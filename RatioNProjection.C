@@ -38,7 +38,7 @@ void set_plot_style() {
 }
 //}}}
 
-void RatioNProjection(bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, TString version = "v1"){ 
+void RatioNProjection(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, TString version = "v1"){ 
 
 	SetStyle();
 	gStyle->SetOptFit(0);
@@ -134,7 +134,6 @@ void RatioNProjection(bool isMC = false, const Int_t multMin = 0, const Int_t mu
 		bkgpPb = new TFile(Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/bkgpPb/%d-%d_%d-%d_%d-%d_%d-%d_%s/deta-dphi_pPb_distribution_bkg_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
 //}}}
 
-
 //Get |deta| > 2 range plot{{{
 
 //get plot{{{
@@ -218,7 +217,6 @@ void RatioNProjection(bool isMC = false, const Int_t multMin = 0, const Int_t mu
 //}}}
 
 //}}}
-
 
 //Get |deta| > 1 range plot{{{
 
