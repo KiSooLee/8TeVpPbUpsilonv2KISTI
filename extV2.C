@@ -242,6 +242,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.2,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.2,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.2,0.75, "|#Delta#eta^{trk}| > 1.0");
+		lt1->DrawLatex(0.6,0.2,Form("v_{2} : %0.3f #pm %0.4f", vn_1fine->GetParameter(1), vn_1fine->GetParError(1)));
 		TLegend* l_1fine = new TLegend(0.77, 0.8, 0.95, 0.95);
 		FormLegend(l_1fine, 0.04);
 		l_1fine->AddEntry(vn_1fine, "total", "l");
@@ -294,6 +295,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.2,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.2,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.2,0.75, "|#Delta#eta^{trk}| > 1.0");
+		lt1->DrawLatex(0.6,0.2,Form("v_{2} : %0.3f #pm %0.4f", vn_1coarse->GetParameter(1), vn_1coarse->GetParError(1)));
 		TLegend* l_1coarse= new TLegend(0.77, 0.8, 0.95, 0.95);
 		FormLegend(l_1coarse, 0.04);
 		l_1coarse->AddEntry(vn_1coarse, "total", "l");
@@ -350,6 +352,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.2,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.2,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.2,0.75, "|#Delta#eta^{trk}| > 1.5");
+		lt1->DrawLatex(0.6,0.2,Form("v_{2} : %0.3f #pm %0.4f", vn_1p5fine->GetParameter(1), vn_1p5fine->GetParError(1)));
 		TLegend* l_1p5fine = new TLegend(0.77, 0.8, 0.95, 0.95);
 		FormLegend(l_1p5fine, 0.04);
 		l_1p5fine->AddEntry(vn_1p5fine, "total", "l");
@@ -402,6 +405,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.2,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.2,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.2,0.75, "|#Delta#eta^{trk}| > 1.5");
+		lt1->DrawLatex(0.6,0.2,Form("v_{2} : %0.3f #pm %0.4f", vn_1p5coarse->GetParameter(1), vn_1p5coarse->GetParError(1)));
 		TLegend* l_1p5coarse = new TLegend(0.77, 0.8, 0.95, 0.95);
 		FormLegend(l_1p5coarse, 0.04);
 		l_1p5coarse->AddEntry(vn_1p5coarse, "total", "l");
@@ -458,6 +462,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.2,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.2,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.2,0.75, "|#Delta#eta^{trk}| > 2.0");
+		lt1->DrawLatex(0.6,0.2,Form("v_{2} : %0.3f #pm %0.4f", vn_2fine->GetParameter(1), vn_2fine->GetParError(1)));
 		TLegend* l_2fine = new TLegend(0.77, 0.8, 0.95, 0.95);
 		FormLegend(l_2fine, 0.04);
 		l_2fine->AddEntry(vn_2fine, "total", "l");
@@ -510,6 +515,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.2,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.2,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.2,0.75, "|#Delta#eta^{trk}| > 2.0");
+		lt1->DrawLatex(0.6,0.2,Form("v_{2} : %0.3f #pm %0.4f", vn_2coarse->GetParameter(1), vn_2coarse->GetParError(1)));
 		TLegend* l_2coarse = new TLegend(0.77, 0.8, 0.95, 0.95);
 		FormLegend(l_2coarse, 0.04);
 		l_2coarse->AddEntry(vn_2coarse, "total", "l");
@@ -525,9 +531,6 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 
 		massCentArr[imass] = 8 + massBinsArr[imass]*0.05 + (massBinsArr[imass+1]-massBinsArr[imass])*0.05/2.;
 		massValsArr[imass+1] = 8 + massBinsArr[imass+1]*0.05;
-
-		//lt1->DrawLatex(0.4,0.4,Form("v_{2} : %0.3f #+- %0.4f",v2s,v2Errs));
-		//lt1->DrawLatex(0.4,0.35, "|#Delta#eta^{trk}| > 1.0");
 	}
 
 //Define graph{{{
