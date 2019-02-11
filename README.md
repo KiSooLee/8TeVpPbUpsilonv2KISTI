@@ -25,10 +25,11 @@
 	do_projection.sh runs the macro.
 
 8. 2-D plot is projected to dphi axis in order to extract v2 by fitting dN/dphi plot. Same event and mixed event are projected separately and same event is divided by mixed event.
-	RatioNProjection.C is macro for ratio. do_projection.sh runs this macro also. So command line should be modified.
+	RatioNProjection.C is macro for ratio. do_projection.sh runs this macro also.
 
 9. extV2.C extracts observed v2 by fitting dN/dphi. do_extV2.sh runs the macro.
-
+	extV23.C include v3 function.
+ 
 10. Observed v2 is combination of signal v2 and background v2. Separation of signal and background is done by simultaneous fitting of mass and v2. It is assumed that the signal background ratio of mass is same in the v2.
 	SimultaneousFit.C macro extracts signal v2. do_Simul.sh runs the macro.
 
