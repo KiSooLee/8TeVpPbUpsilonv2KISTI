@@ -27,7 +27,7 @@ do
 		do
 			for((l=0; l<"${#TrkptMin[@]}"; l++))
 			do
-				root -l -b -q 'DrawCorrel+('${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', "v16")'
+				root -l -b -q 'DrawCorrel.C+('${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', "v16")'
 				root -l -b -q 'RatioNProjection.C+('${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', "v16")'
 			done
 		done
