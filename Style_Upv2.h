@@ -151,24 +151,31 @@ void FormTH1Fill(TH1* h1, Int_t color, Int_t hfill)
 //}}}
 }
 
-void FormTH2(TH1* h1)
+void FormTH2(TH2* h1)
 {
 //{{{
 	h1->Sumw2();
 	h1->GetXaxis()->CenterTitle();
 	h1->GetYaxis()->CenterTitle();
+	h1->GetZaxis()->CenterTitle();
 	h1->GetXaxis()->SetTitleOffset(1.0);
 	h1->GetYaxis()->SetTitleOffset(1.0);
+	h1->GetZaxis()->SetTitleOffset(1.0);
 	h1->GetXaxis()->SetTitleSize(0.048);
 	h1->GetYaxis()->SetTitleSize(0.048);
+	h1->GetZaxis()->SetTitleSize(0.048);
 	h1->GetXaxis()->SetTitleFont(42);
 	h1->GetYaxis()->SetTitleFont(42);
+	h1->GetZaxis()->SetTitleFont(42);
 	h1->GetXaxis()->SetLabelOffset(0.007);
 	h1->GetYaxis()->SetLabelOffset(0.007);
+	h1->GetZaxis()->SetLabelOffset(0.007);
 	h1->GetXaxis()->SetLabelSize(0.04);
 	h1->GetYaxis()->SetLabelSize(0.04);
+	h1->GetZaxis()->SetLabelSize(0.04);
 	h1->GetXaxis()->SetLabelFont(42);
 	h1->GetYaxis()->SetLabelFont(42);
+	h1->GetZaxis()->SetLabelFont(42);
 //}}}
 }
 
