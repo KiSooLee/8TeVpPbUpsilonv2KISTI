@@ -1,5 +1,5 @@
 #!/bin/bash
-#SimultaneousFit.C(multMin, multMax, rapMin, rapMax, TrkptMin , TrkptMax, maxF, bkgN, NU = 1, version)
+#SimultaneousFit.C(multMin, multMax, rapMin, rapMax, TrkptMin , TrkptMax, maxF, bkgN, NU, detacut, isfine, version)
 
 version="v16"
 
@@ -24,7 +24,7 @@ do
 	do
 		for((l=0; l<"${#TrkptMin[@]}"; l++))
 		do
-			root -l -b -q 'SimultaneousFit.C+('${multMin[$i]}', '${multMax[$i]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', 2, 1, 3, '\"$version\"')'
+			root -l -b -q 'SimultaneousFit.C+('${multMin[$i]}', '${multMax[$i]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', 2, 1, 3, 1, true, '\"$version\"')'
 		done
 	done
 done

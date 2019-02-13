@@ -1000,7 +1000,7 @@ Double_t pol2bkg(Double_t* x, Double_t* par)
 
 //}}}
 
-void SimultaneousFit(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Int_t maxF = 2, const Int_t bkgN = 0, const Int_t NU = 1, TString version = "v13")
+void SimultaneousFit(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Int_t maxF = 2, const Int_t bkgN = 0, const Int_t NU = 1, const Int_t detacut = 1, const Bool_t isfine = true, TString version = "v13")
 {
 	SetStyle();
 	gStyle->SetOptFit(0000);
@@ -1023,11 +1023,23 @@ void SimultaneousFit(const Int_t multMin = 0, const Int_t multMax = 300, const D
 		cout << "No such generation in this analysis" << endl;
 		return;
 	}
+	TString DEC;
+	if(detacut == 1) DEC = "eta1";
+	else if(detacut == 2) DEC = "eta1p5";
+	else if(detacut == 3) DEC = "eta2";
+	else
+	{
+		cout << "out of delta eta cut range list" << endl;
+		return;
+	}
+	TString Fine;
+	if(isfine == true) Fine = "fine";
+	else Fine = "coarse";
 //}}}
 
 	TFile* fout;
-	if(maxF == 2) fout = new TFile(Form("CorrDist/CorrFiles/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s.root", (int)multMin, (int)multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Ups.Data(), version.Data()), "RECREATE");
-	else if(maxF == 3) fout = new TFile(Form("CorrDist/CorrFiles/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_tra_%s_%s_%s.root", (int)multMin, (int)multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Ups.Data(), version.Data()), "RECREATE");
+	if(maxF == 2) fout = new TFile(Form("CorrDist/CorrFiles/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_%s_%s.root", (int)multMin, (int)multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Ups.Data(), DEC.Data(), Fine.Data(), version.Data()), "RECREATE");
+	else if(maxF == 3) fout = new TFile(Form("CorrDist/CorrFiles/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_tra_%s_%s_%s_%s_%s.root", (int)multMin, (int)multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Ups.Data(), DEC.Data(), Fine.Data(), version.Data()), "RECREATE");
 	else
 	{
 		cout << "No such Fourier value in this analysis" << endl;
@@ -1121,12 +1133,23 @@ void SimultaneousFit(const Int_t multMin = 0, const Int_t multMax = 300, const D
 			cout << "No such Fourier value in this analysis" << endl;
 			return;
 		}
-		TGraphErrors* gvn_1fine = (TGraphErrors*) fvn->Get("gv2_1fine");
-		TGraphErrors* gvn_1coarse = (TGraphErrors*) fvn->Get("gv2_1coarse");
-		TGraphErrors* gvn_1p5fine = (TGraphErrors*) fvn->Get("gv2_1p5fine");
-		TGraphErrors* gvn_1p5coarse = (TGraphErrors*) fvn->Get("gv2_1p5coarse");
-		TGraphErrors* gvn_2fine = (TGraphErrors*) fvn->Get("gv2_2fine");
-		TGraphErrors* gvn_2coarse = (TGraphErrors*) fvn->Get("gv2_2coarse");
+
+		TGraphErrors* gvn;
+		if(detacut == 1)
+		{
+			if(isfine == true) gvn = (TGraphErrors*) fvn->Get("gv2_1fine");
+			else gvn = (TGraphErrors*) fvn->Get("gv2_1coarse");
+		}
+		else if(detacut == 2)
+		{
+			if(isfine == true) gvn = (TGraphErrors*) fvn->Get("gv2_1p5fine");
+			else gvn = (TGraphErrors*) fvn->Get("gv2_1p5coarse");
+		}
+		else if(detacut == 3)
+		{
+			if(isfine == true) gvn = (TGraphErrors*) fvn->Get("gv2_2fine");
+			else gvn = (TGraphErrors*) fvn->Get("gv2_2coarse");
+		}
 
 		c1[ipt]->cd(2);
 //}}}
@@ -1183,7 +1206,7 @@ void SimultaneousFit(const Int_t multMin = 0, const Int_t multMax = 300, const D
 		ROOT::Fit::DataRange vnrange;
 		vnrange.SetRange(8, 14);
 		ROOT::Fit::BinData datavn(opt, vnrange);
-		ROOT::Fit::FillData(datavn, gvn_1fine);
+		ROOT::Fit::FillData(datavn, gvn);
 
 		ROOT::Fit::Chi2Function mass_chi2(datamass, wmass);
 		ROOT::Fit::Chi2Function vn_chi2(datavn, wvn);
@@ -1309,12 +1332,12 @@ void SimultaneousFit(const Int_t multMin = 0, const Int_t multMax = 300, const D
 		fvn_bkg->SetLineColor(kMagenta);
 		fvn_bkg->SetLineWidth(1);
 
-		gvn_1fine->GetListOfFunctions()->Add(fvn_simul);
-		gvn_1fine->GetListOfFunctions()->Add(fvn_bkg);
-		gvn_1fine->SetTitle("");
-		gvn_1fine->SetMarkerSize(0.8);
-		gvn_1fine->SetLineWidth(1);
-		gvn_1fine->Draw("PESAME");
+		gvn->GetListOfFunctions()->Add(fvn_simul);
+		gvn->GetListOfFunctions()->Add(fvn_bkg);
+		gvn->SetTitle("");
+		gvn->SetMarkerSize(0.8);
+		gvn->SetLineWidth(1);
+		gvn->Draw("PESAME");
 //}}}
 
 //}}}
@@ -1354,7 +1377,12 @@ void SimultaneousFit(const Int_t multMin = 0, const Int_t multMax = 300, const D
 		TLatex* lt1 = new TLatex();
 		FormLatex(lt1, 12, 0.04);
 		lt1->SetNDC();
-		lt1->DrawLatex(0.5, 0.78, Form("Chi2/ndf = %.f/%d", Chi2Yield, NdfYield));
+		lt1->DrawLatex(0.42, 0.9, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", multMin));
+		lt1->DrawLatex(0.42, 0.85, Form("%d < p_{T}^{#varUpsilon} < %d GeV/c", (int)ptBinsArr[ipt], (int)ptBinsArr[ipt+1]));
+		if((int) TrkptMin == 0) lt1->DrawLatex(0.42,0.8, Form("0.3 < p_{T}^{trk} < %d GeV/c", (int) TrkptMax));
+		else lt1->DrawLatex(0.42,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
+		lt1->DrawLatex(0.42,0.75, "|#Delta#eta^{trk}| > 1.0");
+		lt1->DrawLatex(0.42, 0.7, Form("Chi2/ndf = %.f/%d", Chi2Yield, NdfYield));
 
 		Double_t xv2[200];
 		Double_t pullv2[200];
@@ -1363,10 +1391,10 @@ void SimultaneousFit(const Int_t multMin = 0, const Int_t multMax = 300, const D
 		Float_t Chi2v2 = 0;
 		Int_t Ndfv2 = mass_narr-1-fvn_simul->GetNpar()+(3-NU);
 
-		for(Int_t ibin = 0; ibin < gvn_1fine->GetN(); ibin++)
+		for(Int_t ibin = 0; ibin < gvn->GetN(); ibin++)
 		{
-			gvn_1fine->GetPoint(ibin, xv2[ibin], v2y[ibin]);
-			pullv2[ibin] = (v2y[ibin] - fvn_simul->Eval(xv2[ibin]))/gvn_1fine->GetErrorY(ibin);
+			gvn->GetPoint(ibin, xv2[ibin], v2y[ibin]);
+			pullv2[ibin] = (v2y[ibin] - fvn_simul->Eval(xv2[ibin]))/gvn->GetErrorY(ibin);
 			if(fabs(pullv2[ibin]) < 100)
 			{
 				Chi2v2 += pullv2[ibin]*pullv2[ibin];
@@ -1379,8 +1407,8 @@ void SimultaneousFit(const Int_t multMin = 0, const Int_t multMax = 300, const D
 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
-		if(maxF == 2) c1[ipt]->SaveAs(Form("CorrDist/V2Dist/Combine_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s.pdf", (int)multMin, (int)multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Ups.Data(), version.Data()));
-		else if(maxF == 3) c1[ipt]->SaveAs(Form("CorrDist/V2Dist/Combine_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_tra_%s_%s_%s.pdf", (int)multMin, (int)multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Ups.Data(), version.Data()));
+		if(maxF == 2) c1[ipt]->SaveAs(Form("CorrDist/V2Dist/Combine_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_%s_%s.pdf", (int)multMin, (int)multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Ups.Data(), DEC.Data(), Fine.Data(), version.Data()));
+		else if(maxF == 3) c1[ipt]->SaveAs(Form("CorrDist/V2Dist/Combine_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_tra_%s_%s_%s_%s_%s.pdf", (int)multMin, (int)multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Ups.Data(), DEC.Data(), Fine.Data(), version.Data()));
 		else
 		{
 			cout << "No such Fourier value in this analysis" << endl;
