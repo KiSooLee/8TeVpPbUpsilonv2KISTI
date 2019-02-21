@@ -14,4 +14,4 @@ accounting_group=group_cms
 output = log/logSortpPb1/job_$(Process).out
 error = log/logSortpPb1/job_$(Process).err
 request_disk = 10G
-queue ArgFile from Arglist.txt
+queue ArgFile from ../Arguments/Arglist.txt
