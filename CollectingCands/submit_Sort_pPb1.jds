@@ -5,7 +5,7 @@ log = condor.log
 getenv     = True
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = SortpPb1.C, Collect_pPb1.C, Upsilon.h, Style_Upv2.h
+transfer_input_files = SortpPb1.C, Collect_pPb1.C, ../Headers/Upsilon.h, ../Headers/Style_Upv2.h
 transfer_output_files = 110-300_10-30_-24-24_0-3_pPb1
 transfer_output_remaps = "110-300_10-30_-24-24_0-3_pPb1=/xrootd_user/kilee/xrootd/pPb_8TeV_OniaTrkTree/resultpPb1/110-300_10-30_-24-24_0-3"
 accounting_group=group_cms
