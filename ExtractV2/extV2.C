@@ -132,7 +132,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 
 	for(Int_t imass = 0; imass < mass_narr-1; imass++)
 	{
-		fin = new TFile(Form("../Projection/CorrDist/CorrFiles/dphi_distribution_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%d_MupT3p5.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
+		fin = new TFile(Form("../Projection/CorrDist/CorrFiles/dphi_distribution_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
 
 //Get dphiplot{{{
 		hSDeltaPhi1_fine = (TH1D*) fin->Get("hSigDeltaPhi1_fine");
@@ -212,7 +212,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.2,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.2,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.2,0.75, "|#Delta#eta^{trk}| > 1.0");
-		cS1_fine->SaveAs(Form("ProjDist/CorrDistdphi/S_corr1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_sepa_%d_MupT3p5.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), imass));
+		cS1_fine->SaveAs(Form("ProjDist/CorrDistdphi/S_corr1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_sepa_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), imass));
 
 		cB1_fine->cd();
 		hBDeltaPhi1_fine->Draw("pe");
@@ -221,7 +221,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.2,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.2,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.2,0.75, "|#Delta#eta^{trk}| > 1.0");
-		cB1_fine->SaveAs(Form("ProjDist/CorrDistdphi/B_corr1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_sepa_%d_MupT3p5.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), imass));
+		cB1_fine->SaveAs(Form("ProjDist/CorrDistdphi/B_corr1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_sepa_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), imass));
 
 		cdphi1_fine->cd();
 		hDeltaPhi1_fine->Draw("pe");
@@ -254,7 +254,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 		l_1fine->AddEntry(v1_1fine, "v1", "l");
 		l_1fine->AddEntry(v2_1fine, "v2", "l");
 		l_1fine->Draw();
-		cdphi1_fine->SaveAs(Form("ProjDist/CorrDistdphi/fit_corr1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_sepa_%d_MupT3p5.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), imass));
+		cdphi1_fine->SaveAs(Form("ProjDist/CorrDistdphi/fit_corr1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_sepa_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), imass));
 //}}}
 
 //coarse{{{
@@ -662,7 +662,7 @@ void extV2(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t pt
 	//cv2_2coarse->SaveAs(Form("ProjDist/V2Dist/v2_dist_2coarse_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_noMarker_%s.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data()));
 //}}}
 
-	TFile* fout = new TFile(Form("ProjDist/DistFiles/v2_dist_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_MupT3p5.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("ProjDist/DistFiles/v2_dist_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data()), "RECREATE");
 	fout->cd();
 	gv2_1fine->Write();
 	gv2_1coarse->Write();
