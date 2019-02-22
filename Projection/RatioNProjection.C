@@ -21,21 +21,8 @@
 #include <TLatex.h> 
 #include <TInterpreter.h> 
 #include <fstream>
-#include "Style_Upv2.h"
-#include "Upsilon.h"
-//}}}
-
-//{{{
-void set_plot_style() {
-  const Int_t NRGBs = 5;
-  const Int_t NCont = 255;
-  Double_t stops[NRGBs] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
-  Double_t red[NRGBs]   = { 0.00, 0.00, 0.87, 1.00, 0.51 };
-  Double_t green[NRGBs] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
-  Double_t blue[NRGBs]  = { 0.51, 1.00, 0.12, 0.00, 0.00 };
-  TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
-  gStyle->SetNumberContours(NCont);
-}
+#include "../Headers/Style_Upv2.h"
+#include "../Headers/Upsilon.h"
 //}}}
 
 void RatioNProjection(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, TString version = "v1"){ 
@@ -45,12 +32,7 @@ void RatioNProjection(const Int_t multMin = 0, const Int_t multMax = 300, const 
 
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString dphiDIR = mainDIR + "/CorrDist/CorrDistdphi";
 	TString fileDIR = mainDIR + "/CorrDist/CorrFiles";
-
-	void * dird = gSystem->OpenDirectory(dphiDIR.Data());
-	if(dird) gSystem->FreeDirectory(dird);
-	else gSystem->mkdir(dphiDIR.Data(), kTRUE);
 
 	void * dirfile = gSystem->OpenDirectory(fileDIR.Data());
 	if(dirfile) gSystem->FreeDirectory(dirfile);
@@ -128,10 +110,10 @@ void RatioNProjection(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	{
 
 //Get files{{{
-		sigPbp = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s/deta-dphi_Pbp_distribution_sig_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
-		sigpPb = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s/deta-dphi_pPb_distribution_sig_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
-		bkgPbp = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s/deta-dphi_Pbp_distribution_bkg_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
-		bkgpPb = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s/deta-dphi_pPb_distribution_bkg_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
+		sigPbp = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s/deta-dphi_Pbp_distribution_sig_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
+		sigpPb = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s/deta-dphi_pPb_distribution_sig_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
+		bkgPbp = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s/deta-dphi_Pbp_distribution_bkg_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
+		bkgpPb = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s/deta-dphi_pPb_distribution_bkg_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), imass), "READ");
 //}}}
 
 //Get |deta| > 2 range plot{{{
