@@ -1,6 +1,6 @@
 #!/bin/bash
-#DrawCorrel.C(multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, version)
-#RatioNProjection.C(multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, version)
+#DrawCorrel.C(multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, version, MupT)
+#RatioNProjection.C(multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, version, MupT)
 
 #multMin=("0" "40" "100" "200" "300")
 #multMax=("40" "100" "200" "300" "1500")
@@ -27,8 +27,8 @@ do
 		do
 			for((l=0; l<"${#TrkptMin[@]}"; l++))
 			do
-				root -l -b -q 'DrawCorrel.C+('${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', "v16")'
-				root -l -b -q 'RatioNProjection.C+('${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', "v16")'
+				root -l -b -q 'DrawCorrel.C+('${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', "v17", "4")'
+				root -l -b -q 'RatioNProjection.C+('${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', "v17", "4")'
 			done
 		done
 	done
