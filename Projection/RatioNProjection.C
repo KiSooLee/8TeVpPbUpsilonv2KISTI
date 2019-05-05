@@ -33,7 +33,7 @@ void RatioNProjection(const Int_t multMin = 0, const Int_t multMax = 300, const 
 
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString fileDIR = mainDIR + Form("/CorrDist/CorrFiles/", version.Data());
+	TString fileDIR = mainDIR + Form("/CorrDist/CorrFiles/%s", version.Data());
 
 	void * dirfile = gSystem->OpenDirectory(fileDIR.Data());
 	if(dirfile) gSystem->FreeDirectory(dirfile);
@@ -244,7 +244,7 @@ void RatioNProjection(const Int_t multMin = 0, const Int_t multMax = 300, const 
 //}}}
 
 //Store dphi projection{{{
-		TFile* fout = new TFile(Form("CorrDist/CorrFiles/dphi_distribution_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_MupT%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), imass), "RECREATE");
+		TFile* fout = new TFile(Form("CorrDist/CorrFiles/%s/dphi_distribution_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_MupT%s_%d.root", version.Data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), imass), "RECREATE");
 		fout->cd();
 		hSigDeltaPhi1_fine->Write();
 		hSigDeltaPhi1_coarse->Write();
