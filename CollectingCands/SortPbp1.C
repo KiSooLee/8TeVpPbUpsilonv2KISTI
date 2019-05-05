@@ -41,11 +41,11 @@ void SortPbp1(bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 
 	if(isMC)
 	{
 		
-		fname1 = "root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_MC_OniaTrkTree/oniaTree_Pbp1.root";
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_MC_OniaTrkTree/oniaTree_Pbp1.root";
 	}
 	else
 	{
-		fname1 = "root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1.root";
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1.root";
 	}
 	tin->Add(fname1.Data());
 //}}}

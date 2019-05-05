@@ -40,11 +40,11 @@ void mSortpPb2(bool isMC = false, const Int_t multMin = 0, const Int_t multMax =
 	TChain* tin = new TChain("hionia/myTree");
 	if(isMC)
 	{
-		fname1 = "root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_MC_OniaTrkTree/oniaTree_pPb2.root";
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_MC_OniaTrkTree/oniaTree_pPb2.root";
 	}
 	else
 	{
-		fname1 = "root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb2.root";
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb2.root";
 	}
 	tin->Add(fname1.Data());
 //}}}

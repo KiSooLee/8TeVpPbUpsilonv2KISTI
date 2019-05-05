@@ -24,7 +24,7 @@
 using namespace std;
 //}}}
 
-void Collect_pPb2(bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Int_t imass = 0)
+void Collect_pPb2(bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString MupT = "4", const Int_t imass = 0)
 {
 //make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -37,7 +37,7 @@ void Collect_pPb2(bool isMC = false, const Int_t multMin = 0, const Int_t multMa
 //Get files{{{
 	TString fname1;
 	TChain* tin1 = new TChain("UpsilonTree");
-	fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/total/Sort_OniaTree_pPb2_PADoubleMuon_%d.root", imass);
+	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/total_MupT%s/Sort_OniaTree_pPb2_PADoubleMuon_%d.root", MupT.Data(), imass);
 	tin1->Add(fname1.Data());
 //}}}
 
