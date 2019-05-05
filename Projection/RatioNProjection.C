@@ -33,7 +33,7 @@ void RatioNProjection(const Int_t multMin = 0, const Int_t multMax = 300, const 
 
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString fileDIR = mainDIR + "/CorrDist/CorrFiles";
+	TString fileDIR = mainDIR + Form("/CorrDist/CorrFiles/", version.Data());
 
 	void * dirfile = gSystem->OpenDirectory(fileDIR.Data());
 	if(dirfile) gSystem->FreeDirectory(dirfile);

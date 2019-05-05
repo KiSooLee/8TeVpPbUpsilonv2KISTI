@@ -33,18 +33,18 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString fullDIR = mainDIR + "/CorrDist/CorrDistFull";
-	TString fullsigDIR = mainDIR + "/CorrDist/CorrDistFullSig";
-	TString fullbkgDIR = mainDIR + "/CorrDist/CorrDistFullBkg";
-	TString cut1DIR = mainDIR + "/CorrDist/CorrDistCut1";
-	TString cut1sigDIR = mainDIR + "/CorrDist/CorrDistCut1Sig";
-	TString cut1bkgDIR = mainDIR + "/CorrDist/CorrDistCut1Bkg";
-	TString cut1p5DIR = mainDIR + "/CorrDist/CorrDistCut1p5";
-	TString cut1p5sigDIR = mainDIR + "/CorrDist/CorrDistCut1p5Sig";
-	TString cut1p5bkgDIR = mainDIR + "/CorrDist/CorrDistCut1p5Bkg";
-	TString cut2DIR = mainDIR + "/CorrDist/CorrDistCut2";
-	TString cut2sigDIR = mainDIR + "/CorrDist/CorrDistCut2Sig";
-	TString cut2bkgDIR = mainDIR + "/CorrDist/CorrDistCut2Bkg";
+	TString fullDIR = mainDIR + Form("/CorrDist/CorrDistFull/%s", version.Data());
+	TString fullsigDIR = mainDIR + Form("/CorrDist/CorrDistFullSig/%s", version.Data());
+	TString fullbkgDIR = mainDIR + Form("/CorrDist/CorrDistFullBkg/%s", version.Data());
+	TString cut1DIR = mainDIR + Form("/CorrDist/CorrDistCut1/%s", version.Data());
+	TString cut1sigDIR = mainDIR + Form("/CorrDist/CorrDistCut1Sig/%s", version.Data());
+	TString cut1bkgDIR = mainDIR + Form("/CorrDist/CorrDistCut1Bkg/%s", version.Data());
+	TString cut1p5DIR = mainDIR + Form("/CorrDist/CorrDistCut1p5/%s", version.Data());
+	TString cut1p5sigDIR = mainDIR + Form("/CorrDist/CorrDistCut1p5Sig/%s", version.Data());
+	TString cut1p5bkgDIR = mainDIR + Form("/CorrDist/CorrDistCut1p5Bkg/%s", version.Data());
+	TString cut2DIR = mainDIR + Form("/CorrDist/CorrDistCut2/%s", version.Data());
+	TString cut2sigDIR = mainDIR + Form("/CorrDist/CorrDistCut2Sig/%s", version.Data());
+	TString cut2bkgDIR = mainDIR + Form("/CorrDist/CorrDistCut2Bkg/%s", version.Data());
 
 	void * dirf = gSystem->OpenDirectory(fullDIR.Data());
 	if(dirf) gSystem->FreeDirectory(dirf);
@@ -235,7 +235,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		lt1->DrawLatex(0.15,0.85, Form("%d < p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
-		cfull_sig_fine->SaveAs(Form("CorrDist/CorrDistFullSig/plot_corr_full_sig_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
+		cfull_sig_fine->SaveAs(Form("CorrDist/CorrDistFullSig/%s/plot_corr_full_sig_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
 		cfull_bkg_fine->cd();
 		hBkgPbp_fine->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -243,7 +243,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		lt1->DrawLatex(0.15,0.85, Form("%d < p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
-		cfull_bkg_fine->SaveAs(Form("CorrDist/CorrDistFullBkg/plot_corr_full_bkg_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
+		cfull_bkg_fine->SaveAs(Form("CorrDist/CorrDistFullBkg/%s/plot_corr_full_bkg_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
 		cfull_sig_coarse->cd();
 		hSigPbp_coarse->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -251,7 +251,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		lt1->DrawLatex(0.15,0.85, Form("%d < p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
-		cfull_sig_coarse->SaveAs(Form("CorrDist/CorrDistFullSig/plot_corr_full_sig_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
+		cfull_sig_coarse->SaveAs(Form("CorrDist/CorrDistFullSig/%s/plot_corr_full_sig_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
 		cfull_bkg_coarse->cd();
 		hBkgPbp_coarse->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -259,7 +259,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		lt1->DrawLatex(0.15,0.85, Form("%d < p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
-		cfull_bkg_coarse->SaveAs(Form("CorrDist/CorrDistFullBkg/plot_corr_full_bkg_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
+		cfull_bkg_coarse->SaveAs(Form("CorrDist/CorrDistFullBkg/%s/plot_corr_full_bkg_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
 //}}}
 
 //}}}
@@ -290,7 +290,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 2.0");
-		ccut2_sig_fine->SaveAs(Form("CorrDist/CorrDistCut2Sig/plot_corr_sig_cut2_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
+		ccut2_sig_fine->SaveAs(Form("CorrDist/CorrDistCut2Sig/%s/plot_corr_sig_cut2_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
 		ccut2_bkg_fine->cd();
 		hBkg_cut2Pbp_fine->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -299,7 +299,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 2.0");
-		ccut2_bkg_fine->SaveAs(Form("CorrDist/CorrDistCut2Bkg/plot_corr_bkg_cut2_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
+		ccut2_bkg_fine->SaveAs(Form("CorrDist/CorrDistCut2Bkg/%s/plot_corr_bkg_cut2_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
 		ccut2_sig_coarse->cd();
 		hSig_cut2Pbp_coarse->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -308,7 +308,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 2.0");
-		ccut2_sig_coarse->SaveAs(Form("CorrDist/CorrDistCut2Sig/plot_corr_sig_cut2_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
+		ccut2_sig_coarse->SaveAs(Form("CorrDist/CorrDistCut2Sig/%s/plot_corr_sig_cut2_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
 		ccut2_bkg_coarse->cd();
 		hBkg_cut2Pbp_coarse->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -317,7 +317,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 2.0");
-		ccut2_bkg_coarse->SaveAs(Form("CorrDist/CorrDistCut2Bkg/plot_corr_bkg_cut2_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
+		ccut2_bkg_coarse->SaveAs(Form("CorrDist/CorrDistCut2Bkg/%s/plot_corr_bkg_cut2_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
 //}}}
 
 //}}}
@@ -348,7 +348,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 1.5");
-		ccut1p5_sig_fine->SaveAs(Form("CorrDist/CorrDistCut1p5Sig/plot_corr_sig_cut1p5_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
+		ccut1p5_sig_fine->SaveAs(Form("CorrDist/CorrDistCut1p5Sig/%s/plot_corr_sig_cut1p5_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
 		ccut1p5_bkg_fine->cd();
 		hBkg_cut1p5Pbp_fine->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -357,7 +357,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 1.5");
-		ccut1p5_bkg_fine->SaveAs(Form("CorrDist/CorrDistCut1p5Bkg/plot_corr_bkg_cut1p5_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
+		ccut1p5_bkg_fine->SaveAs(Form("CorrDist/CorrDistCut1p5Bkg/%s/plot_corr_bkg_cut1p5_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
 		ccut1p5_sig_coarse->cd();
 		hSig_cut1p5Pbp_coarse->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -366,7 +366,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 1.5");
-		ccut1p5_sig_coarse->SaveAs(Form("CorrDist/CorrDistCut1p5Sig/plot_corr_sig_cut1p5_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
+		ccut1p5_sig_coarse->SaveAs(Form("CorrDist/CorrDistCut1p5Sig/%s/plot_corr_sig_cut1p5_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
 		ccut1p5_bkg_coarse->cd();
 		hBkg_cut1p5Pbp_coarse->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -375,7 +375,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 1.5");
-		ccut1p5_bkg_coarse->SaveAs(Form("CorrDist/CorrDistCut1p5Bkg/plot_corr_bkg_cut1p5_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
+		ccut1p5_bkg_coarse->SaveAs(Form("CorrDist/CorrDistCut1p5Bkg/%s/plot_corr_bkg_cut1p5_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
 //}}}
 
 //}}}
@@ -406,7 +406,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 1.0");
-		ccut1_sig_fine->SaveAs(Form("CorrDist/CorrDistCut1Sig/plot_corr_sig_cut1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
+		ccut1_sig_fine->SaveAs(Form("CorrDist/CorrDistCut1Sig/%s/plot_corr_sig_cut1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
 		ccut1_bkg_fine->cd();
 		hBkg_cut1Pbp_fine->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -415,7 +415,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 1.0");
-		ccut1_bkg_fine->SaveAs(Form("CorrDist/CorrDistCut1Bkg/plot_corr_bkg_cut1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
+		ccut1_bkg_fine->SaveAs(Form("CorrDist/CorrDistCut1Bkg/%s/plot_corr_bkg_cut1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), imass));
 		ccut1_sig_coarse->cd();
 		hSig_cut1Pbp_coarse->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -424,7 +424,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 1.0");
-		ccut1_sig_coarse->SaveAs(Form("CorrDist/CorrDistCut1Sig/plot_corr_sig_cut1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
+		ccut1_sig_coarse->SaveAs(Form("CorrDist/CorrDistCut1Sig/%s/plot_corr_sig_cut1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
 		ccut1_bkg_coarse->cd();
 		hBkg_cut1Pbp_coarse->Draw("Surf1");
 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, N^{trk} #geq %d", (int) multMin));
@@ -433,7 +433,7 @@ void DrawCorrel(const Int_t multMin = 0, const Int_t multMax = 300, const Double
 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 < p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.15,0.8, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.15,0.75, "|#Delta#eta| < 1.0");
-		ccut1_bkg_coarse->SaveAs(Form("CorrDist/CorrDistCut1Bkg/plot_corr_bkg_cut1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
+		ccut1_bkg_coarse->SaveAs(Form("CorrDist/CorrDistCut1Bkg/%s/plot_corr_bkg_cut1_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_MupT%s_%d.pdf", version.data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), imass));
 //}}}
 
 //}}}
