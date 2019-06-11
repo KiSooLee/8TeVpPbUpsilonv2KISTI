@@ -35,25 +35,33 @@ void dataskim(bool isMC = false)
 	else gSystem->mkdir(saveDIR.Data(), kTRUE);
 //}}}
 
-	TString DM;
-	if(isMC) DM = "MC";
-	else DM = "RD";
+	TString MorD;
+	if(isMC) MorD = "MC";
+	else MorD = "RD";
 
 //Get files{{{
 	TString fname1, fname2;
 	TChain* tin = new TChain("hionia/myTree");
 	//fname1 = "oniaTree_pPb_20170504.root";//KUNPL
 	//fname2 = "oniaTree_Pbp_20170504.root";//KUNPL
-	fname1 = "/xrootd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_20170504.root";//KISTI
-	fname2 = "/xrootd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_20170504.root";//KISTI
+	if(isMC)
+	{
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_1S_20190608.root";//KISTI
+		fname2 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_1S_20190608.root";//KISTI
+	}
+	else
+	{
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_20170504.root";//KISTI
+		fname2 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_20170504.root";//KISTI
+	}
 	tin->Add(fname1.Data());
 	tin->Add(fname2.Data());
 //}}}
 
 	TFile* fout;
-	//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_full.root", DM.Data()), "RECREATE");
-	//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_noAcc.root", DM.Data()), "RECREATE");
-	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_MupT3p5.root", DM.Data()), "RECREATE");
+	//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_full.root", MorD.Data()), "RECREATE");
+	//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_noAcc.root", MorD.Data()), "RECREATE");
+	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_MupT4.root", MorD.Data()), "RECREATE");
 
 	const Int_t MaxQQ = 250;
 	const Int_t MaxTrk = 1500;
@@ -367,6 +375,6 @@ void dataskim(bool isMC = false)
 
 bool InAcc(Double_t muPt, Double_t muEta)
 {
-	//return( TMath::Abs(muEta) < 2.4 && muPt >= 4);
-	return( TMath::Abs(muEta) < 2.4 && muPt >= 3.5);
+	return( TMath::Abs(muEta) < 2.4 && muPt >= 4);
+	//return( TMath::Abs(muEta) < 2.4 && muPt >= 3.5);
 }
