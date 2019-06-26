@@ -15,6 +15,7 @@
 #include <TF1.h>
 #include <TRandom3.h>
 #include <TSystem.h>
+
 #include "Style_Upv2.h"
 #include "Upsilon.h"
 /*
@@ -40,8 +41,9 @@ void Collect_Pbp1(const bool isMC = false, const Int_t multMin = 0, const Int_t 
 
 //Get files{{{
 	TString fname1;
-	TChain* tin1 = new TChain("UpsilonTree");
 	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/total_MupT%s/Sort_OniaTree_Pbp1_PADoubleMuon_%s_%d.root", MupT.Data(), MorD.Data(), imass);
+	//fname1 = Form("0-1500_0-30_-24-24_0-10_Pbp1/Sort_OniaTree_Pbp1_PADoubleMuon_%s_%d.root", MorD.Data(), imass);
+	TChain* tin1 = new TChain("UpsilonTree");
 	tin1->Add(fname1.Data());
 //}}}
 
@@ -49,33 +51,51 @@ void Collect_Pbp1(const bool isMC = false, const Int_t multMin = 0, const Int_t 
 	const Int_t MaxTrk = 1500;
 
 //get variables{{{
-	Int_t Ntrg;
-	Int_t Nass;
 	Double_t mult;
 	Float_t zVtx;
-	TClonesArray* Vec_trg;
-	TClonesArray* Vec_ass;
-	Vec_trg = 0;
-	Vec_ass = 0;
+	Int_t Ntrg_Reco;
+	Int_t Nass_Reco;
+	Int_t Ntrg_Gen;
+	Int_t Nass_Gen;
+	TClonesArray* Vec_trg_Reco;
+	TClonesArray* Vec_ass_Reco;
+	TClonesArray* Vec_trg_Gen;
+	TClonesArray* Vec_ass_Gen;
+	Vec_trg_Reco = 0;
+	Vec_ass_Reco = 0;
+	Vec_trg_Gen = 0;
+	Vec_ass_Gen = 0;
 
-	TBranch* b_Ntrg;
-	TBranch* b_Nass;
 	TBranch* b_mult;
 	TBranch* b_zVtx;
-	TBranch* b_Vec_trg;
-	TBranch* b_Vec_ass;
+	TBranch* b_Ntrg_Reco;
+	TBranch* b_Nass_Reco;
+	TBranch* b_Ntrg_Gen;
+	TBranch* b_Nass_Gen;
+	TBranch* b_Vec_trg_Reco;
+	TBranch* b_Vec_ass_Reco;
+	TBranch* b_Vec_trg_Gen;
+	TBranch* b_Vec_ass_Gen;
 
-	tin1->SetBranchAddress("Ntrg", &Ntrg, &b_Ntrg);
-	tin1->SetBranchAddress("Nass", &Nass, &b_Nass);
 	tin1->SetBranchAddress("mult", &mult, &b_mult);
 	tin1->SetBranchAddress("zVtx", &zVtx, &b_zVtx);
-	tin1->SetBranchAddress("Vec_trg", &Vec_trg, &b_Vec_trg);
-	tin1->SetBranchAddress("Vec_ass", &Vec_ass, &b_Vec_ass);
+	tin1->SetBranchAddress("Ntrg_Reco", &Ntrg_Reco, &b_Ntrg_Reco);
+	tin1->SetBranchAddress("Nass_Reco", &Nass_Reco, &b_Nass_Reco);
+	tin1->SetBranchAddress("Vec_trg_Reco", &Vec_trg_Reco, &b_Vec_trg_Reco);
+	tin1->SetBranchAddress("Vec_ass_Reco", &Vec_ass_Reco, &b_Vec_ass_Reco);
+	tin1->SetBranchAddress("Ntrg_Gen", &Ntrg_Gen, &b_Ntrg_Gen);
+	tin1->SetBranchAddress("Nass_Gen", &Nass_Gen, &b_Nass_Gen);
+	tin1->SetBranchAddress("Vec_trg_Gen", &Vec_trg_Gen, &b_Vec_trg_Gen);
+	tin1->SetBranchAddress("Vec_ass_Gen", &Vec_ass_Gen, &b_Vec_ass_Gen);
 
-	TLorentzVector* vec_trg = new TLorentzVector;
-	TLorentzVector* vec_ass = new TLorentzVector;
-	vec_trg = 0;
-	vec_ass = 0;
+	TLorentzVector* vec_trg_Reco = new TLorentzVector;
+	TLorentzVector* vec_ass_Reco = new TLorentzVector;
+	TLorentzVector* vec_trg_Gen = new TLorentzVector;
+	TLorentzVector* vec_ass_Gen = new TLorentzVector;
+	vec_trg_Reco = 0;
+	vec_ass_Reco = 0;
+	vec_trg_Gen = 0;
+	vec_ass_Gen = 0;
 //}}}
 
 	const Int_t Nevt = tin1->GetEntries();
@@ -92,52 +112,103 @@ void Collect_Pbp1(const bool isMC = false, const Int_t multMin = 0, const Int_t 
 		if(ievt%100000 == 0) cout << "Events: " << ievt << " / " << Nevt << " [" << Form("%.1f", ((double)ievt/(double)Nevt)*100) << " %]" << endl;
 		tin1->GetEntry(ievt);
 		DMset.clear();
-		Int_t TrueNtrg = 0;
-		Int_t TrueNass = 0;
+		Int_t TrueNtrgReco = 0;
+		Int_t TrueNassReco = 0;
+		Int_t TrueNtrgGen = 0;
+		Int_t TrueNassGen = 0;
 
 		if(multMin <= mult && mult < multMax)
 		{
-//Get collected trig{{{
-			for(Int_t itrg = 0; itrg < Ntrg; itrg++)
+			if(isMC)
 			{
-				vec_trg = (TLorentzVector*) Vec_trg->At(itrg);
-				if(vec_trg == 0) continue;
-				Double_t trg_pt = vec_trg->Pt();
-				Double_t trg_y = vec_trg->Rapidity();
-
-				if(ptMin <= vec_trg->Pt() && vec_trg->Pt() < ptMax && rapMin <= vec_trg->Rapidity() && vec_trg->Rapidity() < rapMax)
+//Get collected trig{{{
+				for(Int_t itrg = 0; itrg < Ntrg_Gen; itrg++)
 				{
-					new ( (*DMset.Vec_trg)[TrueNtrg] )TLorentzVector(*vec_trg);
-					TrueNtrg++;
+					vec_trg_Gen = (TLorentzVector*) Vec_trg_Gen->At(itrg);
+					if(vec_trg_Gen == 0) continue;
+					Double_t trg_pt = vec_trg_Gen->Pt();
+					Double_t trg_y = vec_trg_Gen->Rapidity();
+
+					if(ptMin <= vec_trg_Gen->Pt() && vec_trg_Gen->Pt() < ptMax && rapMin <= vec_trg_Gen->Rapidity() && vec_trg_Gen->Rapidity() < rapMax)
+					{
+						new ( (*DMset.Vec_trg_Gen)[TrueNtrgGen] )TLorentzVector(*vec_trg_Gen);
+						TrueNtrgGen++;
+					}
+				}
+//}}}
+
+//Get collected associator{{{
+			if(TrueNtrgGen != 0)
+			{
+				for(Int_t itrk = 0; itrk < Nass_Gen; itrk++)
+				{
+					vec_ass_Gen = (TLorentzVector*) Vec_ass_Gen->At(itrk);
+					if(vec_ass_Gen == 0) continue;
+					Double_t TrkptMintmp = 0.;
+					if(TrkptMin == 0) TrkptMintmp = 0.4;
+					else TrkptMintmp = TrkptMin;
+					if(vec_ass_Gen->Pt() >= TrkptMintmp && vec_ass_Gen->Pt() < TrkptMax)
+					{
+						new ( (*DMset.Vec_ass_Gen)[TrueNassGen] )TLorentzVector(*vec_ass_Gen);
+						TrueNassGen++;
+					}
+				}
+			}
+//}}}
+			}
+
+//Get collected trig{{{
+			for(Int_t itrg = 0; itrg < Ntrg_Reco; itrg++)
+			{
+				vec_trg_Reco = (TLorentzVector*) Vec_trg_Reco->At(itrg);
+				if(vec_trg_Reco == 0) continue;
+				Double_t trg_pt = vec_trg_Reco->Pt();
+				Double_t trg_y = vec_trg_Reco->Rapidity();
+
+				if(ptMin <= vec_trg_Reco->Pt() && vec_trg_Reco->Pt() < ptMax && rapMin <= vec_trg_Reco->Rapidity() && vec_trg_Reco->Rapidity() < rapMax)
+				{
+					new ( (*DMset.Vec_trg_Reco)[TrueNtrgReco] )TLorentzVector(*vec_trg_Reco);
+					TrueNtrgReco++;
 				}
 			}
 //}}}
 
 //Get collected associator{{{
-			if(TrueNtrg != 0)
+			if(TrueNtrgReco != 0)
 			{
-				for(Int_t itrk = 0; itrk < Nass; itrk++)
+				for(Int_t itrk = 0; itrk < Nass_Reco; itrk++)
 				{
-					vec_ass = (TLorentzVector*) Vec_ass->At(itrk);
-					if(vec_ass == 0) continue;
+					vec_ass_Reco = (TLorentzVector*) Vec_ass_Reco->At(itrk);
+					if(vec_ass_Reco == 0) continue;
 					Double_t TrkptMintmp = 0.;
 					if(TrkptMin == 0) TrkptMintmp = 0.3;
 					else TrkptMintmp = TrkptMin;
-					if(vec_ass->Pt() >= TrkptMintmp && vec_ass->Pt() < TrkptMax)
+					if(vec_ass_Reco->Pt() >= TrkptMintmp && vec_ass_Reco->Pt() < TrkptMax)
 					{
-						new ( (*DMset.Vec_ass)[TrueNass] )TLorentzVector(*vec_ass);
-						TrueNass++;
+						new ( (*DMset.Vec_ass_Reco)[TrueNassReco] )TLorentzVector(*vec_ass_Reco);
+						TrueNassReco++;
 					}
 				}
 			}
 //}}}
 		}
-		if(TrueNtrg != 0 && TrueNass != 0 && zVtx > -98)
+		if(isMC)
 		{
-			DMset.Ntrg = TrueNtrg;
-			DMset.Nass = TrueNass;
-			DMset.mult = mult;
+			if(TrueNtrgGen != 0 && TrueNassGen != 0)
+			{
+				DMset.Ntrg_Gen = TrueNtrgGen;
+				DMset.Nass_Gen = TrueNassGen;
+			}
+		}
+		if(TrueNtrgReco != 0 && TrueNassReco != 0 && zVtx > -98)
+		{
+			DMset.Ntrg_Reco = TrueNtrgReco;
+			DMset.Nass_Reco = TrueNassReco;
 			DMset.zVtx = zVtx;
+		}
+		if( (TrueNtrgGen != 0 && TrueNassGen != 0) || (TrueNtrgReco != 0 && TrueNassReco != 0 && zVtx > -98) )
+		{
+			DMset.mult = mult;
 			tout->Fill();
 		}
 	}
