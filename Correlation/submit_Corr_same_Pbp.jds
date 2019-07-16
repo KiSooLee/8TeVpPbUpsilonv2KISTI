@@ -1,0 +1,15 @@
+executable = do_Correl_same_Pbp.sh
+universe   = vanilla
+arguments  = $(ArgFile)
+log = condor.log
+getenv     = True
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = Correl_same_Pbp.C, ../Headers/Upsilon.h, ../Headers/Style_Upv2.h
+transfer_output_files = 0-40_0-4_-24-24_0-3_v18_MupT3p5
+accounting_group=group_cms
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
++SingularityBind = "/cvmfs, /cms, /share"
+output = log/logCorSamePbp/job_$(Process).out
+error = log/logCorSamePbp/job_$(Process).err
+queue ArgFile from ../Arguments/ArglistCorr18.txt
