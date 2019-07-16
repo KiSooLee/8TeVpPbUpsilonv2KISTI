@@ -29,7 +29,7 @@ void Collect_pPb1(const bool isMC = false, const Int_t multMin = 0, const Int_t 
 {
 //make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString saveDIR = mainDIR + Form("/%d-%d_%d-%d_%d-%d_%d-%d_pPb1", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax);
+	TString saveDIR = mainDIR + Form("/%d-%d_%d-%d_%d-%d_%d-%d_pPb1_MupT%s", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data());
 	void * dirp = gSystem->OpenDirectory(saveDIR.Data());
 	if(dirp) gSystem->FreeDirectory(dirp);
 	else gSystem->mkdir(saveDIR.Data(), kTRUE);
@@ -51,7 +51,7 @@ void Collect_pPb1(const bool isMC = false, const Int_t multMin = 0, const Int_t 
 	const Int_t MaxTrk = 1500;
 
 //get variables{{{
-	Double_t mult;
+	Int_t mult;
 	Float_t zVtx;
 	Int_t Ntrg_Reco;
 	Int_t Nass_Reco;
@@ -213,7 +213,7 @@ void Collect_pPb1(const bool isMC = false, const Int_t multMin = 0, const Int_t 
 		}
 	}
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_pPb1/Sort_OniaTree_pPb1_PADoubleMuon_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MorD.Data(), imass), "RECREATE");
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_pPb1_MupT%s/Sort_OniaTree_pPb1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), imass), "RECREATE");
 	fout->cd();
 	tout->Write();
 	fout->Close();
