@@ -153,7 +153,7 @@ void Correl_trk_same_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 
 	for(Int_t ievt = 0; ievt < Nevt; ievt++)
 	{
-		if(ievt%100000 == 0) cout << "Events: " << ievt << " / " << Nevt << " [" << Form("%.1f", ((double)ievt/(double)Nevt)*100) << " %]" << endl;
+		if(ievt%100 == 0) cout << "Events: " << ievt << " / " << Nevt << " [" << Form("%.1f", ((double)ievt/(double)Nevt)*100) << " %]" << endl;
 		tin1->GetEntry(ievt);
 
 		if(isMC)

@@ -237,7 +237,7 @@ void Correl_mix_pPb(const bool isMC = false, const Int_t multMin = 0, const Int_
 	{
 		for(Int_t ievt = 0; ievt < Nevt1; ievt++)
 		{
-			if(ievt%100000 == 0) cout << "1st Events: " << ievt << " / " << Nevt1 << " [" << Form("%.1f", ((double)ievt/(double)Nevt1)*100) << " %]" << endl;
+			if(ievt%100 == 0) cout << "1st Events: " << ievt << " / " << Nevt1 << " [" << Form("%.1f", ((double)ievt/(double)Nevt1)*100) << " %]" << endl;
 			tin1->GetEntry(ievt);
 
 			if(isMC)
@@ -367,7 +367,7 @@ void Correl_mix_pPb(const bool isMC = false, const Int_t multMin = 0, const Int_
 
 		for(Int_t ievt = 0; ievt < Nevt2; ievt++)
 		{
-			if(ievt%100000 == 0) cout << "2nd Events: " << ievt << " / " << Nevt2 << " [" << Form("%.1f", ((double)ievt/(double)Nevt2)*100) << " %]" << endl;
+			if(ievt%100 == 0) cout << "2nd Events: " << ievt << " / " << Nevt2 << " [" << Form("%.1f", ((double)ievt/(double)Nevt2)*100) << " %]" << endl;
 			tin2->GetEntry(ievt);
 
 			if(isMC)
