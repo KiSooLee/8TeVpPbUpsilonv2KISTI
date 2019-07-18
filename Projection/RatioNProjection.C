@@ -25,15 +25,14 @@
 #include "../Headers/Upsilon.h"
 //}}}
 
-void RatioNProjection(const Bool_t isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, TString version = "v1", TString MupT = "4")
+void RatioNProjection(const Bool_t isMC = false, const Bool_t isTrk = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4")
 { 
-
 	SetStyle();
 	gStyle->SetOptFit(0);
 
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString fileDIR = mainDIR + Form("/CorrDist/CorrFiles/%s", version.Data());
+	TString fileDIR = mainDIR + Form("/CorrDist/CorrFiles/%s/MupT%s", version.Data(), MupT.Data());
 
 	void * dirfile = gSystem->OpenDirectory(fileDIR.Data());
 	if(dirfile) gSystem->FreeDirectory(dirfile);
@@ -43,233 +42,169 @@ void RatioNProjection(const Bool_t isMC = false, const Int_t multMin = 0, const 
 	TString MorD;
 	if(isMC) MorD = "MC";
 	else MorD = "Data";
+	TString Direction[2] = {"Pbp", "pPb"};
+	TString Away[3] = {"2", "1p5", "1"};
+	TString Trk;
+	if(isTrk) Trk = "trk_";
+	else Trk = "";
 
-	TFile *sigPbp; TFile *sigpPb;
-	TFile *bkgPbp; TFile *bkgpPb;
+	TFile *samePbp[2];
+	TFile *mixPbp[2];
 
 //Define histogram{{{
 
 //fine{{{
+	TH2D *hSameReco_Pbp_fine[3][2];
+	TH2D *hSameGen_Pbp_fine[3][2];
+	TH2D *hMixReco_Pbp_fine[3][2];
+	TH2D *hMixGen_Pbp_fine[3][2];
 
-//2D plot{{{
-	TH2D *hSig_cut1Pbp_fine;
-	TH2D *hSig_cut1pPb_fine;
-	TH2D *hBkg_cut1Pbp_fine;
-	TH2D *hBkg_cut1pPb_fine;
-	TH2D *hSig_cut1p5Pbp_fine;
-	TH2D *hSig_cut1p5pPb_fine;
-	TH2D *hBkg_cut1p5Pbp_fine;
-	TH2D *hBkg_cut1p5pPb_fine;
-	TH2D *hSig_cut2Pbp_fine;
-	TH2D *hSig_cut2pPb_fine;
-	TH2D *hBkg_cut2Pbp_fine;
-	TH2D *hBkg_cut2pPb_fine;
-//}}}
-
-//1D projection{{{
-	TH1D *hSigDeltaPhi1_fine;
-	TH1D *hBkgDeltaPhi1_fine;
-	TH1D *hSigDeltaPhi1p5_fine;
-	TH1D *hBkgDeltaPhi1p5_fine;
-	TH1D *hSigDeltaPhi2_fine;
-	TH1D *hBkgDeltaPhi2_fine;
-//}}}
-
+	TH1D *hSameRecoDeltaPhi_fine[3];
+	TH1D *hSameGenDeltaPhi_fine[3];
+	TH1D *hMixRecoDeltaPhi_fine[3];
+	TH1D *hMixGenDeltaPhi_fine[3];
 //}}}
 
 //coarse{{{
+	TH2D *hSameReco_Pbp_coarse[3][2];
+	TH2D *hSameGen_Pbp_coarse[3][2];
+	TH2D *hMixReco_Pbp_coarse[3][2];
+	TH2D *hMixGen_Pbp_coarse[3][2];
 
-//2D plot{{{
-	TH2D *hSig_cut1Pbp_coarse;
-	TH2D *hSig_cut1pPb_coarse;
-	TH2D *hBkg_cut1Pbp_coarse;
-	TH2D *hBkg_cut1pPb_coarse;
-	TH2D *hSig_cut1p5Pbp_coarse;
-	TH2D *hSig_cut1p5pPb_coarse;
-	TH2D *hBkg_cut1p5Pbp_coarse;
-	TH2D *hBkg_cut1p5pPb_coarse;
-	TH2D *hSig_cut2Pbp_coarse;
-	TH2D *hSig_cut2pPb_coarse;
-	TH2D *hBkg_cut2Pbp_coarse;
-	TH2D *hBkg_cut2pPb_coarse;
-//}}}
-
-//1D projection{{{
-	TH1D *hSigDeltaPhi1_coarse;
-	TH1D *hBkgDeltaPhi1_coarse;
-	TH1D *hSigDeltaPhi1p5_coarse;
-	TH1D *hBkgDeltaPhi1p5_coarse;
-	TH1D *hSigDeltaPhi2_coarse;
-	TH1D *hBkgDeltaPhi2_coarse;
+	TH1D *hSameRecoDeltaPhi_coarse[3];
+	TH1D *hSameGenDeltaPhi_coarse[3];
+	TH1D *hMixRecoDeltaPhi_coarse[3];
+	TH1D *hMixGenDeltaPhi_coarse[3];
 //}}}
 
 //}}}
-
-//}}}
-
-	TLatex* lt1 = new TLatex();
-	FormLatex(lt1, 12, 0.04);
-	lt1->SetNDC();
 
 	for(Int_t imass = 0; imass < mass_narr-1; imass++)
 	{
+		TFile* fout = new TFile(Form("CorrDist/CorrFiles/%s/MupT%s/%sdphi_distribution_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_MupT%s_%d.root", version.Data(), MupT.Data(), Trk.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data(), imass), "RECREATE");
 
 //Get files{{{
-		sigPbp = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Pbp_distribution_sig_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), imass), "READ");
-		sigpPb = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_pPb_distribution_sig_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), imass), "READ");
-		bkgPbp = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Pbp_distribution_bkg_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), imass), "READ");
-		bkgpPb = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_pPb_distribution_bkg_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), imass), "READ");
+		for(Int_t ipPb = 0; ipPb < 2; ipPb++)
+		{
+			samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_distribution_same_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Trk.Data(), Direction[ipPb].Data(), MorD.Data(), imass), "READ");
+			mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_distribution_mix_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Trk.Data(), Direction[ipPb].Data(), MorD.Data(), imass), "READ");
+		}
 //}}}
 
-//Get |deta| > 2 range plot{{{
-
+		for(Int_t iaway = 0; iaway < 3; iaway++)
+		{
+			for(Int_t ipPb = 0; ipPb < 2; ipPb++)
+			{
 //get plot{{{
-		hSig_cut2Pbp_fine = (TH2D*)sigPbp->Get("hSigPbp2_1"); hSig_cut2Pbp_fine->Sumw2();
-		hSig_cut2Pbp_coarse = (TH2D*)sigPbp->Get("hSigPbp2_2"); hSig_cut2Pbp_coarse->Sumw2();
-		hSig_cut2pPb_fine = (TH2D*)sigpPb->Get("hSigpPb2_1"); hSig_cut2pPb_fine->Sumw2();
-		hSig_cut2pPb_coarse = (TH2D*)sigpPb->Get("hSigpPb2_2"); hSig_cut2pPb_coarse->Sumw2();
-		hBkg_cut2Pbp_fine = (TH2D*)bkgPbp->Get("hBkgPbp2_1"); hBkg_cut2Pbp_fine->Sumw2();
-		hBkg_cut2Pbp_coarse = (TH2D*)bkgPbp->Get("hBkgPbp2_2"); hBkg_cut2Pbp_coarse->Sumw2();
-		hBkg_cut2pPb_fine = (TH2D*)bkgpPb->Get("hBkgpPb2_1"); hBkg_cut2pPb_fine->Sumw2();
-		hBkg_cut2pPb_coarse = (TH2D*)bkgpPb->Get("hBkgpPb2_2"); hBkg_cut2pPb_coarse->Sumw2();
-		hSig_cut2Pbp_fine->Add(hSig_cut2pPb_fine);
-		hSig_cut2Pbp_coarse->Add(hSig_cut2pPb_coarse);
-		hBkg_cut2Pbp_fine->Add(hBkg_cut2pPb_fine);
-		hBkg_cut2Pbp_coarse->Add(hBkg_cut2pPb_coarse);
+				if(isMC)
+				{
+					hSameGen_Pbp_fine[iaway][ipPb] = (TH2D*)samePbp[ipPb]->Get(Form("hSame%sGen%d_1", Direction[ipPb].Data(), iaway+2));
+					hSameGen_Pbp_coarse[iaway][ipPb] = (TH2D*)samePbp[ipPb]->Get(Form("hSame%sGen%d_2", Direction[ipPb].Data(), iaway+2));
+					hMixGen_Pbp_fine[iaway][ipPb] = (TH2D*)mixPbp[ipPb]->Get(Form("hMix%sGen%d_1", Direction[ipPb].Data(), iaway+2));
+					hMixGen_Pbp_coarse[iaway][ipPb] = (TH2D*)mixPbp[ipPb]->Get(Form("hMix%sGen%d_2", Direction[ipPb].Data(), iaway+2));
+					hSameGen_Pbp_fine[iaway][ipPb]->Sumw2();
+					hSameGen_Pbp_coarse[iaway][ipPb]->Sumw2();
+					hMixGen_Pbp_fine[iaway][ipPb]->Sumw2();
+					hMixGen_Pbp_coarse[iaway][ipPb]->Sumw2();
+				}
+				hSameReco_Pbp_fine[iaway][ipPb] = (TH2D*)samePbp[ipPb]->Get(Form("hSame%sReco%d_1", Direction[ipPb].Data(), iaway+2));
+				hSameReco_Pbp_coarse[iaway][ipPb] = (TH2D*)samePbp[ipPb]->Get(Form("hSame%sReco%d_2", Direction[ipPb].Data(), iaway+2));
+				hMixReco_Pbp_fine[iaway][ipPb] = (TH2D*)mixPbp[ipPb]->Get(Form("hMix%sReco%d_1", Direction[ipPb].Data(), iaway+2));
+				hMixReco_Pbp_coarse[iaway][ipPb] = (TH2D*)mixPbp[ipPb]->Get(Form("hMix%sReco%d_2", Direction[ipPb].Data(), iaway+2));
+				hSameReco_Pbp_fine[iaway][ipPb]->Sumw2();
+				hSameReco_Pbp_coarse[iaway][ipPb]->Sumw2();
+				hMixReco_Pbp_fine[iaway][ipPb]->Sumw2();
+				hMixReco_Pbp_coarse[iaway][ipPb]->Sumw2();
+//}}}
+			}
+
+//merge direction{{{
+			if(isMC)
+			{
+				hSameGen_Pbp_fine[iaway][0]->Add(hSameGen_Pbp_fine[iaway][1]);
+				hSameGen_Pbp_coarse[iaway][0]->Add(hSameGen_Pbp_coarse[iaway][1]);
+				hMixGen_Pbp_fine[iaway][0]->Add(hMixGen_Pbp_fine[iaway][1]);
+				hMixGen_Pbp_coarse[iaway][0]->Add(hMixGen_Pbp_coarse[iaway][1]);
+			}
+			hSameReco_Pbp_fine[iaway][0]->Add(hSameReco_Pbp_fine[iaway][1]);
+			hSameReco_Pbp_coarse[iaway][0]->Add(hSameReco_Pbp_coarse[iaway][1]);
+			hMixReco_Pbp_fine[iaway][0]->Add(hMixReco_Pbp_fine[iaway][1]);
+			hMixReco_Pbp_coarse[iaway][0]->Add(hMixReco_Pbp_coarse[iaway][1]);
 //}}}
 
 //projection{{{
-		hSigDeltaPhi2_fine = (TH1D*)hSig_cut2Pbp_fine->ProjectionY();
-		hBkgDeltaPhi2_fine = (TH1D*)hBkg_cut2Pbp_fine->ProjectionY();
-		hSigDeltaPhi2_coarse = (TH1D*)hSig_cut2Pbp_coarse->ProjectionY();
-		hBkgDeltaPhi2_coarse = (TH1D*)hBkg_cut2Pbp_coarse->ProjectionY();
+			if(isMC)
+			{
+				hSameGenDeltaPhi_fine[iaway] = (TH1D*)hSameGen_Pbp_fine[iaway][0]->ProjectionY();
+				hSameGenDeltaPhi_coarse[iaway] = (TH1D*)hSameGen_Pbp_coarse[iaway][0]->ProjectionY();
+				hMixGenDeltaPhi_fine[iaway] = (TH1D*)hMixGen_Pbp_fine[iaway][0]->ProjectionY();
+				hMixGenDeltaPhi_coarse[iaway] = (TH1D*)hMixGen_Pbp_coarse[iaway][0]->ProjectionY();
 
-		hSigDeltaPhi2_fine->SetName("hSigDeltaPhi2_fine");
-		hBkgDeltaPhi2_fine->SetName("hBkgDeltaPhi2_fine");
-		hSigDeltaPhi2_coarse->SetName("hSigDeltaPhi2_coarse");
-		hBkgDeltaPhi2_coarse->SetName("hBkgDeltaPhi2_coarse");
+				hSameGenDeltaPhi_fine[iaway]->SetName(Form("hSameGenDeltaPhi%s_fine", Away[iaway].Data()));
+				hSameGenDeltaPhi_coarse[iaway]->SetName(Form("hSameGenDeltaPhi%s_coarse", Away[iaway].Data()));
+				hMixGenDeltaPhi_fine[iaway]->SetName(Form("hMixGenDeltaPhi%s_fine", Away[iaway].Data()));
+				hMixGenDeltaPhi_coarse[iaway]->SetName(Form("hMixGenDeltaPhi%s_coarse", Away[iaway].Data()));
 
-		FormTH1Marker(hSigDeltaPhi2_fine, 0, 0, 1.4);
-		FormTH1Marker(hBkgDeltaPhi2_fine, 0, 0, 1.4);
-		FormTH1Marker(hSigDeltaPhi2_coarse, 0, 0, 1.4);
-		FormTH1Marker(hBkgDeltaPhi2_coarse, 0, 0, 1.4);
+				FormTH1Marker(hSameGenDeltaPhi_fine[iaway], 0, 0, 1.4);
+				FormTH1Marker(hSameGenDeltaPhi_coarse[iaway], 0, 0, 1.4);
+				FormTH1Marker(hMixGenDeltaPhi_fine[iaway], 0, 0, 1.4);
+				FormTH1Marker(hMixGenDeltaPhi_coarse[iaway], 0, 0, 1.4);
+			}
 
-		TH1D* hRatioDeltaPhi2_fine = (TH1D*) hSigDeltaPhi2_fine->Clone("hRatioDeltaPhi2_fine");
-		TH1D* hRatioDeltaPhi2_coarse = (TH1D*) hSigDeltaPhi2_coarse->Clone("hRatioDeltaPhi2_coarse");
+			hSameRecoDeltaPhi_fine[iaway] = (TH1D*)hSameReco_Pbp_fine[iaway][0]->ProjectionY();
+			hSameRecoDeltaPhi_coarse[iaway] = (TH1D*)hSameReco_Pbp_coarse[iaway][0]->ProjectionY();
+			hMixRecoDeltaPhi_fine[iaway] = (TH1D*)hMixReco_Pbp_fine[iaway][0]->ProjectionY();
+			hMixRecoDeltaPhi_coarse[iaway] = (TH1D*)hMixReco_Pbp_coarse[iaway][0]->ProjectionY();
 
-		hRatioDeltaPhi2_fine->Divide(hBkgDeltaPhi2_fine);
-		hRatioDeltaPhi2_coarse->Divide(hBkgDeltaPhi2_coarse);
+			hSameRecoDeltaPhi_fine[iaway]->SetName(Form("hSameRecoDeltaPhi%s_fine", Away[iaway].Data()));
+			hSameRecoDeltaPhi_coarse[iaway]->SetName(Form("hSameRecoDeltaPhi%s_coarse", Away[iaway].Data()));
+			hMixRecoDeltaPhi_fine[iaway]->SetName(Form("hMixRecoDeltaPhi%s_fine", Away[iaway].Data()));
+			hMixRecoDeltaPhi_coarse[iaway]->SetName(Form("hMixRecoDeltaPhi%s_coarse", Away[iaway].Data()));
+
+			FormTH1Marker(hSameRecoDeltaPhi_fine[iaway], 0, 0, 1.4);
+			FormTH1Marker(hSameRecoDeltaPhi_coarse[iaway], 0, 0, 1.4);
+			FormTH1Marker(hMixRecoDeltaPhi_fine[iaway], 0, 0, 1.4);
+			FormTH1Marker(hMixRecoDeltaPhi_coarse[iaway], 0, 0, 1.4);
 //}}}
 
-//}}}
+//Get ratio{{{
+			TH1D* hRatioRecoDeltaPhi_fine = (TH1D*) hSameRecoDeltaPhi_fine[iaway]->Clone(Form("hRatioRecoDeltaPhi%s_fine", Away[iaway].Data()));
+			TH1D* hRatioRecoDeltaPhi_coarse = (TH1D*) hSameRecoDeltaPhi_coarse[iaway]->Clone(Form("hRatioRecoDeltaPhi%s_coarse", Away[iaway].Data()));
 
-//Get |deta| > 1.5 range plot{{{
+			hRatioRecoDeltaPhi_fine->Divide(hMixRecoDeltaPhi_fine[iaway]);
+			hRatioRecoDeltaPhi_coarse->Divide(hMixRecoDeltaPhi_coarse[iaway]);
 
-//get plot{{{
-		hSig_cut1p5Pbp_fine = (TH2D*)sigPbp->Get("hSigPbp3_1"); hSig_cut1p5Pbp_fine->Sumw2();
-		hSig_cut1p5Pbp_coarse = (TH2D*)sigPbp->Get("hSigPbp3_2"); hSig_cut1p5Pbp_coarse->Sumw2();
-		hSig_cut1p5pPb_fine = (TH2D*)sigpPb->Get("hSigpPb3_1"); hSig_cut1p5pPb_fine->Sumw2();
-		hSig_cut1p5pPb_coarse = (TH2D*)sigpPb->Get("hSigpPb3_2"); hSig_cut1p5pPb_coarse->Sumw2();
-		hBkg_cut1p5Pbp_fine = (TH2D*)bkgPbp->Get("hBkgPbp3_1"); hBkg_cut1p5Pbp_fine->Sumw2();
-		hBkg_cut1p5Pbp_coarse = (TH2D*)bkgPbp->Get("hBkgPbp3_2"); hBkg_cut1p5Pbp_coarse->Sumw2();
-		hBkg_cut1p5pPb_fine = (TH2D*)bkgpPb->Get("hBkgpPb3_1"); hBkg_cut1p5pPb_fine->Sumw2();
-		hBkg_cut1p5pPb_coarse = (TH2D*)bkgpPb->Get("hBkgpPb3_2"); hBkg_cut1p5pPb_coarse->Sumw2();
-		hSig_cut1p5Pbp_fine->Add(hSig_cut1p5pPb_fine);
-		hSig_cut1p5Pbp_coarse->Add(hSig_cut1p5pPb_coarse);
-		hBkg_cut1p5Pbp_fine->Add(hBkg_cut1p5pPb_fine);
-		hBkg_cut1p5Pbp_coarse->Add(hBkg_cut1p5pPb_coarse);
-//}}}
+			TH1D* hRatioGenDeltaPhi_fine;
+			TH1D* hRatioGenDeltaPhi_coarse;
+			if(isMC)
+			{
+				hRatioGenDeltaPhi_fine = (TH1D*) hSameGenDeltaPhi_fine[iaway]->Clone(Form("hRatioGenDeltaPhi%s_fine", Away[iaway].Data()));
+				hRatioGenDeltaPhi_coarse = (TH1D*) hSameGenDeltaPhi_coarse[iaway]->Clone(Form("hRatioGenDeltaPhi%s_coarse", Away[iaway].Data()));
 
-//projection{{{
-		hSigDeltaPhi1p5_fine = (TH1D*)hSig_cut1p5Pbp_fine->ProjectionY();
-		hBkgDeltaPhi1p5_fine = (TH1D*)hBkg_cut1p5Pbp_fine->ProjectionY();
-		hSigDeltaPhi1p5_coarse = (TH1D*)hSig_cut1p5Pbp_coarse->ProjectionY();
-		hBkgDeltaPhi1p5_coarse = (TH1D*)hBkg_cut1p5Pbp_coarse->ProjectionY();
-
-		FormTH1Marker(hSigDeltaPhi1p5_fine, 0, 0, 1.4);
-		FormTH1Marker(hBkgDeltaPhi1p5_fine, 0, 0, 1.4);
-		FormTH1Marker(hSigDeltaPhi1p5_coarse, 0, 0, 1.4);
-		FormTH1Marker(hBkgDeltaPhi1p5_coarse, 0, 0, 1.4);
-
-		hSigDeltaPhi1p5_fine->SetName("hSigDeltaPhi1p5_fine");
-		hBkgDeltaPhi1p5_fine->SetName("hBkgDeltaPhi1p5_fine");
-		hSigDeltaPhi1p5_coarse->SetName("hSigDeltaPhi1p5_coarse");
-		hBkgDeltaPhi1p5_coarse->SetName("hBkgDeltaPhi1p5_coarse");
-
-		TH1D* hRatioDeltaPhi1p5_fine = (TH1D*) hSigDeltaPhi1p5_fine->Clone("hRatioDeltaPhi1p5_fine");
-		TH1D* hRatioDeltaPhi1p5_coarse = (TH1D*) hSigDeltaPhi1p5_coarse->Clone("hRatioDeltaPhi1p5_coarse");
-
-		hRatioDeltaPhi1p5_fine->Divide(hBkgDeltaPhi1p5_fine);
-		hRatioDeltaPhi1p5_coarse->Divide(hBkgDeltaPhi1p5_coarse);
-//}}}
-
-//}}}
-
-//Get |deta| > 1 range plot{{{
-
-//get plot{{{
-		hSig_cut1Pbp_fine = (TH2D*)sigPbp->Get("hSigPbp4_1"); hSig_cut1Pbp_fine->Sumw2();
-		hSig_cut1Pbp_coarse = (TH2D*)sigPbp->Get("hSigPbp4_2"); hSig_cut1Pbp_coarse->Sumw2();
-		hSig_cut1pPb_fine = (TH2D*)sigpPb->Get("hSigpPb4_1"); hSig_cut1pPb_fine->Sumw2();
-		hSig_cut1pPb_coarse = (TH2D*)sigpPb->Get("hSigpPb4_2"); hSig_cut1pPb_coarse->Sumw2();
-		hBkg_cut1Pbp_fine = (TH2D*)bkgPbp->Get("hBkgPbp4_1"); hBkg_cut1Pbp_fine->Sumw2();
-		hBkg_cut1Pbp_coarse = (TH2D*)bkgPbp->Get("hBkgPbp4_2"); hBkg_cut1Pbp_coarse->Sumw2();
-		hBkg_cut1pPb_fine = (TH2D*)bkgpPb->Get("hBkgpPb4_1"); hBkg_cut1pPb_fine->Sumw2();
-		hBkg_cut1pPb_coarse = (TH2D*)bkgpPb->Get("hBkgpPb4_2"); hBkg_cut1pPb_coarse->Sumw2();
-		hSig_cut1Pbp_fine->Add(hSig_cut1pPb_fine);
-		hSig_cut1Pbp_coarse->Add(hSig_cut1pPb_coarse);
-		hBkg_cut1Pbp_fine->Add(hBkg_cut1pPb_fine);
-		hBkg_cut1Pbp_coarse->Add(hBkg_cut1pPb_coarse);
-//}}}
-
-//projection{{{
-		hSigDeltaPhi1_fine = (TH1D*)hSig_cut1Pbp_fine->ProjectionY();
-		hBkgDeltaPhi1_fine = (TH1D*)hBkg_cut1Pbp_fine->ProjectionY();
-		hSigDeltaPhi1_coarse = (TH1D*)hSig_cut1Pbp_coarse->ProjectionY();
-		hBkgDeltaPhi1_coarse = (TH1D*)hBkg_cut1Pbp_coarse->ProjectionY();
-
-		FormTH1Marker(hSigDeltaPhi1_fine, 0, 0, 1.4);
-		FormTH1Marker(hBkgDeltaPhi1_fine, 0, 0, 1.4);
-		FormTH1Marker(hSigDeltaPhi1_coarse, 0, 0, 1.4);
-		FormTH1Marker(hBkgDeltaPhi1_coarse, 0, 0, 1.4);
-
-		hSigDeltaPhi1_fine->SetName("hSigDeltaPhi1_fine");
-		hBkgDeltaPhi1_fine->SetName("hBkgDeltaPhi1_fine");
-		hSigDeltaPhi1_coarse->SetName("hSigDeltaPhi1_coarse");
-		hBkgDeltaPhi1_coarse->SetName("hBkgDeltaPhi1_coarse");
-
-		TH1D* hRatioDeltaPhi1_fine = (TH1D*) hSigDeltaPhi1_fine->Clone("hRatioDeltaPhi1_fine");
-		TH1D* hRatioDeltaPhi1_coarse = (TH1D*) hSigDeltaPhi1_coarse->Clone("hRatioDeltaPhi1_coarse");
-
-		hRatioDeltaPhi1_fine->Divide(hBkgDeltaPhi1_fine);
-		hRatioDeltaPhi1_coarse->Divide(hBkgDeltaPhi1_coarse);
-//}}}
-
+				hRatioGenDeltaPhi_fine->Divide(hMixGenDeltaPhi_fine[iaway]);
+				hRatioGenDeltaPhi_coarse->Divide(hMixGenDeltaPhi_coarse[iaway]);
+			}
 //}}}
 
 //Store dphi projection{{{
-		TFile* fout = new TFile(Form("CorrDist/CorrFiles/%s/dphi_distribution_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_MupT%s_%d.root", version.Data(), (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data(), imass), "RECREATE");
-		fout->cd();
-		hSigDeltaPhi1_fine->Write();
-		hSigDeltaPhi1_coarse->Write();
-		hSigDeltaPhi1p5_fine->Write();
-		hSigDeltaPhi1p5_coarse->Write();
-		hSigDeltaPhi2_fine->Write();
-		hSigDeltaPhi2_coarse->Write();
-		hBkgDeltaPhi1_fine->Write();
-		hBkgDeltaPhi1_coarse->Write();
-		hBkgDeltaPhi1p5_fine->Write();
-		hBkgDeltaPhi1p5_coarse->Write();
-		hBkgDeltaPhi2_fine->Write();
-		hBkgDeltaPhi2_coarse->Write();
-		hRatioDeltaPhi1_fine->Write();
-		hRatioDeltaPhi1_coarse->Write();
-		hRatioDeltaPhi1p5_fine->Write();
-		hRatioDeltaPhi1p5_coarse->Write();
-		hRatioDeltaPhi2_fine->Write();
-		hRatioDeltaPhi2_coarse->Write();
-		fout->Close();
+			fout->cd();
+			if(isMC)
+			{
+				hSameGenDeltaPhi_fine[iaway]->Write();
+				hSameGenDeltaPhi_coarse[iaway]->Write();
+				hMixGenDeltaPhi_fine[iaway]->Write();
+				hMixGenDeltaPhi_coarse[iaway]->Write();
+				hRatioGenDeltaPhi_fine->Write();
+				hRatioGenDeltaPhi_coarse->Write();
+			}
+			hSameRecoDeltaPhi_fine[iaway]->Write();
+			hSameRecoDeltaPhi_coarse[iaway]->Write();
+			hMixRecoDeltaPhi_fine[iaway]->Write();
+			hMixRecoDeltaPhi_coarse[iaway]->Write();
+			hRatioRecoDeltaPhi_fine->Write();
+			hRatioRecoDeltaPhi_coarse->Write();
 //}}}
-
+		}
+		fout->Close();
 	}
 }

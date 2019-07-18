@@ -97,7 +97,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 	if(isMC) MorD = "MC";
 	else MorD = "Data";
 	TString Direction[2] = {"Pbp", "pPb"};
-	TString Away[4] = {"Full", "2", "1p5", "1"};
+	TString Away[4] = {"Full", "Cut2", "Cut1p5", "Cut1"};
 	TString Trk;
 	if(isTrk) Trk = "trk_";
 	else Trk = "";
@@ -180,8 +180,8 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 //Get files{{{
 		for(Int_t ipPb = 0; ipPb < 2; ipPb++)
 		{
-			samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_distribution_same_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Direction[ipPb].Data(), MorD.Data(), imass), "READ");
-			mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_distribution_mix_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Direction[ipPb].Data(), MorD.Data(), imass), "READ");
+			samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_distribution_same_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Trk.Data(), Direction[ipPb].Data(), MorD.Data(), imass), "READ");
+			mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_distribution_mix_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Trk.Data(), Direction[ipPb].Data(), MorD.Data(), imass), "READ");
 		}
 //}}}
 
@@ -233,7 +233,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 				c_same_gen_fine[iaway]->cd();
 				hSamePbpGen_fine[iaway][0]->Draw("Surf1");
 				lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-				lt1->DrawLatex(0.15,0.9, Form(" p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+				lt1->DrawLatex(0.15,0.9, Form(" p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 				lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 				if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 				else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -244,7 +244,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 				c_mix_gen_fine[iaway]->cd();
 				hMixPbpGen_fine[iaway][0]->Draw("Surf1");
 				lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-				lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+				lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 				lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 				if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 				else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -258,7 +258,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 	  		 		hSamePbpGen_fine[iaway][0]->Divide(hMixPbpGen_fine[iaway][0]);
 	  		 		hSamePbpGen_fine[iaway][0]->Draw("Surf1");
 	  		 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-	  		 		lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+	  		 		lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 	  		 		lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 	  		 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 	  		 		else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -270,7 +270,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 	  	 		c_same_gen_coarse[iaway]->cd();
 	  	 		hSamePbpGen_coarse[iaway][0]->Draw("Surf1");
 	  	 		lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-	  	 		lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+	  	 		lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 	  	 		lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 	  	 		if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 	  	 		else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -281,7 +281,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 				c_mix_gen_coarse[iaway]->cd();
 				hMixPbpGen_coarse[iaway][0]->Draw("Surf1");
 				lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-				lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+				lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 				lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 				if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 				else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -295,7 +295,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 					hSamePbpGen_coarse[iaway][0]->Divide(hMixPbpGen_coarse[iaway][0]);
 					hSamePbpGen_coarse[iaway][0]->Draw("Surf1");
 					lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-					lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+					lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 					lt1->DrawLatex(0.15,0.85, Form("%d #leq< p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 					if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 					else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -307,7 +307,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 			c_same_reco_fine[iaway]->cd();
 			hSamePbpReco_fine[iaway][0]->Draw("Surf1");
 			lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-			lt1->DrawLatex(0.15,0.9, Form(" p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+			lt1->DrawLatex(0.15,0.9, Form(" p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 			if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -318,7 +318,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 			c_mix_reco_fine[iaway]->cd();
 			hMixPbpReco_fine[iaway][0]->Draw("Surf1");
 			lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-			lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+			lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 			if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -332,7 +332,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 				hSamePbpReco_fine[iaway][0]->Divide(hMixPbpReco_fine[iaway][0]);
 				hSamePbpReco_fine[iaway][0]->Draw("Surf1");
 				lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-				lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+				lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 				lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 				if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 				else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -344,7 +344,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 			c_same_reco_coarse[iaway]->cd();
 			hSamePbpReco_coarse[iaway][0]->Draw("Surf1");
 			lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-			lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+			lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 			if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -355,7 +355,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 			c_mix_reco_coarse[iaway]->cd();
 			hMixPbpReco_coarse[iaway][0]->Draw("Surf1");
 			lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-			lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+			lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 			if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
@@ -369,7 +369,7 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 				hSamePbpReco_coarse[iaway][0]->Divide(hMixPbpReco_coarse[iaway][0]);
 				hSamePbpReco_coarse[iaway][0]->Draw("Surf1");
 				lt1->DrawLatex(0.15,0.95, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-				lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+				lt1->DrawLatex(0.15,0.9, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 				lt1->DrawLatex(0.15,0.85, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
 				if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 				else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
