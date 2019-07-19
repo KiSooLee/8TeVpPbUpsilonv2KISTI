@@ -34,13 +34,10 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 	TString fullDIR = mainDIR + Form("/CorrDist/CorrDistFullRatio/%s/MupT%s", version.Data(), MupT.Data());
 	TString fullsameDIR = mainDIR + Form("/CorrDist/CorrDistFullSame/%s/MupT%s", version.Data(), MupT.Data());
 	TString fullmixDIR = mainDIR + Form("/CorrDist/CorrDistFullMix/%s/MupT%s", version.Data(), MupT.Data());
-	TString cut1DIR = mainDIR + Form("/CorrDist/CorrDistCut1Ratio/%s/MupT%s", version.Data(), MupT.Data());
 	TString cut1sameDIR = mainDIR + Form("/CorrDist/CorrDistCut1Same/%s/MupT%s", version.Data(), MupT.Data());
 	TString cut1mixDIR = mainDIR + Form("/CorrDist/CorrDistCut1Mix/%s/MupT%s", version.Data(), MupT.Data());
-	TString cut1p5DIR = mainDIR + Form("/CorrDist/CorrDistCut1p5Ratio/%s/MupT%s", version.Data(), MupT.Data());
 	TString cut1p5sameDIR = mainDIR + Form("/CorrDist/CorrDistCut1p5Same/%s/MupT%s", version.Data(), MupT.Data());
 	TString cut1p5mixDIR = mainDIR + Form("/CorrDist/CorrDistCut1p5Mix/%s/MupT%s", version.Data(), MupT.Data());
-	TString cut2DIR = mainDIR + Form("/CorrDist/CorrDistCut2Ratio/%s/MupT%s", version.Data(), MupT.Data());
 	TString cut2sameDIR = mainDIR + Form("/CorrDist/CorrDistCut2Same/%s/MupT%s", version.Data(), MupT.Data());
 	TString cut2mixDIR = mainDIR + Form("/CorrDist/CorrDistCut2Mix/%s/MupT%s", version.Data(), MupT.Data());
 
@@ -56,10 +53,6 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 	if(dirfb) gSystem->FreeDirectory(dirfb);
 	else gSystem->mkdir(fullmixDIR.Data(), kTRUE);
 
-	void * dirc1 = gSystem->OpenDirectory(cut1DIR.Data());
-	if(dirc1) gSystem->FreeDirectory(dirc1);
-	else gSystem->mkdir(cut1DIR.Data(), kTRUE);
-
 	void * dirc1s = gSystem->OpenDirectory(cut1sameDIR.Data());
 	if(dirc1s) gSystem->FreeDirectory(dirc1s);
 	else gSystem->mkdir(cut1sameDIR.Data(), kTRUE);
@@ -68,10 +61,6 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 	if(dirc1b) gSystem->FreeDirectory(dirc1b);
 	else gSystem->mkdir(cut1mixDIR.Data(), kTRUE);
 
-	void * dirc1p5 = gSystem->OpenDirectory(cut1p5DIR.Data());
-	if(dirc1p5) gSystem->FreeDirectory(dirc1p5);
-	else gSystem->mkdir(cut1p5DIR.Data(), kTRUE);
-
 	void * dirc1p5s = gSystem->OpenDirectory(cut1p5sameDIR.Data());
 	if(dirc1p5s) gSystem->FreeDirectory(dirc1p5s);
 	else gSystem->mkdir(cut1p5sameDIR.Data(), kTRUE);
@@ -79,10 +68,6 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isTrk = false, const Int
 	void * dirc1p5b = gSystem->OpenDirectory(cut1p5mixDIR.Data());
 	if(dirc1p5b) gSystem->FreeDirectory(dirc1p5b);
 	else gSystem->mkdir(cut1p5mixDIR.Data(), kTRUE);
-
-	void * dirc2 = gSystem->OpenDirectory(cut2DIR.Data());
-	if(dirc2) gSystem->FreeDirectory(dirc2);
-	else gSystem->mkdir(cut2DIR.Data(), kTRUE);
 
 	void * dirc2s = gSystem->OpenDirectory(cut2sameDIR.Data());
 	if(dirc2s) gSystem->FreeDirectory(dirc2s);
