@@ -5,13 +5,12 @@ log = condor.log
 getenv     = True
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = Collect_pPb1.C, ../Headers/Upsilon.h, ../Headers/Style_Upv2.h
-transfer_output_files = 0-40_10-30_-24-24_0-3_pPb1_MupT4
-transfer_output_remaps = "0-40_10-30_-24-24_0-3_pPb1_MupT4=/xrootd_user/kilee/xrootd/pPb_8TeV_OniaTrkTree/resultpPb1/0-40_10-30_-24-24_0-3_MupT4"
+transfer_input_files = Collect_Reco_pPb1.C, Collect_Gen_pPb1.C, ../Headers/Upsilon.h, ../Headers/Style_Upv2.h
+transfer_output_files = 0-40_7-10_-24-24_0-3_pPb1_MupT3p5
+transfer_output_remaps = "0-40_7-10_-24-24_0-3_pPb1_MupT3p5=/xrootd_user/kilee/xrootd/pPb_8TeV_OniaTrkTree/resultpPb1/0-40_7-10_-24-24_0-3_MupT3p5"
 accounting_group=group_cms
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
 +SingularityBind = "/cvmfs, /cms, /share"
 output = log/logCollpPb1/job_$(Process).out
 error = log/logCollpPb1/job_$(Process).err
-request_disk = 10G
 queue ArgFile from ../Arguments/Arglist.txt
