@@ -23,9 +23,9 @@ using namespace std;
 using namespace RooFit;
 //}}}
 
-bool InAcc(Double_t muPt, Double_t muEta);
+bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void dataskim(bool isMC = false)
+void dataskim(bool isMC = false, const TString MupT = "3p5")
 {
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -37,7 +37,25 @@ void dataskim(bool isMC = false)
 
 	TString MorD;
 	if(isMC) MorD = "MC";
-	else MorD = "RD";
+	else MorD = "Data";
+
+//define muon pt value{{{
+	Double_t MupTCut;
+	if(MupT == "0") MupTCut = 0;
+	else if(MupT == "0p5") MupTCut = 0.5;
+	else if(MupT == "1") MupTCut = 1.0;
+	else if(MupT == "1p5") MupTCut = 1.5;
+	else if(MupT == "2") MupTCut = 2.0;
+	else if(MupT == "2p5") MupTCut = 2.5;
+	else if(MupT == "3") MupTCut = 3.0;
+	else if(MupT == "3p5") MupTCut = 3.5;
+	else if(MupT == "4") MupTCut = 4.0;
+	else
+	{
+		cout << "There is no such muon pT cut value" << endl;
+		return;
+	}
+//}}}
 
 //Get files{{{
 	TString fname1, fname2;
@@ -46,8 +64,8 @@ void dataskim(bool isMC = false)
 	//fname2 = "oniaTree_Pbp_20170504.root";//KUNPL
 	if(isMC)
 	{
-		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_1S_20190608.root";//KISTI
-		fname2 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_1S_20190608.root";//KISTI
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_1S_20190613.root";//KISTI
+		fname2 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_1S_20190613.root";//KISTI
 	}
 	else
 	{
@@ -59,9 +77,7 @@ void dataskim(bool isMC = false)
 //}}}
 
 	TFile* fout;
-	//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_full.root", MorD.Data()), "RECREATE");
-	//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_noAcc.root", MorD.Data()), "RECREATE");
-	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_MupT4.root", MorD.Data()), "RECREATE");
+	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_MupT%s.root", MorD.Data(), MupT.Data()), "RECREATE");
 
 	const Int_t MaxQQ = 250;
 	const Int_t MaxTrk = 1500;
@@ -70,7 +86,6 @@ void dataskim(bool isMC = false)
 	UInt_t eventNb;
 	ULong64_t HLTriggers;
 
-//data{{{
 	Int_t Reco_QQ_size;
 	Int_t Reco_QQ_type[MaxQQ];
 	Int_t Reco_QQ_sign[MaxQQ];
@@ -102,28 +117,9 @@ void dataskim(bool isMC = false)
 	Reco_trk_4mom = 0;
 //}}}
 
-//MC{{{
-	Int_t Gen_QQ_size;
-	TClonesArray* Gen_QQ_4mom;
-	TClonesArray* Gen_QQ_mupl_4mom;
-	TClonesArray* Gen_QQ_mumi_4mom;
-	Gen_QQ_4mom = 0;
-	Gen_QQ_mupl_4mom = 0;
-	Gen_QQ_mumi_4mom = 0;
-	Int_t Gen_trk_size;
-	Int_t Gen_trk_charge[MaxTrk];
-	Int_t Gen_isMuTrk[MaxTrk];
-	TClonesArray* Gen_trk_4mom;
-	Gen_trk_4mom = 0;
-//}}}
-
-//}}}
-
 //Branch{{{
 	TBranch* b_eventNb;
 	TBranch* b_HLTriggers;
-
-//data{{{
 	TBranch* b_Reco_QQ_size;
 	TBranch* b_Reco_QQ_type;
 	TBranch* b_Reco_QQ_sign;
@@ -149,24 +145,9 @@ void dataskim(bool isMC = false)
 	TBranch* b_Reco_isgoodTrk;
 	TBranch* b_Reco_isMuTrk;
 	TBranch* b_Reco_trk_4mom;
-//data}}}
-
-//MC{{{
-	TBranch* b_Gen_QQ_size;
-	TBranch* b_Gen_QQ_4mom;
-	TBranch* b_Gen_QQ_mupl_4mom;
-	TBranch* b_Gen_QQ_mumi_4mom;
-	TBranch* b_Gen_trk_size;
-	TBranch* b_Gen_trk_charge;
-	TBranch* b_Gen_isMuTrk;
-	TBranch* b_Gen_trk_4mom;
-//data}}}
-
 //}}}
 
 //Branch address{{{
-
-//data{{{
 	tin->SetBranchAddress("eventNb", &eventNb, &b_eventNb);
 	tin->SetBranchAddress("HLTriggers", &HLTriggers, &b_HLTriggers);
 	tin->SetBranchAddress("Reco_QQ_size", &Reco_QQ_size, &b_Reco_QQ_size);
@@ -196,22 +177,6 @@ void dataskim(bool isMC = false)
 	tin->SetBranchAddress("Reco_trk_4mom", &Reco_trk_4mom, &b_Reco_trk_4mom);
 //}}}
 
-//MC{{{
-	if(isMC)
-	{
-		tin->SetBranchAddress("Gen_QQ_size", &Gen_QQ_size, &b_Gen_QQ_size);
-		tin->SetBranchAddress("Gen_QQ_4mom", &Gen_QQ_4mom, &b_Gen_QQ_4mom);
-		tin->SetBranchAddress("Gen_QQ_mupl_4mom", &Gen_QQ_mupl_4mom, &b_Gen_QQ_mupl_4mom);
-		tin->SetBranchAddress("Gen_QQ_mumi_4mom", &Gen_QQ_mumi_4mom, &b_Gen_QQ_mumi_4mom);
-		tin->SetBranchAddress("Gen_trk_size", &Gen_trk_size, &b_Gen_trk_size);
-		tin->SetBranchAddress("Gen_trk_charge", Gen_trk_charge, &b_Gen_trk_charge);
-		tin->SetBranchAddress("Gen_isMuTrk", Gen_isMuTrk, &b_Gen_isMuTrk);
-		tin->SetBranchAddress("Gen_trk_4mom", &Gen_trk_4mom, &b_Gen_trk_4mom);
-	}
-//}}}
-
-//}}}
-
 //RooFit variable{{{
 	RooRealVar* Roomass = new RooRealVar("mass", "dimuon mass", 0, 100, "GeV/c^{2}");
 	RooRealVar* Roopt = new RooRealVar("pt", "p_{T} of dimuon", 0, 100, "GeV/c");
@@ -231,24 +196,10 @@ void dataskim(bool isMC = false)
 	mupl_Reco_4mom = 0;
 	mumi_Reco_4mom = 0;
 	Trk_Reco_4mom = 0;
-	TLorentzVector* Up_Gen_4mom = new TLorentzVector;
-	TLorentzVector* mupl_Gen_4mom = new TLorentzVector;
-	TLorentzVector* mumi_Gen_4mom = new TLorentzVector;
-	TLorentzVector* Trk_Gen_4mom = new TLorentzVector;
-	Up_Gen_4mom = 0;
-	mupl_Gen_4mom = 0;
-	mumi_Gen_4mom = 0;
-	Trk_Gen_4mom = 0;
 
 	vector<TVector3>* Vec_trg = new vector<TVector3>;
 	vector<TVector3>* Vec_ass = new vector<TVector3>;
 //}}}
-
-	DiMuon DMGenset;
-	TTree* toutGen;
-	toutGen = new TTree("UpsilonGenTree", "");
-	toutGen->SetMaxTreeSize(10000000000000);
-	DMGenset.BuildBranch(toutGen);
 
 	DiMuon DMset;
 
@@ -256,7 +207,7 @@ void dataskim(bool isMC = false)
 	tout->SetMaxTreeSize(10000000000000);
 	DMset.BuildBranch(tout);
 
-	TH1D* hEvent = new TH1D("hEvent", "", 20 ,0.5, 21.5);
+	TH1D* hEvent = new TH1D("hEvent", "", 10 ,0.5, 11.5);
 
 	const Int_t Nevt = tin->GetEntries();
 
@@ -268,33 +219,21 @@ void dataskim(bool isMC = false)
 		hEvent->GetXaxis()->SetBinLabel(1,"Events total");
 		hEvent->Fill(1);
 
-		DMGenset.clear();
-		if(isMC)
-		{
-			for(Int_t iqq = 0; iqq < Gen_QQ_size; iqq++)
-			{
-				Up_Gen_4mom = (TLorentzVector*) Gen_QQ_4mom->At(iqq);
-				mupl_Gen_4mom = (TLorentzVector*) Gen_QQ_mupl_4mom->At(iqq);
-				mumi_Gen_4mom = (TLorentzVector*) Gen_QQ_mumi_4mom->At(iqq);
-				DMGenset.mass = Up_Gen_4mom->M();
-				DMGenset.pt = Up_Gen_4mom->Pt();
-				DMGenset.y = Up_Gen_4mom->Rapidity();
-				DMGenset.weight = 1.;
-				toutGen->Fill();
-			}
-		}
-
 		DMset.clear();
 
 		if( (HLTriggers&1)!=1 ) continue;
-		hEvent->GetXaxis()->SetBinLabel(3, "Event trigger");
-		hEvent->Fill(3);
+		hEvent->GetXaxis()->SetBinLabel(2, "Event trigger");
+		hEvent->Fill(2);
 
 //Get track multiplicity{{{
 		Int_t Tot_Ntrk = 0;
 		for(Int_t itrk = 0; itrk < Reco_trk_size; itrk++)
 		{
-			if( Reco_isgoodTrk[itrk] && !Reco_isMuTrk[itrk] ) Tot_Ntrk++;
+			if( Reco_isgoodTrk[itrk] && !Reco_isMuTrk[itrk] )
+			{
+				Trk_Reco_4mom = (TLorentzVector*) Reco_trk_4mom->At(itrk);
+				if(Trk_Reco_4mom->Pt() > 0.4) Tot_Ntrk++;
+			}
 		}
 //}}}
 
@@ -304,8 +243,8 @@ void dataskim(bool isMC = false)
 //Get trigger vector{{{
 		for(Int_t iqq = 0; iqq < Reco_QQ_size; iqq++)
 		{
-			hEvent->GetXaxis()->SetBinLabel(4,"Di-muons Total");
-			hEvent->Fill(4);
+			hEvent->GetXaxis()->SetBinLabel(3,"Di-muons Total");
+			hEvent->Fill(3);
 
 			Up_Reco_4mom = (TLorentzVector*) Reco_QQ_4mom->At(iqq);
 			mupl_Reco_4mom = (TLorentzVector*) Reco_QQ_mupl_4mom->At(iqq);
@@ -313,16 +252,14 @@ void dataskim(bool isMC = false)
 
 //Cuts for muon and Upsilon{{{
 			if( (Reco_QQ_trig[iqq]&1) != 1 ) continue;
-			hEvent->GetXaxis()->SetBinLabel(7,"Di-muons trig");
-			hEvent->Fill(7);
+			hEvent->GetXaxis()->SetBinLabel(4,"Di-muons trig");
+			hEvent->Fill(4);
 
-			if( !InAcc(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta()) ) continue;
-			if( !InAcc(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta()) ) continue;
-//			hEvent->GetXaxis()->SetBinLabel(5,"Di-muons Accep");
-//			hEvent->Fill(5);
+			if( !InAcc(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), MupTCut) ) continue;
+			if( !InAcc(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), MupTCut) ) continue;
+			hEvent->GetXaxis()->SetBinLabel(5,"Di-muons Accep");
+			hEvent->Fill(5);
 
-			//if( Up_Reco_4mom->M() < 8 || Up_Reco_4mom->M() > 14) continue;
-			//if( abs(Up_Reco_4mom->Rapidity()) > 2.4 ) continue;
 			bool muplSoft = ( (Reco_QQ_mupl_TMOneStaTight[iqq] == true) &&
 									(Reco_QQ_mupl_nTrkWMea[iqq] > 5) &&
 									(Reco_QQ_mupl_nPixWMea[iqq] > 0) &&
@@ -338,17 +275,16 @@ void dataskim(bool isMC = false)
 									(Reco_QQ_mumi_highPurity[iqq] == true) //purity used for pPb not PbPb
 									);
 			if( !(muplSoft && mumiSoft) ) continue;
-			hEvent->GetXaxis()->SetBinLabel(8,"Di-muons mu ID");
-			hEvent->Fill(8);
-
-			if( Reco_QQ_VtxProb[iqq] < 0.01 ) continue;
-			hEvent->GetXaxis()->SetBinLabel(6,"Di-muons Vtx prob.");
+			hEvent->GetXaxis()->SetBinLabel(6,"Di-muons mu ID");
 			hEvent->Fill(6);
 
+			if( Reco_QQ_VtxProb[iqq] < 0.01 ) continue;
+			hEvent->GetXaxis()->SetBinLabel(7,"Di-muons Vtx prob.");
+			hEvent->Fill(7);
+
 			if( Reco_QQ_sign[iqq] != 0) continue;
-			hEvent->GetXaxis()->SetBinLabel(9,"Di-muoons charge sign");
-			hEvent->Fill(9);
-			//if( abs(Up_Reco_4mom->Eta()) > 2.4 ) continue;
+			hEvent->GetXaxis()->SetBinLabel(8,"Di-muoons charge sign");
+			hEvent->Fill(8);
 //}}}
 
 			DMset.mass = Up_Reco_4mom->M();
@@ -369,12 +305,10 @@ void dataskim(bool isMC = false)
 	}
 	dataset->Write();
 	tout->Write();
-	toutGen->Write();
 	fout->Close();
 }
 
-bool InAcc(Double_t muPt, Double_t muEta)
+bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut)
 {
-	return( TMath::Abs(muEta) < 2.4 && muPt >= 4);
-	//return( TMath::Abs(muEta) < 2.4 && muPt >= 3.5);
+	return( TMath::Abs(muEta) < 2.4 && muPt >= MupTCut);
 }
