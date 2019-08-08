@@ -34,9 +34,8 @@ using namespace std;
 using namespace RooFit;
 //}}}
 
-void GetYield(const Double_t multMin = 0, const Double_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, TString version = "v1", TString MupT = "4")
+void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, TString version = "v1", TString MupT = "4")
 {
-
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
 	TString massDIR = mainDIR + "/MassDist";
@@ -52,8 +51,7 @@ void GetYield(const Double_t multMin = 0, const Double_t multMax = 300, const Do
 
 	//const Int_t Nmassbins = 120;
 	const Int_t Nmassbins = 120;
-	TFile* fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_%s_MupT%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
-	//TFile* fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_%s_extendMass.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_MupT%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
 
 //Define parameters{{{
 	Double_t sig11;
@@ -64,8 +62,7 @@ void GetYield(const Double_t multMin = 0, const Double_t multMax = 300, const Do
 
 //Get parameter{{{
 	ifstream in;
-	//in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_%s_extendMass.txt", (int)multMin, (int)multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data()));
-	in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_%s_MupT%s.txt", (int)multMin, (int)multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()));
+	in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()));
 	if(in.is_open())
 	{
 		while(!in.eof())
@@ -86,7 +83,7 @@ void GetYield(const Double_t multMin = 0, const Double_t multMax = 300, const Do
 //}}}
 
 //Get data{{{
-	TFile* fin = new TFile(Form("Skim_OniaTree_RD_PADoubleMuon_MupT%s.root", MupT.Data()), "READ");
+	TFile* fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_MupT%s.root", MupT.Data()), "READ");
 	RooDataSet* dataset = (RooDataSet*) fin->Get("dataset");
 	RooWorkspace* ws = new RooWorkspace(Form("workspace"));
 	ws->import(*dataset);
@@ -98,7 +95,7 @@ void GetYield(const Double_t multMin = 0, const Double_t multMax = 300, const Do
 //}}}
 
 //Reduce dataset{{{
-	RooDataSet* reducedDS = (RooDataSet*) weightedDS->reduce(RooArgSet(*(ws->var("mass"))), Form("(mult>=%f&&mult<%f)&&(pt>=%f&&pt<%f)&&(y>=%f&&y<%f)", multMin, multMax, ptMin, ptMax, rapMin, rapMax));
+	RooDataSet* reducedDS = (RooDataSet*) weightedDS->reduce(RooArgSet(*(ws->var("mass"))), Form("(mult>=%d&&mult<%d)&&(pt>=%f&&pt<%f)&&(y>=%f&&y<%f)", multMin, multMax, ptMin, ptMax, rapMin, rapMax));
 	reducedDS->SetName("reducedDS");
 	ws->import(*reducedDS);
 	ws->var("mass")->setRange(8, 14);
@@ -157,7 +154,7 @@ void GetYield(const Double_t multMin = 0, const Double_t multMax = 300, const Do
 
 //}}}
 
-	RooRealVar alpha("alpha", "alpha of Crystal ball", 2., 0.7, 20.0);
+	RooRealVar alpha("alpha", "alpha of Crystal ball", 2.0, 0.7, 20.0);
 	RooRealVar n("n", "n of Crystal ball", 2.0, 0.7, 20.0);
 	RooRealVar* frac = new RooRealVar("frac", "CB fraction", 0.5, 0, 1);
 
@@ -302,17 +299,15 @@ void GetYield(const Double_t multMin = 0, const Double_t multMax = 300, const Do
 	TF1* Bkgfc = ws->pdf("bkgErf")->asTF(*(ws->var("mass")));
 
 	Double_t TIntgr1S = Sgnfc1S->Integral(8, 14);
-	Double_t TIntgr2S = Sgnfc1S->Integral(8, 14);
-	Double_t TIntgr3S = Sgnfc1S->Integral(8, 14);
+	Double_t TIntgr2S = Sgnfc2S->Integral(8, 14);
+	Double_t TIntgr3S = Sgnfc3S->Integral(8, 14);
 	Double_t TIntgrBkg = Bkgfc->Integral(8, 14);
 	Double_t IntgrSig = Sgnfc1S->Integral(meanout-2*sigmaout, meanout+2*sigmaout);
 	Double_t IntgrBkg = Bkgfc->Integral(meanout-2*sigmaout, meanout+2*sigmaout);
 
 	Double_t Significance = (Yield1S*IntgrSig/TIntgr1S)/TMath::Sqrt(((Yield1S*IntgrSig/TIntgr1S)+(YieldBkg*IntgrBkg/TIntgrBkg)));
 	FILE* ftxt;
-	//ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_%s.txt", (int)multMin, (int)multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data()), "w");
-	//ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_%s_noAcc.txt", (int)multMin, (int)multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data()), "w");
-	ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_%s_MupT%s.txt", (int)multMin, (int)multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "w");
+	ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "w");
 	if(ftxt != NULL)
 	{
 		fprintf(ftxt, "mean  sigma1  sigma2  fraction  totsigma  totsig  totbkg sig  bkg  nsig  nbkg  significance \n");
@@ -326,8 +321,7 @@ void GetYield(const Double_t multMin = 0, const Double_t multMax = 300, const Do
 	}
 //}}}
 
-	c1->SaveAs(Form("MassDist/MassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_%s_%dbin_MupT%s.pdf", (int)multMin, (int)multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, MupT.Data()));
-	//c1->SaveAs(Form("MassDist/MassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_%s_%dbin_extendMass.pdf", (int)multMin, (int)multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins));
+	c1->SaveAs(Form("MassDist/MassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_MupT%s.pdf", (int)multMin, (int)multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, MupT.Data()));
 	fout->cd();
 	massPlot->Write();
 	hYield->Write();
