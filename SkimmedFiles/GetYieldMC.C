@@ -50,7 +50,9 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 //}}}
 
 	//const Int_t Nmassbins = 120;
-	const Int_t Nmassbins = 120;
+	const Int_t Nmassbins = 150;
+	const Double_t RangeLow = 8.5;
+	const Double_t RangeHigh = 10;
 	TFile* fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_MC_%s_MupT%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
 
 //Define parameters{{{
@@ -97,8 +99,7 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 	RooDataSet* reducedDS = (RooDataSet*) weightedDS->reduce(RooArgSet(*(ws->var("mass"))), Form("(mult>=%f&&mult<%f)&&(pt>=%f&&pt<%f)&&(y>=%f&&y<%f)", multMin, multMax, ptMin, ptMax, rapMin, rapMax));
 	reducedDS->SetName("reducedDS");
 	ws->import(*reducedDS);
-	ws->var("mass")->setRange(8, 14);
-	//ws->var("mass")->setRange(7, 10);
+	ws->var("mass")->setRange(RangeLow, RangeHigh);
 	ws->var("mass")->Print();
 //}}}
 
@@ -110,7 +111,7 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 	TPad* pad_pull = new TPad("pad_pull", "pad_pull", 0, 0.05, 0.98, 0.25);
 	pad_pull->SetBottomMargin(0);
 	pad_pull->Draw();
-	TPad* pad_leg = new TPad("pad_leg", "pad_leg", 0.65, 0.35, 0.85, 0.92);
+	TPad* pad_leg = new TPad("pad_leg", "pad_leg", 0.15, 0.35, 0.35, 0.92);
 	pad_leg->SetBottomMargin(0);
 	pad_leg->Draw();
 
@@ -127,12 +128,14 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 	RooRealVar mean1S("mean1S", "mean of Upsilon 1S", U1S_mass, U1S_mass-0.01, U1S_mass+0.01);
 
 //sigma
-	RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.2);
+	RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.3);
 	RooRealVar* x1S = new RooRealVar("x1S", "sigma ratio", 0.35, 0, 1);
 	RooFormulaVar sigma1S_2("sigma1S_2", "@0*@1", RooArgList(sigma1S_1, *x1S));
 
-	RooRealVar alpha("alpha", "alpha of Crystal ball", 2., 0.7, 20.0);
-	RooRealVar n("n", "n of Crystal ball", 2.0, 0.7, 20.0);
+	//RooRealVar alpha("alpha", "alpha of Crystal ball", 2., 0.1, 20.0);
+	//RooRealVar n("n", "n of Crystal ball", 2.0, 0.1, 20.0);
+	RooRealVar alpha("alpha", "alpha of Crystal ball", 2., 0.5, 5.5);
+	RooRealVar n("n", "n of Crystal ball", 2.0, 0.5, 5.5);
 	RooRealVar* frac = new RooRealVar("frac", "CB fraction", 0.5, 0, 1);
 
 //twoCB function
@@ -144,9 +147,10 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 //}}}
 
 //Background function{{{
-	RooRealVar p0("p0", "1st parameter of bkg", 0.5, -5, 5);
-	RooRealVar p1("p1", "2nd parameter of bkg", 0.5, -5, 5);
+	RooRealVar p0("p0", "1st parameter of bkg", 0.5, -4, 4);
+	RooRealVar p1("p1", "2nd parameter of bkg", 0.5, -4, 4);
 	RooChebychev* bkgch = new RooChebychev("bkgch", "Chebychev background", *(ws->var("mass")), RooArgList(p0, p1));
+	//RooPolynomial* bkgch = new RooPolynomial("bkgch", "bkgch", *(ws->var("mass")), RooArgList());
 //}}}
 
 //Select Pdf{{{
@@ -165,12 +169,12 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 
 //Draw mass plot{{{
 	RooRealVar* nSig1S = new RooRealVar("nSig1S", "# of 1S signal", 400, -1000, 10000000);
-	RooRealVar* nBkg = new RooRealVar("nBkg", "number of background", 300, -1000, 10000);
+	RooRealVar* nBkg = new RooRealVar("nBkg", "number of background", 300, -1000, 1000000);
 	RooAddPdf* model = new RooAddPdf("model", "1S+Bkg", RooArgList(*Signal1S, *Background), RooArgList(*nSig1S, *nBkg));
+	//RooAddPdf* model = new RooAddPdf("model", "1S", RooArgList(*Signal1S), RooArgList(*nSig1S));
 	ws->import(*model);
 
-	RooFitResult* Result = ws->pdf("model")->fitTo(*reducedDS, Save(), Hesse(kTRUE), Range(8, 14), Minos(0), SumW2Error(kTRUE), Extended(kTRUE));
-	//RooFitResult* Result = ws->pdf("model")->fitTo(*reducedDS, Save(), Hesse(kTRUE), Range(8, 10), Minos(0), SumW2Error(kTRUE), Extended(kTRUE));
+	RooFitResult* Result = ws->pdf("model")->fitTo(*reducedDS, Save(), Hesse(kTRUE), Range(RangeLow, RangeHigh), Minos(0), SumW2Error(kTRUE), Extended(kTRUE));
 	ws->pdf("model")->plotOn(massPlot, Name("modelPlot"));
 	ws->pdf("model")->plotOn(massPlot, Components(RooArgSet(*Signal1S)), LineColor(kRed), LineStyle(kDashed), MoveToBack());
 	ws->pdf("model")->plotOn(massPlot, Components(RooArgSet(*Background)), LineColor(kBlue), LineStyle(kDashed));
@@ -242,24 +246,29 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 	TF1* Sgnfc1S = ws->pdf("twoCB1S")->asTF(*(ws->var("mass")));
 	TF1* Bkgfc = ws->pdf("bkgch")->asTF(*(ws->var("mass")));
 
-	Double_t TIntgr1S = Sgnfc1S->Integral(8, 14);
-	Double_t TIntgrBkg = Bkgfc->Integral(8, 14);
-	//Double_t TIntgr1S = Sgnfc1S->Integral(8, 10);
-	//Double_t TIntgrBkg = Bkgfc->Integral(8, 10);
+	Double_t TIntgr1S = Sgnfc1S->Integral(RangeLow, RangeHigh);
+	Double_t TIntgrBkg = Bkgfc->Integral(RangeLow, RangeHigh);
 	Double_t IntgrSig = Sgnfc1S->Integral(meanout-2*sigmaout, meanout+2*sigmaout);
 	Double_t IntgrBkg = Bkgfc->Integral(meanout-2*sigmaout, meanout+2*sigmaout);
 
 	Double_t Significance = (Yield1S*IntgrSig/TIntgr1S)/TMath::Sqrt(((Yield1S*IntgrSig/TIntgr1S)+(YieldBkg*IntgrBkg/TIntgrBkg)));
+	//Double_t Significance = (Yield1S*IntgrSig/TIntgr1S)/TMath::Sqrt(((Yield1S*IntgrSig/TIntgr1S)));
 	FILE* ftxt;
 	ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_MC_%s_MupT%s.txt", (int)multMin, (int)multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "w");
 	if(ftxt != NULL)
 	{
 		fprintf(ftxt, "mean  sigma1  sigma2  fraction  totsigma  totsig  totbkg sig  bkg  nsig  nbkg  significance \n");
 		fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f \n", meanout, sigma1out, sigma2out, fracout, sigmaout, TIntgr1S, TIntgrBkg, IntgrSig, IntgrBkg, Yield1S, YieldBkg, Significance);
+		//fprintf(ftxt, "mean  sigma1  sigma2  fraction  totsigma  totsig  sig  nsig  significance \n");
+		//fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f \n", meanout, sigma1out, sigma2out, fracout, sigmaout, TIntgr1S, IntgrSig, Yield1S, Significance);
 		fprintf(ftxt, "mean  U1sigma1  fraction  alpha  n  p0  p1 \n");
 		fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f  %.3f   \n", meanout, sigma1out, fracout, ws->var("alpha")->getVal(), ws->var("n")->getVal(), ws->var("p0")->getVal(), ws->var("p1")->getVal());
+		//fprintf(ftxt, "mean  U1sigma1  fraction  alpha  n  \n");
+		//fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f  \n", meanout, sigma1out, fracout, ws->var("alpha")->getVal(), ws->var("n")->getVal());
 		fprintf(ftxt, "1SYield  BkgYield  1SIntgr  BkgTIntgr  \n");
 		fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f \n", Yield1S, YieldBkg, TIntgr1S, TIntgrBkg);
+		//fprintf(ftxt, "1SYield  1SIntgr  \n");
+		//fprintf(ftxt, "%.3f   %.3f   \n", Yield1S, TIntgr1S);
 	}
 //}}}
 
@@ -267,8 +276,7 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 	fout->cd();
 	massPlot->Write();
 	hYield->Write();
-	TH1D* hmass = new TH1D("hmass", "", Nmassbins, 8, 14);
-	//TH1D* hmass = new TH1D("hmass", "", Nmassbins, 8, 10);
+	TH1D* hmass = new TH1D("hmass", "", Nmassbins, RangeLow, RangeHigh);
 	reducedDS->fillHistogram(hmass, (*ws->var("mass")));
 	hmass->Write();
 	Sgnfc1S->Write();

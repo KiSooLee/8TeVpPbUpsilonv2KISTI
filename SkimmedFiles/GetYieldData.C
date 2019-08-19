@@ -50,6 +50,8 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 //}}}
 
 	//const Int_t Nmassbins = 120;
+	const Double_t RangeLow = 8;
+	const Double_t RangeHigh = 14;
 	const Int_t Nmassbins = 120;
 	TFile* fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_MupT%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
 
@@ -98,8 +100,7 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	RooDataSet* reducedDS = (RooDataSet*) weightedDS->reduce(RooArgSet(*(ws->var("mass"))), Form("(mult>=%d&&mult<%d)&&(pt>=%f&&pt<%f)&&(y>=%f&&y<%f)", multMin, multMax, ptMin, ptMax, rapMin, rapMax));
 	reducedDS->SetName("reducedDS");
 	ws->import(*reducedDS);
-	ws->var("mass")->setRange(8, 14);
-	//ws->var("mass")->setRange(7, 14);
+	ws->var("mass")->setRange(RangeLow, RangeHigh);
 	ws->var("mass")->Print();
 //}}}
 
@@ -213,8 +214,7 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	RooAddPdf* model = new RooAddPdf("model", "1S+2S+3S+Bkg", RooArgList(*Signal1S, *Signal2S, *Signal3S, *Background), RooArgList(*nSig1S, *nSig2S, *nSig3S, *nBkg));
 	ws->import(*model);
 
-	RooFitResult* Result = ws->pdf("model")->fitTo(*reducedDS, Save(), Hesse(kTRUE), Range(8, 14), Minos(0), SumW2Error(kTRUE), Extended(kTRUE));
-	//RooFitResult* Result = ws->pdf("model")->fitTo(*reducedDS, Save(), Hesse(kTRUE), Range(7, 14), Minos(0), SumW2Error(kTRUE), Extended(kTRUE));
+	RooFitResult* Result = ws->pdf("model")->fitTo(*reducedDS, Save(), Hesse(kTRUE), Range(RangeLow, RangeHigh), Minos(0), SumW2Error(kTRUE), Extended(kTRUE));
 	ws->pdf("model")->plotOn(massPlot, Name("modelPlot"));
 	ws->pdf("model")->plotOn(massPlot, Components(RooArgSet(*Signal1S)), LineColor(kRed), LineStyle(kDashed), MoveToBack());
 	ws->pdf("model")->plotOn(massPlot, Components(RooArgSet(*Signal2S)), LineColor(kRed), LineStyle(kDashed), MoveToBack());
@@ -298,10 +298,10 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	TF1* Sgnfc3S = ws->pdf("twoCB3S")->asTF(*(ws->var("mass")));
 	TF1* Bkgfc = ws->pdf("bkgErf")->asTF(*(ws->var("mass")));
 
-	Double_t TIntgr1S = Sgnfc1S->Integral(8, 14);
-	Double_t TIntgr2S = Sgnfc2S->Integral(8, 14);
-	Double_t TIntgr3S = Sgnfc3S->Integral(8, 14);
-	Double_t TIntgrBkg = Bkgfc->Integral(8, 14);
+	Double_t TIntgr1S = Sgnfc1S->Integral(RangeLow, RangeHigh);
+	Double_t TIntgr2S = Sgnfc2S->Integral(RangeLow, RangeHigh);
+	Double_t TIntgr3S = Sgnfc3S->Integral(RangeLow, RangeHigh);
+	Double_t TIntgrBkg = Bkgfc->Integral(RangeLow, RangeHigh);
 	Double_t IntgrSig = Sgnfc1S->Integral(meanout-2*sigmaout, meanout+2*sigmaout);
 	Double_t IntgrBkg = Bkgfc->Integral(meanout-2*sigmaout, meanout+2*sigmaout);
 
@@ -325,8 +325,7 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	fout->cd();
 	massPlot->Write();
 	hYield->Write();
-	TH1D* hmass = new TH1D("hmass", "", Nmassbins, 8, 14);
-	//TH1D* hmass = new TH1D("hmass", "", Nmassbins, 7, 14);
+	TH1D* hmass = new TH1D("hmass", "", Nmassbins, RangeLow, RangeHigh);
 	reducedDS->fillHistogram(hmass, (*ws->var("mass")));
 	hmass->Write();
 	Sgnfc1S->Write();
