@@ -135,22 +135,22 @@ void Correl_trk_Gen_same_Pbp(const Int_t multMin = 0, const Int_t multMax = 300,
 //}}}
 
 //fill hist{{{
-				hGen1_1->Fill(deta, dphi, 1/( (double)Nass_Gen*2) );
-				hGen1_2->Fill(deta, dphi, 1/( (double)Nass_Gen*2) );
+				hGen1_1->Fill(deta, dphi, 1/( (double)Nass_Gen) );
+				hGen1_2->Fill(deta, dphi, 1/( (double)Nass_Gen) );
 				if(fabs(deta) > 2.0)
 				{
-					hGen2_1->Fill(deta, dphi, 1/( (double)Nass_Gen*2) );
-					hGen2_2->Fill(deta, dphi, 1/( (double)Nass_Gen*2) );
+					hGen2_1->Fill(deta, dphi, 1/( (double)Nass_Gen) );
+					hGen2_2->Fill(deta, dphi, 1/( (double)Nass_Gen) );
 				}
 				if(fabs(deta) > 1.5)
 				{
-					hGen3_1->Fill(deta, dphi, 1/( (double)Nass_Gen*2) );
-					hGen3_2->Fill(deta, dphi, 1/( (double)Nass_Gen*2) );
+					hGen3_1->Fill(deta, dphi, 1/( (double)Nass_Gen) );
+					hGen3_2->Fill(deta, dphi, 1/( (double)Nass_Gen) );
 				}
 				if(fabs(deta) > 1.0)
 				{
-					hGen4_1->Fill(deta, dphi, 1/( (double)Nass_Gen*2) );
-					hGen4_2->Fill(deta, dphi, 1/( (double)Nass_Gen*2) );
+					hGen4_1->Fill(deta, dphi, 1/( (double)Nass_Gen) );
+					hGen4_2->Fill(deta, dphi, 1/( (double)Nass_Gen) );
 				}
 //}}}
 			}

@@ -139,22 +139,22 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 //}}}
 
 //fill hist{{{
-				hReco1_1->Fill(deta, dphi, 1/( (double)Nass_Reco*2) );
-				hReco1_2->Fill(deta, dphi, 1/( (double)Nass_Reco*2) );
+				hReco1_1->Fill(deta, dphi, 1/( (double)Nass_Reco) );
+				hReco1_2->Fill(deta, dphi, 1/( (double)Nass_Reco) );
 				if(fabs(deta) > 2.0)
 				{
-					hReco2_1->Fill(deta, dphi, 1/( (double)Nass_Reco*2) );
-					hReco2_2->Fill(deta, dphi, 1/( (double)Nass_Reco*2) );
+					hReco2_1->Fill(deta, dphi, 1/( (double)Nass_Reco) );
+					hReco2_2->Fill(deta, dphi, 1/( (double)Nass_Reco) );
 				}
 				if(fabs(deta) > 1.5)
 				{
-					hReco3_1->Fill(deta, dphi, 1/( (double)Nass_Reco*2) );
-					hReco3_2->Fill(deta, dphi, 1/( (double)Nass_Reco*2) );
+					hReco3_1->Fill(deta, dphi, 1/( (double)Nass_Reco) );
+					hReco3_2->Fill(deta, dphi, 1/( (double)Nass_Reco) );
 				}
 				if(fabs(deta) > 1.0)
 				{
-					hReco4_1->Fill(deta, dphi, 1/( (double)Nass_Reco*2) );
-					hReco4_2->Fill(deta, dphi, 1/( (double)Nass_Reco*2) );
+					hReco4_1->Fill(deta, dphi, 1/( (double)Nass_Reco) );
+					hReco4_2->Fill(deta, dphi, 1/( (double)Nass_Reco) );
 				}
 //}}}
 			}
