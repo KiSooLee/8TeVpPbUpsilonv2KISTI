@@ -39,15 +39,19 @@ void Correl_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, cons
 
 //Get files{{{
 	TString fname1, fname2;
-	TChain* tin1 = new TChain("UpsilonTree");
-	TChain* tin2 = new TChain("UpsilonTree");
+	TChain* tin1_tmp = new TChain("UpsilonTree");
+	TChain* tin2_tmp = new TChain("UpsilonTree");
 	for(Int_t ibin = massBinsArr[imass]; ibin < massBinsArr[imass+1]; ibin++)
 	{
 		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s/Sort_OniaTree_Gen_Pbp1_PADoubleMuon_MC_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), ibin);
 		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s/Sort_OniaTree_Gen_Pbp2_PADoubleMuon_MC_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), ibin);
-		tin1->Add(fname1.Data());
-		tin2->Add(fname2.Data());
+		tin1_tmp->Add(fname1.Data());
+		tin2_tmp->Add(fname2.Data());
 	}
+	TTree* tin1 = tin1_tmp->CloneTree();
+	TTree* tin2 = tin2_tmp->CloneTree();
+	tin1_tmp->Reset();
+	tin2_tmp->Reset();
 //}}}
 
 //Define canvas & hist{{{
