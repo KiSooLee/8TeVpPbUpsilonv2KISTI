@@ -169,11 +169,11 @@ void extV2(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t i
 //}}}
 
 //Define fitting function{{{
-			TF1 *vn_fine = new TF1(Form("vn_%s_fine", Away[iaway].Data()),"[0]*(1+2*[1]*cos(2*x)+2*[2]*cos(x))",-6.28,6.28);
+			TF1 *vn_fine = new TF1(Form("vn_Away%s_fine", Away[iaway].Data()),"[0]*(1+2*[1]*cos(2*x)+2*[2]*cos(x))",-6.28,6.28);
 			vn_fine->SetLineColor(kViolet+1);
 			vn_fine->SetLineStyle(1);
 			vn_fine->SetLineWidth(2);
-			TF1 *vn_coarse = new TF1(Form("vn_%s_coarse", Away[iaway].Data()),"[0]*(1+2*[1]*cos(2*x)+2*[2]*cos(x))",-6.28,6.28);
+			TF1 *vn_coarse = new TF1(Form("vn_Away%s_coarse", Away[iaway].Data()),"[0]*(1+2*[1]*cos(2*x)+2*[2]*cos(x))",-6.28,6.28);
 			vn_coarse->SetLineColor(kViolet+1);
 			vn_coarse->SetLineStyle(1);
 			vn_coarse->SetLineWidth(2);
@@ -244,7 +244,7 @@ void extV2(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t i
 			l_fine->AddEntry(v1_fine, "v1", "l");
 			l_fine->AddEntry(v2_fine, "v2", "l");
 			l_fine->Draw();
-			cdphi_fine[iaway]->SaveAs(Form("ProjDist/CorrDistdphi/%s/MupT%s/Away%s/%sfit_corr_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_%d.pdf", version.Data(), MupT.Data(), Away[iaway].Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data(), imass));
+			cdphi_fine[iaway]->SaveAs(Form("ProjDist/CorrDistdphi/%s/MupT%s/Away%s/%sFit_corr_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_%d.pdf", version.Data(), MupT.Data(), Away[iaway].Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data(), imass));
 //}}}
 
 //}}}
@@ -314,7 +314,7 @@ void extV2(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t i
 			l_coarse->AddEntry(v1_coarse, "v1", "l");
 			l_coarse->AddEntry(v2_coarse, "v2", "l");
 			l_coarse->Draw();
-			cdphi_coarse[iaway]->SaveAs(Form("ProjDist/CorrDistdphi/%s/MupT%s/Away%s/%sfit_corr_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_%d.pdf", version.Data(), MupT.Data(), Away[iaway].Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data(), imass));
+			cdphi_coarse[iaway]->SaveAs(Form("ProjDist/CorrDistdphi/%s/MupT%s/Away%s/%sFit_corr_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_%d.pdf", version.Data(), MupT.Data(), Away[iaway].Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data(), imass));
 //}}}
 
 //}}}
@@ -328,8 +328,10 @@ void extV2(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t i
 	FormTH1(hRef, 0);
 	hRef->GetXaxis()->SetTitle("m_{#mu#mu} (GeV/c^{2})");
 	hRef->GetYaxis()->SetTitle("v_{2}^{S+B}");
-	hRef->SetMinimum(-0.05);
-	hRef->SetMaximum(0.05);
+	//hRef->SetMinimum(-0.05);
+	//hRef->SetMaximum(0.05);
+	hRef->SetMinimum(-0.1);
+	hRef->SetMaximum(0.1);
 
 	TGraphErrors* gv2_fine[3];
 	TGraphErrors* gv2_coarse[3];
@@ -337,11 +339,11 @@ void extV2(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t i
 	{
 //Define graph{{{
 		gv2_fine[iaway] = new TGraphErrors(mass_narr-1, massCentArr, v2v_fine[iaway], massE, v2Ev_fine[iaway]);
-		gv2_fine[iaway]->SetName(Form("gv2_%s_fine", Away[iaway].Data()));
+		gv2_fine[iaway]->SetName(Form("gv2_Away%s_fine", Away[iaway].Data()));
 		gv2_fine[iaway]->SetMaximum(0.05);
 		gv2_fine[iaway]->SetMinimum(-0.05);
 		gv2_coarse[iaway] = new TGraphErrors(mass_narr-1, massCentArr, v2v_coarse[iaway], massE, v2Ev_coarse[iaway]);
-		gv2_coarse[iaway]->SetName(Form("gv2_%s_coarse", Away[iaway].Data()));
+		gv2_coarse[iaway]->SetName(Form("gv2_Away%s_coarse", Away[iaway].Data()));
 		gv2_coarse[iaway]->SetMaximum(0.05);
 		gv2_coarse[iaway]->SetMinimum(-0.05);
 //}}}
@@ -353,14 +355,14 @@ void extV2(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t i
 		gv2_fine[iaway]->SetMarkerSize(1.2);
 		//gv2_fine->SetMarkerSize(0);
 		gv2_fine[iaway]->Draw("pesame");
-		lt2->DrawLatex(0.17,0.92, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-		lt2->DrawLatex(0.17,0.87, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
-		lt2->DrawLatex(0.17,0.82, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-		if((int) TrkptMin == 0) lt2->DrawLatex(0.17,0.77, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
-		else lt2->DrawLatex(0.17,0.77, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
-		if(iaway == 0) lt2->DrawLatex(0.17,0.72, "|#Delta#eta^{trk}| > 2.0");
-		else if(iaway == 1) lt2->DrawLatex(0.17,0.72, "|#Delta#eta^{trk}| > 1.5");
-		else if(iaway == 2) lt2->DrawLatex(0.17,0.72, "|#Delta#eta^{trk}| > 1.0");
+		lt2->DrawLatex(0.33,0.38, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
+		lt2->DrawLatex(0.33,0.33, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
+		lt2->DrawLatex(0.33,0.28, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
+		if((int) TrkptMin == 0) lt2->DrawLatex(0.33,0.23, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+		else lt2->DrawLatex(0.33,0.23, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
+		if(iaway == 0) lt2->DrawLatex(0.33,0.18, "|#Delta#eta^{trk}| > 2.0");
+		else if(iaway == 1) lt2->DrawLatex(0.33,0.18, "|#Delta#eta^{trk}| > 1.5");
+		else if(iaway == 2) lt2->DrawLatex(0.33,0.18, "|#Delta#eta^{trk}| > 1.0");
 		cv2_fine[iaway]->SaveAs(Form("ProjDist/V2Dist/%s/MupT%s/%sv2_dist_%s_%s_fine_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_MupT%s.pdf", version.Data(), MupT.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data()));
 		//cv2_fine->SaveAs(Form("ProjDist/V2Dist/v2_dist_%s_fine_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_noMarker_%s_%s_MupT%s.pdf", Away[away].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data()));
 //}}}
@@ -372,14 +374,14 @@ void extV2(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t i
 		gv2_coarse[iaway]->SetMarkerSize(1.2);
 		//gv2_coarse->SetMarkerSize(0);
 		gv2_coarse[iaway]->Draw("pesame");
-		lt2->DrawLatex(0.17,0.92, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
-		lt2->DrawLatex(0.17,0.87, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
-		lt2->DrawLatex(0.17,0.82, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-		if((int) TrkptMin == 0) lt2->DrawLatex(0.17,0.77, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
-		else lt2->DrawLatex(0.17,0.77, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
-		if(iaway == 0) lt2->DrawLatex(0.17,0.72, "|#Delta#eta^{trk}| > 2.0");
-		else if(iaway == 1) lt2->DrawLatex(0.17,0.72, "|#Delta#eta^{trk}| > 1.5");
-		else if(iaway == 2) lt2->DrawLatex(0.17,0.72, "|#Delta#eta^{trk}| > 1.0");
+		lt2->DrawLatex(0.33,0.38, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq #N^{trk} < %d", multMin, multMax));
+		lt2->DrawLatex(0.33,0.33, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
+		lt2->DrawLatex(0.33,0.28, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
+		if((int) TrkptMin == 0) lt2->DrawLatex(0.33,0.23, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+		else lt2->DrawLatex(0.33,0.23, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
+		if(iaway == 0) lt2->DrawLatex(0.33,0.18, "|#Delta#eta^{trk}| > 2.0");
+		else if(iaway == 1) lt2->DrawLatex(0.33,0.18, "|#Delta#eta^{trk}| > 1.5");
+		else if(iaway == 2) lt2->DrawLatex(0.33,0.18, "|#Delta#eta^{trk}| > 1.0");
 		cv2_coarse[iaway]->SaveAs(Form("ProjDist/V2Dist/%s/MupT%s/%sv2_dist_%s_%s_coarse_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_MupT%s.pdf", version.Data(), MupT.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data()));
 		//cv2_coarse[iaway]->SaveAs(Form("ProjDist/V2Dist/v2_dist_%s_coarse_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_noMarker_%s_%s_MupT%s.pdf", Away[away].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data()));
 //}}}
