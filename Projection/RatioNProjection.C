@@ -39,6 +39,7 @@ void RatioNProjection(const Bool_t isMC = false, const Bool_t isGen = false, con
 	else gSystem->mkdir(fileDIR.Data(), kTRUE);
 //}}}
 
+//Define names{{{
 	TString MorD;
 	if(isMC) MorD = "MC";
 	else MorD = "Data";
@@ -50,6 +51,7 @@ void RatioNProjection(const Bool_t isMC = false, const Bool_t isGen = false, con
 	TString Trk;
 	if(isTrk) Trk = "trk_";
 	else Trk = "";
+//}}}
 
 	TFile *samePbp[2];
 	TFile *mixPbp[2];
