@@ -15,13 +15,13 @@
 #include <TF1.h>
 #include <TRandom3.h>
 #include <TSystem.h>
-
+/*
 #include "Style_Upv2.h"
 #include "Upsilon.h"
-/*
+*/
 #include "../Headers/Style_Upv2.h"
 #include "../Headers/Upsilon.h"
-*/
+
 using namespace std;
 //}}}
 
@@ -74,6 +74,8 @@ void Correl_Reco_mix_pPb(const bool isMC = false, const Int_t multMin = 0, const
 	TCanvas* cReco3_2 = new TCanvas("cReco3_2", "", 0, 0, 600, 600);
 	TCanvas* cReco4_1 = new TCanvas("cReco4_1", "", 0, 0, 600, 600);
 	TCanvas* cReco4_2 = new TCanvas("cReco4_2", "", 0, 0, 600, 600);
+	TCanvas* cReco5_1 = new TCanvas("cReco5_1", "", 0, 0, 600, 600);
+	TCanvas* cReco5_2 = new TCanvas("cReco5_2", "", 0, 0, 600, 600);
 
 	TH2D* hReco1_1 = new TH2D("hMixpPbReco1_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1, -4.95, 4.95, Nphibin1, -(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());
 	TH2D* hReco1_2 = new TH2D("hMixpPbReco1_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
@@ -83,6 +85,8 @@ void Correl_Reco_mix_pPb(const bool isMC = false, const Int_t multMin = 0, const
 	TH2D* hReco3_2 = new TH2D("hMixpPbReco3_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
 	TH2D* hReco4_1 = new TH2D("hMixpPbReco4_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1, -4.95, 4.95, Nphibin1, -(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());
 	TH2D* hReco4_2 = new TH2D("hMixpPbReco4_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
+	TH2D* hReco5_1 = new TH2D("hMixpPbReco5_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1, -4.95, 4.95, Nphibin1, -(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());
+	TH2D* hReco5_2 = new TH2D("hMixpPbReco5_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
 
 /*
 //wide bin first case{{{
@@ -108,6 +112,8 @@ void Correl_Reco_mix_pPb(const bool isMC = false, const Int_t multMin = 0, const
 	FormTH2(hReco3_2);
 	FormTH2(hReco4_1);
 	FormTH2(hReco4_2);
+	FormTH2(hReco5_1);
+	FormTH2(hReco5_2);
 //}}}
 
 //get variables{{{
@@ -229,6 +235,11 @@ void Correl_Reco_mix_pPb(const bool isMC = false, const Int_t multMin = 0, const
 							hReco4_1->Fill(deta, dphi, 1/(double)(10*Ntrg_Reco1));
 							hReco4_2->Fill(deta, dphi, 1/(double)(10*Ntrg_Reco1));
 						}
+						if(fabs(deta) < 1.0)
+						{
+							hReco5_1->Fill(deta, dphi, 1/(double)(10*Ntrg_Reco1));
+							hReco5_2->Fill(deta, dphi, 1/(double)(10*Ntrg_Reco1));
+						}
 //}}}
 					}
 				}
@@ -293,6 +304,11 @@ void Correl_Reco_mix_pPb(const bool isMC = false, const Int_t multMin = 0, const
 							hReco4_1->Fill(deta, dphi, 1/(double)(10*Ntrg_Reco2));
 							hReco4_2->Fill(deta, dphi, 1/(double)(10*Ntrg_Reco2));
 						}
+						if(fabs(deta) < 1.0)
+						{
+							hReco5_1->Fill(deta, dphi, 1/(double)(10*Ntrg_Reco2));
+							hReco5_2->Fill(deta, dphi, 1/(double)(10*Ntrg_Reco2));
+						}
 //}}}
 					}
 				}
@@ -318,6 +334,10 @@ void Correl_Reco_mix_pPb(const bool isMC = false, const Int_t multMin = 0, const
 	hReco4_1->Draw("Surf1");
 	cReco4_2->cd();
 	hReco4_2->Draw("Surf1");
+	cReco5_1->cd();
+	hReco5_1->Draw("Surf1");
+	cReco5_2->cd();
+	hReco5_2->Draw("Surf1");
 //}}}
 
 //store{{{
@@ -331,6 +351,8 @@ void Correl_Reco_mix_pPb(const bool isMC = false, const Int_t multMin = 0, const
 	hReco3_2->Write();
 	hReco4_1->Write();
 	hReco4_2->Write();
+	hReco5_1->Write();
+	hReco5_2->Write();
 	fout->Close();
 //}}}
 }
