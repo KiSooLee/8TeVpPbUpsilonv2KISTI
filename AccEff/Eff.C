@@ -25,15 +25,15 @@ using namespace RooFit;
 
 bool InAcc(Double_t muPt, Double_t muEta);
 
-void AccEff()
+void Eff()
 {
 	SetStyle();
-	TString version = "v16";
-	const Int_t Generation = 3;//1: 1S, 2: 2S, 3:3S
+	const Int_t Generation = 1;//1: 1S, 2: 2S, 3:3S
 
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
 	TString saveDIR = mainDIR + "/Plots";
+
 	void * dirp = gSystem->OpenDirectory(saveDIR.Data());
 	if(dirp) gSystem->FreeDirectory(dirp);
 	else gSystem->mkdir(saveDIR.Data(), kTRUE);
@@ -41,7 +41,9 @@ void AccEff()
 
 //Get files{{{
 	TChain* tin = new TChain("hionia/myTree");
-	TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);//1S
+	TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);
+	//TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);//HIJING
+	//TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);//EPOS
 	tin->Add(fname1.Data());
 //}}}
 
