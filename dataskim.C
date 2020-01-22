@@ -25,7 +25,7 @@ using namespace RooFit;
 
 bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void dataskim(bool isMC = false, const TString MupT = "3p5")
+void dataskim(const bool isMC = false, const Weight = false, const TString MupT = "3p5")
 {
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -74,7 +74,6 @@ void dataskim(bool isMC = false, const TString MupT = "3p5")
 	}
 	tin->Add(fname1.Data());
 	tin->Add(fname2.Data());
-//}}}
 
     // dmoon add : Acc and Eff file uploaed.
     TFile *ineff = new TFile("AccEff/Plots/EffPlots_Upsilon_1S_Ny5_MupT3p5.root","READ"); // efficiency file
@@ -87,9 +86,10 @@ void dataskim(bool isMC = false, const TString MupT = "3p5")
     TH1F *hEff1618 = (TH1F*)ineff->Get("hEff_1");
     TH1F *hEff1821 = (TH1F*)ineff->Get("hEff_2");
     TH1F *hEff2124 = (TH1F*)ineff->Get("hEff_3");
+//}}}
 
 	TFile* fout;
-	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_MupT%s.root", MorD.Data(), MupT.Data()), "RECREATE");
+	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_weight%o_MupT%s.root", MorD.Data(), Weight, MupT.Data()), "RECREATE");
 
 	const Int_t MaxQQ = 250;
 	const Int_t MaxTrk = 1500;
