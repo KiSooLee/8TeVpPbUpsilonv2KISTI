@@ -16,19 +16,36 @@
 #include <RooDataSet.h>
 #include <RooArgSet.h>
 
-#include "../Style_Upv2.h"
-#include "../Upsilon.h"
+#include "../Headers/Style_Upv2.h"
+#include "../Headers/Upsilon.h"
 
 using namespace std;
 using namespace RooFit;
 //}}}
 
-bool InAcc(Double_t muPt, Double_t muEta);
+bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void Eff()
+void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 {
 	SetStyle();
-	const Int_t Generation = 1;//1: 1S, 2: 2S, 3:3S
+
+//define muon pt value{{{
+	Double_t MupTCut;
+	if(MupT == "0") MupTCut = 0;
+	else if(MupT == "0p5") MupTCut = 0.5;
+	else if(MupT == "1") MupTCut = 1.0;
+	else if(MupT == "1p5") MupTCut = 1.5;
+	else if(MupT == "2") MupTCut = 2.0;
+	else if(MupT == "2p5") MupTCut = 2.5;
+	else if(MupT == "3") MupTCut = 3.0;
+	else if(MupT == "3p5") MupTCut = 3.5;
+	else if(MupT == "4") MupTCut = 4.0;
+	else
+	{
+		cout << "There is no such muon pT cut value" << endl;
+		return;
+	}
+//}}}
 
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -41,23 +58,65 @@ void Eff()
 
 //Get files{{{
 	TChain* tin = new TChain("hionia/myTree");
-	TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);
-	//TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);//HIJING
-	//TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);//EPOS
+	TString fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_20190613.root", Generation);
+	TString fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_20190613.root", Generation);
 	tin->Add(fname1.Data());
+	const Int_t Nevtcut = tin->GetEntries();
+	tin->Add(fname2.Data());
 //}}}
 
-	TH2D* hGen = new TH2D("hGen", ";Rapidity;p_{T}^{#varUpsilon}", rap_narr-1, rapBinsArr, pt_narr-1, ptBinsArr);
-	TH2D* hAccGen = new TH2D("hAccGen", ";Rapidity;p_{T}^{#varUpsilon}", rap_narr-1, rapBinsArr, pt_narr-1, ptBinsArr);
-	TH2D* hReco = new TH2D("hReco", ";Rapidity;p_{T}^{#varUpsilon}", rap_narr-1, rapBinsArr, pt_narr-1, ptBinsArr);
-	TH2D* hGeneta = new TH2D("hGeneta", ";p_{T}^{#varUpsilon};PsudoRapidity", pt_narr-1, ptBinsArr, 40, -10, 10);
-	TH2D* hRecoeta = new TH2D("hRecoeta", ";p_{T}^{#varUpsilon};PsudoRapidity", pt_narr-1, ptBinsArr, 40, -10, 10);
+//binning{{{
+	const Int_t Npt1 = 14;
+	const Int_t Npt2 = 9;
+	const Double_t ptbins1[Npt1] = {0., 1., 2., 3., 4., 5., 6., 7., 8., 9.,
+											10., 15., 20., 30.};
+	const Double_t ptbins2[Npt2] = {0., 2., 4., 6., 8., 10., 15., 20., 30.};
+	const Int_t Ny = 5;
+	const Double_t ybins[Ny] = {0., 1.6, 1.8, 2.1, 2.4};
+//}}}
 
-	FormTH2(hGen);
-	FormTH2(hAccGen);
-	FormTH2(hReco);
-	FormTH2(hGeneta);
-	FormTH2(hRecoeta);
+//Define canvas and histogram{{{
+	TCanvas* cyDenintgr = new TCanvas("cyDenintgr", "", 0, 0, 600, 600);
+	TCanvas* cyNumintgr = new TCanvas("cyNumintgr", "", 0, 0, 600, 600);
+	TCanvas* cyEffintgr = new TCanvas("cyEffintgr", "", 0, 0, 600, 600);
+	TCanvas* cptDenintgr = new TCanvas("cptDenintgr", "", 0, 0, 600, 600);
+	TCanvas* cptNumintgr = new TCanvas("cptNumintgr", "", 0, 0, 600, 600);
+	TCanvas* cptEffintgr = new TCanvas("cptEffintgr", "", 0, 0, 600, 600);
+	TCanvas* cDen[Ny-1];
+	TCanvas* cNum[Ny-1];
+	TCanvas* cEff[Ny-1];
+	TH1D* hyDenintgr = new TH1D("hyDenintgr", ";y^{#varUpsilon};Entries", 250, -2.5, 2.5);
+	TH1D* hyNumintgr = new TH1D("hyNumintgr", ";y^{#varUpsilon};Entries", 250, -2.5, 2.5);
+	TH1D* hptDenintgr = new TH1D("hptDenintgr", ";p_{T}y^{#varUpsilon};Entries", 300, 0, 30);
+	TH1D* hptNumintgr = new TH1D("hptNumintgr", ";p_{T}y^{#varUpsilon};Entries", 300, 0, 30);
+	FormTH1Marker(hyDenintgr, 0, 0, 1.2);
+	FormTH1Marker(hyNumintgr, 0, 0, 1.2);
+	FormTH1Marker(hptDenintgr, 0, 0, 1.2);
+	FormTH1Marker(hptNumintgr, 0, 0, 1.2);
+	TH1D* hyEffintgr;
+	TH1D* hptEffintgr;
+	TH1D* hDen[Ny-1];
+	TH1D* hNum[Ny-1];
+	TH1D* hEff[Ny-1];
+	for(Int_t iy = 0; iy < Ny-1; iy++)
+	{
+		cDen[iy] = new TCanvas(Form("cDen_%d", iy), "", 0, 0, 600, 600);
+		cNum[iy] = new TCanvas(Form("cNum_%d", iy), "", 0, 0, 600, 600);
+		cEff[iy] = new TCanvas(Form("cEff_%d", iy), "", 0, 0, 600, 600);
+		if(iy == 0)
+		{
+			hDen[iy] = new TH1D(Form("hDen_%d", iy), ";p_{T}^{#varUpsilon};Entries", Npt1-1, ptbins1);
+			hNum[iy] = new TH1D(Form("hNum_%d", iy), ";p_{T}^{#varUpsilon};Entries", Npt1-1, ptbins1);
+		}
+		else
+		{
+			hDen[iy] = new TH1D(Form("hDen_%d", iy), ";p_{T}^{#varUpsilon};Entries", Npt2-1, ptbins2);
+			hNum[iy] = new TH1D(Form("hNum_%d", iy), ";p_{T}^{#varUpsilon};Entries", Npt2-1, ptbins2);
+		}
+		FormTH1Marker(hDen[iy], 0, 0, 1.2);
+		FormTH1Marker(hNum[iy], 0, 0, 1.2);
+	}
+//}}}
 
 	const Int_t MaxQQ = 250;
 
@@ -174,20 +233,26 @@ void Eff()
 		if(ievt%100000 == 0) cout << "Events: " << ievt << " / " << Nevt << "[" << Form("%.1f", ( (double)ievt/(double)Nevt)*100 ) << " %]" << endl;
 		tin->GetEntry(ievt);
 
-//Fill Gen{{{
+//Fill Denominator{{{
 		for(Int_t iqq = 0; iqq < Gen_QQ_size; iqq++)
 		{
 			Up_Gen_4mom = (TLorentzVector*) Gen_QQ_4mom->At(iqq);
 			mupl_Gen_4mom = (TLorentzVector*) Gen_QQ_mupl_4mom->At(iqq);
 			mumi_Gen_4mom = (TLorentzVector*) Gen_QQ_mumi_4mom->At(iqq);
-			hGen->Fill(Up_Gen_4mom->Rapidity(), Up_Gen_4mom->Pt());
-			hGeneta->Fill(Up_Gen_4mom->Pt(), Up_Gen_4mom->Eta());
-			if( !InAcc(mupl_Gen_4mom->Pt(), mupl_Gen_4mom->Eta()) ) continue;
-			if( !InAcc(mumi_Gen_4mom->Pt(), mumi_Gen_4mom->Eta()) ) continue;
-			hAccGen->Fill(Up_Gen_4mom->Rapidity(), Up_Gen_4mom->Pt());
+			if( !InAcc(mupl_Gen_4mom->Pt(), mupl_Gen_4mom->Eta(), MupTCut) ) continue;
+			if( !InAcc(mumi_Gen_4mom->Pt(), mumi_Gen_4mom->Eta(), MupTCut) ) continue;
+			if(ievt < Nevtcut) hyDenintgr->Fill(Up_Gen_4mom->Rapidity());
+			else hyDenintgr->Fill(-1.*Up_Gen_4mom->Rapidity());
+			hptDenintgr->Fill(Up_Gen_4mom->Pt());
+			for(Int_t iy = 0; iy < Ny-1; iy++)
+			{
+				if(fabs(Up_Gen_4mom->Rapidity()) > ybins[iy] && fabs(Up_Gen_4mom->Rapidity()) <= ybins[iy+1])
+				hDen[iy]->Fill(Up_Gen_4mom->Pt());
+			}
 		}
 //}}}
 
+//Fill Numerator{{{
 		if( (HLTriggers&1)!=1 ) continue;
 
 		for(Int_t iqq = 0; iqq < Reco_QQ_size; iqq++)
@@ -199,8 +264,8 @@ void Eff()
 //Cuts for muon and Upsilon{{{
 			if( (Reco_QQ_trig[iqq]&1) != 1 ) continue;
 
-			if( !InAcc(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta()) ) continue;
-			if( !InAcc(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta()) ) continue;
+			if( !InAcc(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), MupTCut) ) continue;
+			if( !InAcc(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), MupTCut) ) continue;
 
 			bool muplSoft = ( (Reco_QQ_mupl_TMOneStaTight[iqq] == true) &&
 									(Reco_QQ_mupl_nTrkWMea[iqq] > 5) &&
@@ -223,83 +288,104 @@ void Eff()
 			if( Reco_QQ_sign[iqq] != 0) continue;
 //}}}
 
-			hReco->Fill(Up_Reco_4mom->Rapidity(), Up_Reco_4mom->Pt());
-			hRecoeta->Fill(Up_Reco_4mom->Pt(), Up_Reco_4mom->Eta());
+			hyNumintgr->Fill(Up_Reco_4mom->Rapidity());
+			hptNumintgr->Fill(Up_Reco_4mom->Pt());
+
+			for(Int_t iy = 0; iy < Ny-1; iy++)
+			{
+				if(fabs(Up_Reco_4mom->Rapidity()) > ybins[iy] && fabs(Up_Reco_4mom->Rapidity()) <= ybins[iy+1])
+				hNum[iy]->Fill(Up_Reco_4mom->Pt());
+			}
 		}
+//}}}
 	}
 
-	TCanvas* cGen = new TCanvas("cGen", "", 0, 0, 600, 600);
-	cGen->cd();
-	hGen->Draw("colztext");
-	cGen->SaveAs(Form("Plots/Gen_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	TLatex* lt1 = new TLatex();
+	FormLatex(lt1, 12, 0.05);
+	lt1->SetNDC();
 
-	TCanvas* cGeneta = new TCanvas("cGeneta", "", 0, 0, 600, 600);
-	cGeneta->cd();
-	hGeneta->Draw("colztext");
-	cGeneta->SaveAs(Form("Plots/Geneta_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	cyDenintgr->cd();
+	hyDenintgr->Draw("pe");
+	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	cyDenintgr->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_yintegral_MupT%s.pdf", Generation, MupT.Data()));
 
-	TCanvas* cAccGen = new TCanvas("cAccGen", "", 0, 0, 600, 600);
-	cAccGen->cd();
-	hAccGen->Draw("colztext");
-	cAccGen->SaveAs(Form("Plots/GenwAcc_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	cptDenintgr->cd();
+	hptDenintgr->Draw("pe");
+	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	cptDenintgr->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_ptintegral_MupT%s.pdf", Generation, MupT.Data()));
 
-	TCanvas* cReco = new TCanvas("cReco", "", 0, 0, 600, 600);
-	cReco->cd();
-	hReco->Draw("colztext");
-	cReco->SaveAs(Form("Plots/Reco_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	cyNumintgr->cd();
+	hyNumintgr->Draw("pe");
+	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	cyNumintgr->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_yintegral_MupT%s.pdf", Generation, MupT.Data()));
 
-	TCanvas* cRecoeta = new TCanvas("cRecoeta", "", 0, 0, 600, 600);
-	cRecoeta->cd();
-	hRecoeta->Draw("colztext");
-	cRecoeta->SaveAs(Form("Plots/Recoeta_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	cptNumintgr->cd();
+	hptNumintgr->Draw("pe");
+	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	cptNumintgr->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_ptintegral_MupT%s.pdf", Generation, MupT.Data()));
 
-	TH2D* hAcc = (TH2D*) hAccGen->Clone("hAcc");
-	hAcc->Divide(hGen);
+	cyEffintgr->cd();
+	hyEffintgr = (TH1D*) hyNumintgr->Clone(Form("hEffyintgr"));
+	hyEffintgr->GetYaxis()->SetTitle("efficiency");
+	hyEffintgr->Divide(hyDenintgr);
+	hyEffintgr->SetMaximum(1.1);
+	hyEffintgr->SetMinimum(0.);
+	hyEffintgr->Draw("pe");
+	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	cyEffintgr->SaveAs(Form("Plots/eff_Up%dS_yintegral_MupT%s.pdf", Generation, MupT.Data()));
 
-	TCanvas* cAcc = new TCanvas("cAcc", "", 0, 0, 600, 600);
-	cAcc->cd();
-	hAcc->Draw("colztext");
-	cAcc->SaveAs(Form("Plots/Acc_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	cptEffintgr->cd();
+	hptEffintgr = (TH1D*) hptNumintgr->Clone(Form("hEffptintgr"));
+	hptEffintgr->GetYaxis()->SetTitle("efficiency");
+	hptEffintgr->Divide(hptDenintgr);
+	hptEffintgr->SetMaximum(1.1);
+	hptEffintgr->SetMinimum(0.);
+	hptEffintgr->Draw("pe");
+	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	cptEffintgr->SaveAs(Form("Plots/eff_Up%dS_ptintegral_MupT%s.pdf", Generation, MupT.Data()));
 
-	TH2D* hEff = (TH2D*) hReco->Clone("hEff");
-	hEff->Divide(hAccGen);
+	for(Int_t iy = 0; iy < Ny-1; iy++)
+	{
+		cDen[iy]->cd();
+		hDen[iy]->Draw("pe");
+		lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+		lt1->DrawLatex(0.6, 0.77, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
+		cDen[iy]->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_Ny%d_etabin%d_MupT%s.pdf", Generation, Ny, iy, MupT.Data()));
+		cNum[iy]->cd();
+		hNum[iy]->Draw("pe");
+		lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+		lt1->DrawLatex(0.6, 0.77, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
+		cNum[iy]->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_Ny%d_etabin%d_MupT%s.pdf", Generation, Ny, iy, MupT.Data()));
+		cEff[iy]->cd();
+		hEff[iy] = (TH1D*) hNum[iy]->Clone(Form("hEff_%d", iy));
+		hEff[iy]->GetYaxis()->SetTitle("efficiency");
+		hEff[iy]->Divide(hDen[iy]);
+		hEff[iy]->SetMaximum(1.1);
+		hEff[iy]->SetMinimum(0.);
+		hEff[iy]->Draw("pe");
+		lt1->DrawLatex(0.6, 0.44, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+		lt1->DrawLatex(0.6, 0.37, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
+		cEff[iy]->SaveAs(Form("Plots/eff_Up%dS_Ny%d_etabin%d_MupT%s.pdf", Generation, Ny, iy, MupT.Data()));
+	}
 
-	TCanvas* cEff = new TCanvas("cEff", "", 0, 0, 600, 600);
-	cEff->cd();
-	hEff->Draw("colztext");
-	cEff->SaveAs(Form("Plots/Eff_Upsilon_%dS_%s.pdf", Generation, version.Data()));
-
-	TH2D* hAccEff = (TH2D*) hAcc->Clone("hAccEff");
-	hAccEff->Multiply(hEff);
-
-	TCanvas* cAccEff = new TCanvas("cAccEff", "", 0, 0, 600, 600);
-	cAccEff->cd();
-	hAccEff->Draw("colztext");
-	cAccEff->SaveAs(Form("Plots/AccEff_Upsilon_%dS_%s.pdf", Generation, version.Data()));
-
-	TH2D* hEffeta = (TH2D*) hRecoeta->Clone("hEffeta");
-	hEffeta->Divide(hGeneta);
-
-	TCanvas* cEffeta = new TCanvas("cEffeta", "", 0, 0, 600, 600);
-	cEffeta->cd();
-	hEffeta->Draw("colztext");
-	cEffeta->SaveAs(Form("Plots/Effeta_Upsilon_%dS_%s.pdf", Generation, version.Data()));
-
-	TFile* fout = new TFile(Form("Plots/AccEffPlots_Upsilon_%dS_%s.root", Generation, version.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Plots/EffPlots_Upsilon_%dS_Ny%d_MupT%s.root", Generation, Ny, MupT.Data()), "RECREATE");
 	fout->cd();
-	hGen->Write();
-	hGeneta->Write();
-	hAccGen->Write();
-	hReco->Write();
-	hRecoeta->Write();
-	hAcc->Write();
-	hEff->Write();
-	hEffeta->Write();
-	hAccEff->Write();
+	hyDenintgr->Write();
+	hyNumintgr->Write();
+	hyEffintgr->Write();
+	hptDenintgr->Write();
+	hptNumintgr->Write();
+	hptEffintgr->Write();
+	for(Int_t iy = 0; iy < Ny-1; iy++)
+	{
+		hDen[iy]->Write();
+		hNum[iy]->Write();
+		hEff[iy]->Write();
+	}
 	fout->Close();
 }
 
-bool InAcc(Double_t muPt, Double_t muEta)
+bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut)
 {
-	return( TMath::Abs(muEta) < 2.4 && muPt >= 4);
+	return( TMath::Abs(muEta) < 2.4 && muPt >= MupTCut);
 }
