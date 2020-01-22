@@ -76,6 +76,18 @@ void dataskim(bool isMC = false, const TString MupT = "3p5")
 	tin->Add(fname2.Data());
 //}}}
 
+    // dmoon add : Acc and Eff file uploaed.
+    TFile *ineff = new TFile("EffPlots_Upsilon_1S_Ny5_MupT3p5.root","READ"); // efficiency file
+    TFile *inacc = new TFile("test_acc_upsi_816.root","READ");
+    TH1F *hAcc0016 = (TH1F*)inacc->Get("hAccPt0016"); 
+    TH1F *hAcc1618 = (TH1F*)inacc->Get("hAccPt1618"); 
+    TH1F *hAcc1821 = (TH1F*)inacc->Get("hAccPt1821"); 
+    TH1F *hAcc2124 = (TH1F*)inacc->Get("hAccPt2124"); 
+    TH1F *hEff0016 = (TH1F*)ineff->Get("hEff_0");
+    TH1F *hEff1618 = (TH1F*)ineff->Get("hEff_1");
+    TH1F *hEff1821 = (TH1F*)ineff->Get("hEff_2");
+    TH1F *hEff2124 = (TH1F*)ineff->Get("hEff_3");
+
 	TFile* fout;
 	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_MupT%s.root", MorD.Data(), MupT.Data()), "RECREATE");
 
@@ -287,11 +299,21 @@ void dataskim(bool isMC = false, const TString MupT = "3p5")
 			hEvent->Fill(8);
 //}}}
 
+
 			DMset.mass = Up_Reco_4mom->M();
 			DMset.pt = Up_Reco_4mom->Pt();
 			DMset.y = Up_Reco_4mom->Rapidity();
 			DMset.mult = Tot_Ntrk;
-			DMset.weight = 1.;
+
+            // Get weight number 
+            double eff = 1.0, acc = 1.0, wgt = 1.0;
+            if(fabs(y) < 1.6) {eff = hEff0016->GetBinContent(hEff0016->FindBin(pt)); acc = hAcc0016->GetBinContent(hAcc0016->FindBin(pt)); wgt = 1.0/(eff*acc)}
+            if(fabs(y) > 1.6 && fabs(y) < 1.8) {eff = hEff1618->GetBinContent(hEff1618->FindBin(pt)); acc = hAcc1618->GetBinContent(hAcc1618->FindBin(pt)); wgt = 1.0/(eff*acc)}
+            if(fabs(y) > 1.8 && fabs(y) < 2.1) {eff = hEff1821->GetBinContent(hEff1821->FindBin(pt)); acc = hAcc1821->GetBinContent(hAcc1821->FindBin(pt)); wgt = 1.0/(eff*acc)}
+            if(fabs(y) > 2.1 && fabs(y) < 2.4) {eff = hEff2124->GetBinContent(hEff2124->FindBin(pt)); acc = hAcc2124->GetBinContent(hAcc2124->FindBin(pt)); wgt = 1.0/(eff*acc)}
+			//DMset.weight = 1.;
+            cout<<" Weighting number check, acc : "<<acc<<", eff : "<<eff<<", weight : "<<wgt;
+			DMset.weight = wgt;
 			tout->Fill();
 
 			Roomass->setVal( (double)DMset.mass );
