@@ -77,8 +77,8 @@ void dataskim(bool isMC = false, const TString MupT = "3p5")
 //}}}
 
     // dmoon add : Acc and Eff file uploaed.
-    TFile *ineff = new TFile("EffPlots_Upsilon_1S_Ny5_MupT3p5.root","READ"); // efficiency file
-    TFile *inacc = new TFile("test_acc_upsi_816.root","READ");
+    TFile *ineff = new TFile("AccEff/Plots/EffPlots_Upsilon_1S_Ny5_MupT3p5.root","READ"); // efficiency file
+    TFile *inacc = new TFile("AccEff/Plots/test_acc_upsi_816.root","READ");
     TH1F *hAcc0016 = (TH1F*)inacc->Get("hAccPt0016"); 
     TH1F *hAcc1618 = (TH1F*)inacc->Get("hAccPt1618"); 
     TH1F *hAcc1821 = (TH1F*)inacc->Get("hAccPt1821"); 
