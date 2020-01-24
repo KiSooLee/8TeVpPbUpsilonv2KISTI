@@ -25,7 +25,7 @@ using namespace RooFit;
 
 bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void dataskim(const bool isMC = false, const Weight = false, const TString MupT = "3p5")
+void dataskim(const bool isMC = false, const bool Weight = false, const TString MupT = "3p5")
 {
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -306,13 +306,33 @@ void dataskim(const bool isMC = false, const Weight = false, const TString MupT 
 			DMset.mult = Tot_Ntrk;
 
             // Get weight number 
-            double eff = 1.0, acc = 1.0, wgt = 1.0;
-            if(fabs(y) <= 1.6) {eff = hEff0016->GetBinContent(hEff0016->FindBin(pt)); acc = hAcc0016->GetBinContent(hAcc0016->FindBin(pt)); wgt = 1.0/(eff*acc)}
-            if(fabs(y) > 1.6 && fabs(y) <= 1.8) {eff = hEff1618->GetBinContent(hEff1618->FindBin(pt)); acc = hAcc1618->GetBinContent(hAcc1618->FindBin(pt)); wgt = 1.0/(eff*acc)}
-            if(fabs(y) > 1.8 && fabs(y) <= 2.1) {eff = hEff1821->GetBinContent(hEff1821->FindBin(pt)); acc = hAcc1821->GetBinContent(hAcc1821->FindBin(pt)); wgt = 1.0/(eff*acc)}
-            if(fabs(y) > 2.1 && fabs(y) <= 2.4) {eff = hEff2124->GetBinContent(hEff2124->FindBin(pt)); acc = hAcc2124->GetBinContent(hAcc2124->FindBin(pt)); wgt = 1.0/(eff*acc)}
+			double eff = 1.0, acc = 1.0, wgt = 1.0;
+			if(fabs(Up_Reco_4mom->Rapidity()) <= 1.6)
+			{
+				eff = hEff0016->GetBinContent(hEff0016->FindBin(Up_Reco_4mom->Pt()));
+				acc = hAcc0016->GetBinContent(hAcc0016->FindBin(Up_Reco_4mom->Pt()));
+				wgt = 1.0/(eff*acc);
+			}
+			else if(fabs(Up_Reco_4mom->Rapidity()) > 1.6 && fabs(Up_Reco_4mom->Rapidity()) <= 1.8)
+			{
+				eff = hEff1618->GetBinContent(hEff1618->FindBin(Up_Reco_4mom->Pt()));
+				acc = hAcc1618->GetBinContent(hAcc1618->FindBin(Up_Reco_4mom->Pt()));
+				wgt = 1.0/(eff*acc);
+			}
+			else if(fabs(Up_Reco_4mom->Rapidity()) > 1.8 && fabs(Up_Reco_4mom->Rapidity()) <= 2.1)
+			{
+				eff = hEff1821->GetBinContent(hEff1821->FindBin(Up_Reco_4mom->Pt()));
+				acc = hAcc1821->GetBinContent(hAcc1821->FindBin(Up_Reco_4mom->Pt()));
+				wgt = 1.0/(eff*acc);
+			}
+			else if(fabs(Up_Reco_4mom->Rapidity()) > 2.1 && fabs(Up_Reco_4mom->Rapidity()) <= 2.4)
+			{
+				eff = hEff2124->GetBinContent(hEff2124->FindBin(Up_Reco_4mom->Pt()));
+				acc = hAcc2124->GetBinContent(hAcc2124->FindBin(Up_Reco_4mom->Pt()));
+				wgt = 1.0/(eff*acc);
+			}
 			//DMset.weight = 1.;
-            cout<<" Weighting number check, acc : "<<acc<<", eff : "<<eff<<", weight : "<<wgt;
+            //cout<<" Weighting number check, acc : "<<acc<<", eff : "<<eff<<", weight : " << wgt << endl;;
 			DMset.weight = wgt;
 			tout->Fill();
 
