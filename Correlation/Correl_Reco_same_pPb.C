@@ -25,7 +25,7 @@
 using namespace std;
 //}}}
 
-void Correl_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const Int_t imass = 0)
+void Correl_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const bool Weight = false, const Int_t imass = 0)
 {
 	SetStyle();
 
@@ -53,6 +53,24 @@ void Correl_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, cons
 	}
 	TTree* tin1 = tin1_tmp->CloneTree();
 	tin1_tmp->Reset();
+
+	TFile* facc = new TFile("../AccEff/Plots/test_acc_upsi_816.root", "READ");
+	TFile* feff = new TFile("../AccEff/Plots/EffPlots_Upsilon_1S_Ny5_MupT3p5.root", "READ");
+	TFile* ftrk = new TFile("../AccEff/Plots/Hijing_8TeV_dataBS.root", "READ");
+//}}}
+
+//Get weighting factor{{{
+	const Int_t Ny = 4;
+	const Double_t ybin[Ny+1] = {0.0, 1.6, 1.8, 2.1, 2.4};
+	const TString yabin[Ny+1] = {"00", "16", "18", "21", "24"};
+	TH1D* hacc[Ny];
+	TH1D* heff[Ny];
+	for(Int_t iy = 0; iy < Ny; iy++)
+	{
+		hacc[iy] = (TH1D*) facc->Get(Form("hAccPt%s%s", yabin[iy].Data(), yabin[iy+1].Data()));
+		heff[iy] = (TH1D*) feff->Get(Form("hEff_%d", iy));
+	}
+	TH2D* htrk = (TH2D*) ftrk->Get("rTotalEff3D_0");
 //}}}
 
 //Define canvas & hist{{{
@@ -151,8 +169,26 @@ void Correl_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, cons
 		{
 			vec_trg_Reco = (TLorentzVector*) Vec_trg_Reco->At(itrg);
 			if(vec_trg_Reco == 0) continue;
+			Double_t trg_y = vec_trg_Reco->Rapidity();
+			Double_t trg_pt = vec_trg_Reco->Pt();
 			Double_t trg_eta = vec_trg_Reco->Eta();
 			Double_t trg_phi = vec_trg_Reco->Phi();
+
+			Double_t upacc = 1.;
+			Double_t upeff = 1.;
+			if(Weight)
+			{
+				for(Int_t iy = 0; iy < Ny; iy++)
+				{
+					if(fabs(trg_y) > ybin[iy] && fabs(trg_y) <= ybin[iy+1])
+					{
+						upacc = hacc[iy]->GetBinContent(hacc[iy]->FindBin(trg_pt));
+						upeff = heff[iy]->GetBinContent(heff[iy]->FindBin(trg_pt));
+						break;
+					}
+					else continue;
+				}
+			}
 
 			for(Int_t itrk = 0; itrk < Nass_Reco; itrk++)
 			{
@@ -162,6 +198,7 @@ void Correl_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, cons
 //calculate correl{{{
 				Double_t ass_eta = vec_ass_Reco->Eta();
 				Double_t ass_phi = vec_ass_Reco->Phi();
+				Double_t ass_pt = vec_ass_Reco->Pt();
 				Double_t deta = ass_eta - trg_eta;
 				Double_t dphi = ass_phi - trg_phi;
 
@@ -171,27 +208,30 @@ void Correl_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, cons
 //}}}
 
 //fill hist{{{
-				hReco1_1->Fill(deta, dphi, 1/(double)Ntrg_Reco);
-				hReco1_2->Fill(deta, dphi, 1/(double)Ntrg_Reco);
+				Double_t trkeff = 1.;
+				if(Weight) trkeff = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+
+				hReco1_1->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
+				hReco1_2->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
 				if(fabs(deta) > 2.0)
 				{
-					hReco2_1->Fill(deta, dphi, 1/(double)Ntrg_Reco);
-					hReco2_2->Fill(deta, dphi, 1/(double)Ntrg_Reco);
+					hReco2_1->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
+					hReco2_2->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
 				}
 				if(fabs(deta) > 1.5)
 				{
-					hReco3_1->Fill(deta, dphi, 1/(double)Ntrg_Reco);
-					hReco3_2->Fill(deta, dphi, 1/(double)Ntrg_Reco);
+					hReco3_1->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
+					hReco3_2->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
 				}
 				if(fabs(deta) > 1.0)
 				{
-					hReco4_1->Fill(deta, dphi, 1/(double)Ntrg_Reco);
-					hReco4_2->Fill(deta, dphi, 1/(double)Ntrg_Reco);
+					hReco4_1->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
+					hReco4_2->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
 				}
 				if(fabs(deta) < 1.0)
 				{
-					hReco5_1->Fill(deta, dphi, 1/(double)Ntrg_Reco);
-					hReco5_2->Fill(deta, dphi, 1/(double)Ntrg_Reco);
+					hReco5_1->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
+					hReco5_2->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
 				}
 //}}}
 			}
@@ -222,7 +262,7 @@ void Correl_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, cons
 //}}}
 
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Reco_pPb_distribution_same_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), imass), "RECREATE");
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Reco_pPb_distribution_same_%s_weight%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), Weight, imass), "RECREATE");
 	fout->cd();
 	hReco1_1->Write();
 	hReco1_2->Write();

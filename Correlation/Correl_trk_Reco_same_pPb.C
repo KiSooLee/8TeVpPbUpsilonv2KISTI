@@ -25,7 +25,7 @@
 using namespace std;
 //}}}
 
-void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const Int_t imass = 0)
+void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const bool Weight = false, const Int_t imass = 0)
 {
 	SetStyle();
 
@@ -51,9 +51,34 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 		tin1_tmp->Add(fname1.Data());
 		tin1_tmp->Add(fname2.Data());
 	}
+/*
+	if( tin1_tmp->GetEntry() == 0 )
+	{
+		cout << "no events to correlate" << endl;
+
+//store{{{
+		fout->cd();
+		hReco1_1->Write();
+		hReco1_2->Write();
+		hReco2_1->Write();
+		hReco2_2->Write();
+		hReco3_1->Write();
+		hReco3_2->Write();
+		hReco4_1->Write();
+		hReco4_2->Write();
+		fout->Close();
+//}}}
+
+		return;
+	}
+*/
 	TTree* tin1 = tin1_tmp->CloneTree();
 	tin1_tmp->Reset();
+
+	TFile* ftrk = new TFile("../AccEff/Plots/Hijing_8TeV_dataBS.root", "READ");
 //}}}
+
+	TH2D* htrk = (TH2D*) ftrk->Get("rTotalEff3D_0");
 
 //Define canvas & hist{{{
 	Int_t Netabin1 = 32;
@@ -69,6 +94,8 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 	TCanvas* cReco3_2 = new TCanvas("cReco3_2", "", 0, 0, 600, 600);
 	TCanvas* cReco4_1 = new TCanvas("cReco4_1", "", 0, 0, 600, 600);
 	TCanvas* cReco4_2 = new TCanvas("cReco4_2", "", 0, 0, 600, 600);
+	TCanvas* cReco5_1 = new TCanvas("cReco5_1", "", 0, 0, 600, 600);
+	TCanvas* cReco5_2 = new TCanvas("cReco5_2", "", 0, 0, 600, 600);
 
 	TH2D* hReco1_1 = new TH2D("hSamepPbReco1_1", ";#Delta#eta;#Delta#phi;S(#Delta#eta,#Delta#phi)", Netabin1, -4.95, 4.95, Nphibin1, -(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());
 	TH2D* hReco1_2 = new TH2D("hSamepPbReco1_2", ";#Delta#eta;#Delta#phi;S(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
@@ -78,6 +105,8 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 	TH2D* hReco3_2 = new TH2D("hSamepPbReco3_2", ";#Delta#eta;#Delta#phi;S(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
 	TH2D* hReco4_1 = new TH2D("hSamepPbReco4_1", ";#Delta#eta;#Delta#phi;S(#Delta#eta,#Delta#phi)", Netabin1, -4.95, 4.95, Nphibin1, -(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());
 	TH2D* hReco4_2 = new TH2D("hSamepPbReco4_2", ";#Delta#eta;#Delta#phi;S(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
+	TH2D* hReco5_1 = new TH2D("hSamepPbReco5_1", ";#Delta#eta;#Delta#phi;S(#Delta#eta,#Delta#phi)", Netabin1, -4.95, 4.95, Nphibin1, -(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());
+	TH2D* hReco5_2 = new TH2D("hSamepPbReco5_2", ";#Delta#eta;#Delta#phi;S(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
 
 	FormTH2(hReco1_1);
 	FormTH2(hReco1_2);
@@ -87,6 +116,8 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 	FormTH2(hReco3_2);
 	FormTH2(hReco4_1);
 	FormTH2(hReco4_2);
+	FormTH2(hReco5_1);
+	FormTH2(hReco5_2);
 //}}}
 
 //get variables{{{
@@ -122,6 +153,10 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 			if(vec_trk_Reco1 == 0) continue;
 			Double_t trg_eta_tmp = vec_trk_Reco1->Eta();
 			Double_t trg_phi_tmp = vec_trk_Reco1->Phi();
+			Double_t trg_pt_tmp = vec_trk_Reco1->Pt();
+
+			Double_t trkeff_trg = 1.;
+			if(Weight) trkeff_trg = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(trg_eta_tmp), htrk->GetYaxis()->FindBin(trg_pt_tmp)));
 
 			for(Int_t itrk2 = 0; itrk2 < Nass_Reco; itrk2++)
 			{
@@ -132,6 +167,7 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 //calculate correl{{{
 				Double_t ass_eta = vec_trk_Reco2->Eta();
 				Double_t ass_phi = vec_trk_Reco2->Phi();
+				Double_t ass_pt = vec_trk_Reco2->Pt();
 				Double_t deta = ass_eta - trg_eta_tmp;
 				Double_t dphi = ass_phi - trg_phi_tmp;
 
@@ -141,22 +177,30 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 //}}}
 
 //fill hist{{{
-				hReco1_1->Fill(deta, dphi, 1/( (double)Nass_Reco) );
-				hReco1_2->Fill(deta, dphi, 1/( (double)Nass_Reco) );
+				Double_t trkeff_ass = 1.;
+				if(Weight) trkeff_ass = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+
+				hReco1_1->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
+				hReco1_2->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
 				if(fabs(deta) > 2.0)
 				{
-					hReco2_1->Fill(deta, dphi, 1/( (double)Nass_Reco) );
-					hReco2_2->Fill(deta, dphi, 1/( (double)Nass_Reco) );
+					hReco2_1->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
+					hReco2_2->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
 				}
 				if(fabs(deta) > 1.5)
 				{
-					hReco3_1->Fill(deta, dphi, 1/( (double)Nass_Reco) );
-					hReco3_2->Fill(deta, dphi, 1/( (double)Nass_Reco) );
+					hReco3_1->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
+					hReco3_2->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
 				}
 				if(fabs(deta) > 1.0)
 				{
-					hReco4_1->Fill(deta, dphi, 1/( (double)Nass_Reco) );
-					hReco4_2->Fill(deta, dphi, 1/( (double)Nass_Reco) );
+					hReco4_1->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
+					hReco4_2->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
+				}
+				if(fabs(deta) < 1.0)
+				{
+					hReco5_1->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
+					hReco5_2->Fill(deta, dphi, 1/( (double)Nass_Reco*trkeff_trg*trkeff_ass ));
 				}
 //}}}
 			}
@@ -180,10 +224,14 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 	hReco4_1->Draw("Surf1");
 	cReco4_2->cd();
 	hReco4_2->Draw("Surf1");
+	cReco5_1->cd();
+	hReco5_1->Draw("Surf1");
+	cReco5_2->cd();
+	hReco5_2->Draw("Surf1");
 //}}}
 
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/trk_deta-dphi_Reco_pPb_distribution_same_%s_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), imass), "RECREATE");
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/trk_deta-dphi_Reco_pPb_distribution_same_%s_weight%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), Weight, imass), "RECREATE");
 	fout->cd();
 	hReco1_1->Write();
 	hReco1_2->Write();
@@ -193,6 +241,8 @@ void Correl_trk_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, 
 	hReco3_2->Write();
 	hReco4_1->Write();
 	hReco4_2->Write();
+	hReco5_1->Write();
+	hReco5_2->Write();
 	fout->Close();
 //}}}
 }
