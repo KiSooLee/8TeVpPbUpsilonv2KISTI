@@ -1,8 +1,8 @@
 #!/bin/bash
-#extV2.C(isMC, isTrk, multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, version, MupT)
-#extV23.C(isMC, isTrk, multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, version, MupT)
+#extV2.C(isMC, isGen, isTrk, multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, version, MupT)
+#extV23.C(isMC, isGen, isTrk, multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, version, MupT)
 
-version="v17"
+version="v19"
 
 #multMin=("0" "40" "100" "200" "300")
 #multMax=("40" "100" "200" "300" "1500")
@@ -12,6 +12,8 @@ version="v17"
 #rapMax=("-12" "0" "12" "24")
 #TrkptMin=("0" "1" "2" "3" "4" "6")
 #TrkptMax=("1" "2" "3" "4" "6" "10")
+#multMin=("0")
+#multMax=("40")
 multMin=("110")
 multMax=("300")
 ptMin=("0" "4" "7" "10")
@@ -29,9 +31,8 @@ do
 		do
 			for((l=0; l<"${#TrkptMin[@]}"; l++))
 			do
-				root -l -b -q 'extV2.C+(true, false, '${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', '\"$version\"', "3p5")'
-				root -l -b -q 'extV23.C+(true, false'${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', '\"$version\"', "3p5")'
-				#root -l -b -q 'extV2_trk.C+('${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', '\"$version\"')'
+				root -l -b -q 'extV2.C+(false, false, true, '${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', '\"$version\"', false, "3p5")'
+				root -l -b -q 'extV23.C+(false, false, true, '${multMin[$i]}', '${multMax[$i]}', '${ptMin[$j]}', '${ptMax[$j]}', '${rapMin[$k]}', '${rapMax[$k]}', '${TrkptMin[$l]}', '${TrkptMax[$l]}', '\"$version\"', false, "3p5")'
 			done
 		done
 	done
