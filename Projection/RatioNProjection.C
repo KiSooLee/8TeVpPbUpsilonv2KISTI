@@ -25,7 +25,7 @@
 #include "../Headers/Upsilon.h"
 //}}}
 
-void RatioNProjection(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t isTrk = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4")
+void RatioNProjection(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t isTrk = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const bool Weight = true, const TString MupT = "4")
 { 
 	SetStyle();
 	gStyle->SetOptFit(0);
@@ -47,7 +47,8 @@ void RatioNProjection(const Bool_t isMC = false, const Bool_t isGen = false, con
 	if(isGen) RorG = "Gen";
 	else RorG = "Reco";
 	TString Direction[2] = {"Pbp", "pPb"};
-	TString Away[3] = {"2", "1p5", "1"};
+	const Int_t Naway = 4;
+	TString Away[Naway] = {"2", "1p5", "1", "short"};
 	TString Trk;
 	if(isTrk) Trk = "trk_";
 	else Trk = "";
@@ -57,30 +58,30 @@ void RatioNProjection(const Bool_t isMC = false, const Bool_t isGen = false, con
 	TFile *mixPbp[2];
 
 //Define histogram{{{
-	TH2D *hSamePbp_fine[3][2];
-	TH2D *hMixPbp_fine[3][2];
-	TH1D *hSameDeltaPhi_fine[3];
-	TH1D *hMixDeltaPhi_fine[3];
+	TH2D *hSamePbp_fine[Naway][2];
+	TH2D *hMixPbp_fine[Naway][2];
+	TH1D *hSameDeltaPhi_fine[Naway];
+	TH1D *hMixDeltaPhi_fine[Naway];
 
-	TH2D *hSamePbp_coarse[3][2];
-	TH2D *hMixPbp_coarse[3][2];
-	TH1D *hSameDeltaPhi_coarse[3];
-	TH1D *hMixDeltaPhi_coarse[3];
+	TH2D *hSamePbp_coarse[Naway][2];
+	TH2D *hMixPbp_coarse[Naway][2];
+	TH1D *hSameDeltaPhi_coarse[Naway];
+	TH1D *hMixDeltaPhi_coarse[Naway];
 //}}}
 
 	for(Int_t imass = 0; imass < mass_narr-1; imass++)
 	{
-		TFile* fout = new TFile(Form("CorrDist/CorrFiles/%s/MupT%s/%sdphi_distribution_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_MupT%s_%d.root", version.Data(), MupT.Data(), Trk.Data(), RorG.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data(), imass), "RECREATE");
+		TFile* fout = new TFile(Form("CorrDist/CorrFiles/%s/MupT%s/%sdphi_distribution_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_weight%o_MupT%s_%d.root", version.Data(), MupT.Data(), Trk.Data(), RorG.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), Weight, MupT.Data(), imass), "RECREATE");
 
 //Get files{{{
 		for(Int_t ipPb = 0; ipPb < 2; ipPb++)
 		{
-			samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_%s_distribution_same_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data(), imass), "READ");
-			mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_%s_distribution_mix_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data(), imass), "READ");
+			samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_%s_distribution_same_%s_weight%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data(), Weight, imass), "READ");
+			mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/%sdeta-dphi_%s_%s_distribution_mix_%s_weight%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data(), Weight, imass), "READ");
 		}
 //}}}
 
-		for(Int_t iaway = 0; iaway < 3; iaway++)
+		for(Int_t iaway = 0; iaway < Naway; iaway++)
 		{
 			for(Int_t ipPb = 0; ipPb < 2; ipPb++)
 			{
