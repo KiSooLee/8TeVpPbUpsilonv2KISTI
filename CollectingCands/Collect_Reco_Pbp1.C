@@ -43,8 +43,11 @@ void Collect_Reco_Pbp1(const bool isMC = false, const Int_t multMin = 0, const I
 	TString fname1;
 	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/total_MupT%s/Sort_OniaTree_Pbp1_PADoubleMuon_%s_%d.root", MupT.Data(), MorD.Data(), imass);
 	//fname1 = Form("0-1500_0-30_-24-24_0-10_Pbp1/Sort_OniaTree_Pbp1_PADoubleMuon_%s_%d.root", MorD.Data(), imass);
-	TChain* tin1 = new TChain("UpsilonTree");
-	tin1->Add(fname1.Data());
+	TChain* tin1_tmp = new TChain("UpsilonTree");
+	tin1_tmp->Add(fname1.Data());
+
+	TTree* tin1 = tin1_tmp->CloneTree();
+	tin1_tmp->Reset();
 //}}}
 
 	const Int_t MaxQQ = 250;
