@@ -48,15 +48,29 @@ void Subtract_Trk(const Bool_t isMC = false, const Int_t multMin = 0, const Int_
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
 	TString fDIR = mainDIR + Form("/V2File/%s", version.Data());
-	TString pDIR = mainDIR + Form("/V2Plot/%s/MupT%s", version.Data(), MupT.Data());
+	TString aDIR[3];
+	TString pDIR[3];
+
+	for(Int_t iaway = 0; iaway < 3; iaway++)
+	{
+		aDIR[iaway] = mainDIR + Form("/V2Plot/%s/Away%s", version.Data(), Away[iaway].Data());
+		pDIR[iaway] = mainDIR + Form("/V2Plot/%s/Away%s/MupT%s", version.Data(), Away[iaway].Data(), MupT.Data());
+	}
 
 	void * dirf = gSystem->OpenDirectory(fDIR.Data());
 	if(dirf) gSystem->FreeDirectory(dirf);
 	else gSystem->mkdir(fDIR.Data(), kTRUE);
 
-	void * dirp = gSystem->OpenDirectory(pDIR.Data());
-	if(dirp) gSystem->FreeDirectory(dirp);
-	else gSystem->mkdir(pDIR.Data(), kTRUE);
+	for(Int_t iaway = 0; iaway < 3; iaway++)
+	{
+		void * dira = gSystem->OpenDirectory(aDIR[iaway].Data());
+		if(dira) gSystem->FreeDirectory(dira);
+		else gSystem->mkdir(aDIR[iaway].Data(), kTRUE);
+
+		void * dirp = gSystem->OpenDirectory(pDIR[iaway].Data());
+		if(dirp) gSystem->FreeDirectory(dirp);
+		else gSystem->mkdir(pDIR[iaway].Data(), kTRUE);
+	}
 //}}}
 
 //Define canvas for yield and vn dist{{{
@@ -67,8 +81,21 @@ void Subtract_Trk(const Bool_t isMC = false, const Int_t multMin = 0, const Int_
 	FormTH1Marker(hist, 0, 0, 1.4);
 	hist->GetXaxis()->SetTitle("m_{#mu#mu} (GeV/c^{2})");
 	hist->GetYaxis()->SetTitle("v_{2}^{S+B}");
-	hist->SetMinimum(-0.1);
-	hist->SetMaximum(0.1);
+	if(ptMin < 5)
+	{
+		hist->SetMinimum(-0.2);
+		hist->SetMaximum(0.2);
+	}
+	else if(ptMin < 8)
+	{
+		hist->SetMinimum(-0.1);
+		hist->SetMaximum(0.3);
+	}
+	else
+	{
+		hist->SetMinimum(-0.1);
+		hist->SetMaximum(0.4);
+	}
 //}}}
 
 	TFile* fout;
@@ -121,7 +148,7 @@ void Subtract_Trk(const Bool_t isMC = false, const Int_t multMin = 0, const Int_
 			c1->cd();
 			hist->Draw();
 			gv2->Draw("samepe");
-			c1->SaveAs(Form("V2Plot/%s/MupT%s/Sigv2_dist_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_MupT%s_weight%o%s.pdf", version.Data(), MupT.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data(), Weight, Ffit.Data()));
+			c1->SaveAs(Form("V2Plot/%s/Away%s/MupT%s/Sigv2_dist_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_MupT%s_weight%o%s.pdf", version.Data(), Away[iaway].Data(), MupT.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data(), Weight, Ffit.Data()));
 
 			fout->cd();
 			gv2->Write();

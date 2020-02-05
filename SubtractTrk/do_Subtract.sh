@@ -1,7 +1,7 @@
 #!/bin/bash
-#Subtract_Trk.C(isMC, multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, maxF, version, MupT)
+#Subtract_Trk.C(isMC, multMin, multMax, ptMin, ptMax, rapMin, rapMax, TrkptMin, TrkptMax, maxF, version, MupT, Weight)
 
-version="v19"
+version="v22"
 
 #multMin=("0" "40" "100" "200" "300")
 #multMax=("40" "100" "200" "300" "1500")
@@ -11,10 +11,14 @@ version="v19"
 #rapMax=("-12" "0" "12" "24")
 #TrkptMin=("0" "1" "2" "3" "4" "6")
 #TrkptMax=("1" "2" "3" "4" "6" "10")
+#multMin=("110")
+#multMax=("300")
 #multMin=("0")
 #multMax=("40")
-multMin=("110")
-multMax=("300")
+#multMin=("40")
+#multMax=("90")
+multMin=("90")
+multMax=("110")
 ptMin=("0" "4" "7" "10")
 ptMax=("4" "7" "10" "30")
 rapMin=("-2.4")
