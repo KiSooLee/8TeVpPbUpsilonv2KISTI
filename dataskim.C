@@ -73,6 +73,7 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 		fname2 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_20170504.root";//KISTI
 	}
 	tin->Add(fname1.Data());
+	const Int_t Nevtcut = tin->GetEntries();
 	tin->Add(fname2.Data());
 
     // dmoon add : Acc and Eff file uploaed.
@@ -123,8 +124,8 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 	Reco_QQ_mumi_4mom = 0;
 	Int_t Reco_trk_size;
 	Int_t Reco_trk_charge[MaxTrk];
-	Int_t Reco_isgoodTrk[MaxTrk];
-	Int_t Reco_isMuTrk[MaxTrk];
+	Bool_t Reco_isgoodTrk[MaxTrk];
+	Bool_t Reco_isMuTrk[MaxTrk];
 	TClonesArray* Reco_trk_4mom;
 	Reco_trk_4mom = 0;
 //}}}
@@ -299,10 +300,10 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 			hEvent->Fill(8);
 //}}}
 
-
 			DMset.mass = Up_Reco_4mom->M();
 			DMset.pt = Up_Reco_4mom->Pt();
-			DMset.y = Up_Reco_4mom->Rapidity();
+			if(ievt < Nevtcut) DMset.y = Up_Reco_4mom->Rapidity();
+			else DMset.y = (-1.)*Up_Reco_4mom->Rapidity();
 			DMset.mult = Tot_Ntrk;
 
             // Get weight number 
