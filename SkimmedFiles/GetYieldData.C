@@ -358,18 +358,16 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	c1->SaveAs(Form("MassDist/MassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_weight%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, Weight, MupT.Data()));
 	TH1D* hmass = new TH1D("hmass", ";M (GeV/c^2);Counts", Nmassbins, RangeLow, RangeHigh);
 	reducedDS->fillHistogram(hmass, (*ws->var("mass")));
-	FormTH1Fill(hmass, 0, 4);
-	//hmass->SetFillStyle(2003);
-	hmass->SetFillStyle(1001);
+	FormTH1Marker(hmass, 0, 0, 1.4);
 	c2->cd();
-	hmass->Draw("hist");
+	hmass->Draw("pe");
 	CMSP(0.12, 0.92);
 	lumiText(0.56, 0.92);
 	TLatex* lt1 = new TLatex();
 	FormLatex(lt1, 12, 0.04);
-	lt1->DrawLatex(0.63,0.85, Form("%d #leq #N^{trk} < %d", multMin, multMax));
-	lt1->DrawLatex(0.63,0.80, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.63,0.75, Form("%d #leq p_{T}^{#mu#mu} < %d GeV/c", (int) ptMin, (int) ptMax));
+	lt1->DrawLatex(0.6,0.85, Form("%d #leq #N^{trk} < %d", multMin, multMax));
+	lt1->DrawLatex(0.6,0.80, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
+	lt1->DrawLatex(0.6,0.75, Form("%d #leq p_{T}^{#mu#mu} < %d GeV/c", (int) ptMin, (int) ptMax));
 	
 	c2->SaveAs(Form("MassDist/WithoutFit_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_weight%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, Weight, MupT.Data()));
 	fout->cd();
