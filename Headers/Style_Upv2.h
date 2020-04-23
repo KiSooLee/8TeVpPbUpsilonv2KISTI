@@ -45,7 +45,7 @@ void SetStyle()
 	gStyle->SetCanvasDefH(600);
 	gStyle->SetCanvasDefW(600);
 
-	gStyle->SetPadTopMargin(0.03);
+	gStyle->SetPadTopMargin(0.1);
 	gStyle->SetPadBottomMargin(0.12);
 	gStyle->SetPadLeftMargin(0.12);
 	gStyle->SetPadRightMargin(0.065);
@@ -144,10 +144,10 @@ void FormTH1Fill(TH1* h1, Int_t color, Int_t hfill)
 	h1->GetYaxis()->SetLabelSize(0.04);
 	h1->GetXaxis()->SetLabelFont(42);
 	h1->GetYaxis()->SetLabelFont(42);
-	h1->SetLineColor(colorArr[color]);
-	h1->SetLineWidth(2);
 	h1->SetFillColor(colorArr[color]);
 	h1->SetFillStyle(hfillArr[hfill]);
+	h1->SetLineColor(colorArr[color]);
+	h1->SetLineWidth(2);
 //}}}
 }
 
@@ -199,7 +199,7 @@ void RooMaxRange(RooPlot* h1, RooPlot* h2, Double_t weight = 1.2, Double_t min =
 //}}}
 }
 
-void FormGraph(TGraph* g1, Int_t color, Int_t marker, Int_t size)
+void FormGraph(TGraph* g1, Int_t color, Int_t marker, Double_t size)
 {
 //{{{
 	g1->GetXaxis()->CenterTitle();
@@ -249,4 +249,30 @@ void WriteMessage(TString message)
 //}}}
 }
 
+void CMSP(Double_t x, Double_t y)
+{
+//{{{
+	TLatex* latex = new TLatex();
+	latex->SetNDC();
+	latex->SetTextAlign(11);
+	latex->SetTextFont(61);
+	latex->SetTextSize(0.06);
+	latex->DrawLatex(x, y, "CMS");
+	latex->SetTextFont(52);
+	latex->SetTextSize(0.0456);
+	latex->DrawLatex(x+0.13, y, "Preliminary");
+//}}}
+}
+
+void lumiText(Double_t x, Double_t y)
+{
+//{{{
+	TLatex* latex = new TLatex();
+	latex->SetNDC();
+	latex->SetTextFont(42);
+	latex->SetTextAlign(11);
+	latex->SetTextSize(0.04);
+	latex->DrawLatex(x, y, "pPb 186 nb^{-1} (8.16 TeV)");
+//}}}
+}
 #endif
