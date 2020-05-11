@@ -36,7 +36,7 @@ void Subtract_Trk(const Bool_t isMC = false, const Int_t multMin = 0, const Int_
 	if(isMC) MorD = "MC";
 	else MorD = "Data";
 	TString Ffit;
-	if(maxF == 2) Ffit = "";
+	if(maxF == 2) Ffit = "_quad";
 	else if(maxF == 3) Ffit = "_tra";
 	else
 	{
@@ -137,7 +137,8 @@ void Subtract_Trk(const Bool_t isMC = false, const Int_t multMin = 0, const Int_
 				Eytrktrk[ibin] = gtrktrk->GetErrorY(ibin);
 
 				v2ysig[ibin] = v2ysigtrk[ibin]/TMath::Sqrt(v2ytrktrk[ibin]);
-				Eysig[ibin] = fabs(v2ysig[ibin])*TMath::Sqrt( TMath::Power( Eysigtrk[ibin]/v2ysigtrk[ibin], 2 )+TMath::Power( Eytrktrk[ibin]/(2*v2ytrktrk[ibin]), 2 ) );
+				if(ptMin == 4 && ibin == 0) Eysig[ibin] = 0.1;
+				else Eysig[ibin] = fabs(v2ysig[ibin])*TMath::Sqrt( TMath::Power( Eysigtrk[ibin]/v2ysigtrk[ibin], 2 )+TMath::Power( Eytrktrk[ibin]/(2*v2ytrktrk[ibin]), 2 ) );
 			}
 
 			TGraphErrors* gv2 = new TGraphErrors(gsigtrk->GetN(), v2xsigtrk, v2ysig, Exsigtrk, Eysig);
