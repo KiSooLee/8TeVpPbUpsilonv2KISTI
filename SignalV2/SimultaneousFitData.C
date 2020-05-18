@@ -814,7 +814,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 	//hist->SetMinimum(-0.35);//for 110~300
 	//hist->SetMaximum(0.35);//for 110~300
 	hist->SetMinimum(-0.35);//for 0~40
-	hist->SetMaximum(1.0);//for 0~40
+	hist->SetMaximum(2.5);//for 0~40
 //}}}
 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
@@ -1073,6 +1073,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		}
 
 		c1[ipt]->cd(2);
+		hist->SetMaximum(1.0);
 		fvn_bkg->SetLineColor(kMagenta);
 		fvn_bkg->SetLineWidth(1);
 
