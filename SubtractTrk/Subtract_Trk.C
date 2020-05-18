@@ -123,9 +123,14 @@ void Subtract_Trk(const Bool_t isMC = false, const Int_t multMin = 0, const Int_
 				Eysigtrk[ibin] = gsigtrk->GetErrorY(ibin);
 				Eytrktrk[ibin] = gtrktrk->GetErrorY(ibin);
 
-				v2ysig[ibin] = v2ysigtrk[ibin]/TMath::Sqrt(v2ytrktrk[ibin]);
+				if(v2ytrktrk[ibin] > 0) v2ysig[ibin] = v2ysigtrk[ibin]/TMath::Sqrt(v2ytrktrk[ibin]);
+				else if(v2ytrktrk[ibin] < 0) v2ysig[ibin] = v2ysigtrk[ibin]/TMath::Sqrt(fabs(v2ytrktrk[ibin]));
+				else v2ysig[ibin] = v2ysigtrk[ibin];
+/*
 				if(ptMin == 4 && ibin == 0) Eysig[ibin] = 0.1;
 				else Eysig[ibin] = fabs(v2ysig[ibin])*TMath::Sqrt( TMath::Power( Eysigtrk[ibin]/v2ysigtrk[ibin], 2 )+TMath::Power( Eytrktrk[ibin]/(2*v2ytrktrk[ibin]), 2 ) );
+*/
+				Eysig[ibin] = fabs(v2ysig[ibin])*TMath::Sqrt( TMath::Power( Eysigtrk[ibin]/v2ysigtrk[ibin], 2 )+TMath::Power( Eytrktrk[ibin]/(2*v2ytrktrk[ibin]), 2 ) );
 			}
 
 			TGraphErrors* gv2 = new TGraphErrors(gsigtrk->GetN(), v2xsigtrk, v2ysig, Exsigtrk, Eysig);
