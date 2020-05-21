@@ -18,7 +18,7 @@
 #include <RooPlot.h>
 //}}}
 
-const Int_t colorArr[] = {1, 96, 62, 224, 76, 93, 219, 228};
+const Int_t colorArr[] = {1, 100, 60, 419, 222, 93, 219, 228};
 const Int_t markerArr[] = {20, 21, 29, 33, 34, 22, 23, 28};
 const Int_t hfillArr[]  = {2004, 2011, 2022, 2020, 2025, 3006, 3007, 2016};
 
