@@ -156,10 +156,10 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 //}}}
 
 //sigma{{{
-	//RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.2);
+	RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.2);
 	//RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.18);//for 110~300, 4~6 GeV
 	//RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.17);//for 110~300, 0~2 GeV
-	RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.15);//for 110~300, 4~7 GeV
+	//RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.15);//for 110~300, 4~7 GeV
 	RooFormulaVar sigma2S_1("sigma2S_1", "@0*@1", RooArgList(sigma1S_1, mratio2));
 	RooFormulaVar sigma3S_1("sigma3S_1", "@0*@1", RooArgList(sigma1S_1, mratio3));
 
@@ -340,6 +340,12 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	Double_t IntgrBkg = Bkgfc->Integral(meanout-2*sigmaout, meanout+2*sigmaout);
 
 	Double_t Significance = (Yield1S*IntgrSig/TIntgr1S)/TMath::Sqrt(((Yield1S*IntgrSig/TIntgr1S)+(YieldBkg*IntgrBkg/TIntgrBkg)));
+
+	TH1D* hfrac = new TH1D("hfrac", "", 2, 0, 2);
+	hfrac->SetBinContent(1, Sgnfc1S->Eval(U1S_mass));
+	hfrac->SetBinContent(2, Bkgfc->Eval(U1S_mass));
+	
+
 	FILE* ftxt;
 	ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, MupT.Data()), "w");
 	if(ftxt != NULL)
@@ -365,7 +371,7 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	lumiText(0.56, 0.92);
 	TLatex* lt1 = new TLatex();
 	FormLatex(lt1, 12, 0.04);
-	lt1->DrawLatex(0.6,0.85, Form("%d #leq #N^{trk} < %d", multMin, multMax));
+	lt1->DrawLatex(0.6,0.85, Form("%d #leq N^{offline}_{trk} < %d", multMin, multMax));
 	lt1->DrawLatex(0.6,0.80, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 	lt1->DrawLatex(0.6,0.75, Form("%d #leq p_{T}^{#mu#mu} < %d GeV/c", (int) ptMin, (int) ptMax));
 	
@@ -377,4 +383,5 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	Sgnfc1S->Write();
 	Sgnfc2S->Write();
 	Sgnfc3S->Write();
+	hfrac->Write();
 }
