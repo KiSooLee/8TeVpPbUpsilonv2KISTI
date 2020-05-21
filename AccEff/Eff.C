@@ -67,10 +67,10 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 
 //binning{{{
 	const Int_t Npt1 = 14;
-	const Int_t Npt2 = 9;
+	const Int_t Npt2 = 8;
 	const Double_t ptbins1[Npt1] = {0., 1., 2., 3., 4., 5., 6., 7., 8., 9.,
 											10., 15., 20., 30.};
-	const Double_t ptbins2[Npt2] = {0., 2., 4., 6., 8., 10., 15., 20., 30.};
+	const Double_t ptbins2[Npt2] = {0., 2., 4., 6., 8., 10., 15., 30.};
 	const Int_t Ny = 5;
 	const Double_t ybins[Ny] = {0., 1.6, 1.8, 2.1, 2.4};
 //}}}
@@ -326,7 +326,7 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 
 	cyEffintgr->cd();
 	hyEffintgr = (TH1D*) hyNumintgr->Clone(Form("hEffyintgr"));
-	hyEffintgr->GetYaxis()->SetTitle("efficiency");
+	hyEffintgr->GetYaxis()->SetTitle("Efficiency");
 	hyEffintgr->Divide(hyDenintgr);
 	hyEffintgr->SetMaximum(1.1);
 	hyEffintgr->SetMinimum(0.);
@@ -336,7 +336,7 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 
 	cptEffintgr->cd();
 	hptEffintgr = (TH1D*) hptNumintgr->Clone(Form("hEffptintgr"));
-	hptEffintgr->GetYaxis()->SetTitle("efficiency");
+	hptEffintgr->GetYaxis()->SetTitle("Efficiency");
 	hptEffintgr->Divide(hptDenintgr);
 	hptEffintgr->SetMaximum(1.1);
 	hptEffintgr->SetMinimum(0.);
