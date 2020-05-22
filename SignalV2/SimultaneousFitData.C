@@ -1135,7 +1135,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		lt1->DrawLatex(0.17, 0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 		lt1->DrawLatex(0.52, 0.83, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.52, 0.78, Form("%d < p_{T}^{#varUpsilon} < %d GeV/c", (int)ptBinsArr[ipt], (int)ptBinsArr[ipt+1]));
-		if((int) TrkptMin == 0) lt1->DrawLatex(0.52,0.73, Form("0.4 < p_{T}^{trk} < %d GeV/c", (int) TrkptMax));
+		if((int) TrkptMin == 0) lt1->DrawLatex(0.52,0.73, Form("0.4 #leq p_{T}^{trk} < %d GeV/c", (int) TrkptMax));
 		else lt1->DrawLatex(0.52,0.73, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		lt1->DrawLatex(0.52, 0.68, "|#Delta#eta^{trk}| > 1.0");
 		lt1->DrawLatex(0.52, 0.63, Form("Chi2/ndf = %.f/%d", Chi2Yield, NdfYield));
