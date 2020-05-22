@@ -32,8 +32,6 @@
 #include "../Headers/Upsilon.h"
 using namespace std;
 using namespace RooFit;
-
-TLatex* lt1 = new TLatex();
 //}}}
 
 void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const TString version = "v1", const bool Weight = false, TString MupT = "4")
@@ -57,7 +55,7 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	const Double_t RangeLow = 8;
 	const Double_t RangeHigh = 14;
 	const Int_t Nmassbins = 120;
-	TFile* fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_MupT%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Yield/Plot_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_MupT%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, MupT.Data()), "RECREATE");
 
 //define muon pt value{{{
 	Double_t MupTCut;
@@ -158,10 +156,10 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 //}}}
 
 //sigma{{{
-	//RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.2);
+	RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.2);
 	//RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.18);//for 110~300, 4~6 GeV
 	//RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.17);//for 110~300, 0~2 GeV
-	RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.15);//for 110~300, 4~7 GeV
+	//RooRealVar sigma1S_1("sigma1S_1", "sigma1 of 1S", 0.05, 0.01, 0.15);//for 110~300, 4~7 GeV
 	RooFormulaVar sigma2S_1("sigma2S_1", "@0*@1", RooArgList(sigma1S_1, mratio2));
 	RooFormulaVar sigma3S_1("sigma3S_1", "@0*@1", RooArgList(sigma1S_1, mratio3));
 
@@ -264,10 +262,12 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	massPlot->GetYaxis()->SetTitleOffset(1.5);
 	massPlot->Draw();
 	Result->Print("v");
+
+	TLatex* lt1 = new TLatex();
 	FormLatex(lt1, 42, 0.04);
 	lt1->DrawLatex(0.6,0.83, Form("%d #leq N^{offline}_{trk} < %d", multMin, multMax));
 	lt1->DrawLatex(0.6,0.76, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.6,0.69, Form("%d #leq p_{T}^{#mu#mu} < %d GeV/c", (int) ptMin, (int) ptMax));
+	lt1->DrawLatex(0.6,0.69, Form("%d #leq p_{T}^{#mu#mu} < %d GeV/c", (int)ptMin, (int)ptMax));
 	CMSP(0.12, 0.92);
 	lumiText(0.64, 0.92); // 0.56, 0.92
 
@@ -290,7 +290,6 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 
 	WriteMessage("Fitting is Done !!!");
 	//}}}
-
     
 	//Draw pull distribution{{{
 	pad_pull->cd();
@@ -335,78 +334,8 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	WriteMessage("Writing result is Done !!!");
 //}}}
 
-//Save Yield{{{
-	Double_t Yield1S = ws->var("nSig1S")->getVal();
-	Double_t Yield1SErr = ws->var("nSig1S")->getError();
-	Double_t Yield2S = ws->var("nSig2S")->getVal();
-	Double_t Yield2SErr = ws->var("nSig2S")->getError();
-	Double_t Yield3S = ws->var("nSig3S")->getVal();
-	Double_t Yield3SErr = ws->var("nSig3S")->getError();
-	Double_t YieldBkg = ws->var("nBkg")->getVal();
-
-	hYield->SetBinContent(1, Yield1S);
-	hYield->SetBinError(1, Yield1SErr);
-	hYield->SetBinContent(2, Yield2S);
-	hYield->SetBinError(2, Yield2SErr);
-	hYield->SetBinContent(3, Yield3S);
-	hYield->SetBinError(3, Yield3SErr);
-//}}}
-
-//Save text{{{
-	Double_t meanout = ws->var("mean1S")->getVal();
-	Double_t sigma1out = ws->var("sigma1S_1")->getVal();
-	Double_t sigma2out = (ws->var("x1S")->getVal())*sigma1out;
-	Double_t fracout = ws->var("frac")->getVal();
-	Double_t sigmaout = TMath::Sqrt(fracout*sigma1out*sigma1out+(1-fracout)*sigma2out*sigma2out);
-
-	TF1* Sgnfc1S = ws->pdf("twoCB1S")->asTF(*(ws->var("mass")));
-	TF1* Sgnfc2S = ws->pdf("twoCB2S")->asTF(*(ws->var("mass")));
-	TF1* Sgnfc3S = ws->pdf("twoCB3S")->asTF(*(ws->var("mass")));
-	TF1* Bkgfc = ws->pdf("bkgErf")->asTF(*(ws->var("mass")));
-
-	Double_t TIntgr1S = Sgnfc1S->Integral(RangeLow, RangeHigh);
-	Double_t TIntgr2S = Sgnfc2S->Integral(RangeLow, RangeHigh);
-	Double_t TIntgr3S = Sgnfc3S->Integral(RangeLow, RangeHigh);
-	Double_t TIntgrBkg = Bkgfc->Integral(RangeLow, RangeHigh);
-	Double_t IntgrSig = Sgnfc1S->Integral(meanout-2*sigmaout, meanout+2*sigmaout);
-	Double_t IntgrBkg = Bkgfc->Integral(meanout-2*sigmaout, meanout+2*sigmaout);
-
-	Double_t Significance = (Yield1S*IntgrSig/TIntgr1S)/TMath::Sqrt(((Yield1S*IntgrSig/TIntgr1S)+(YieldBkg*IntgrBkg/TIntgrBkg)));
-	FILE* ftxt;
-	ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, MupT.Data()), "w");
-	if(ftxt != NULL)
-	{
-		fprintf(ftxt, "mean  sigma1  sigma2  fraction  totsigma  totsig  totbkg sig  bkg  nsig  nbkg  significance \n");
-		fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f \n", meanout, sigma1out, sigma2out, fracout, sigmaout, TIntgr1S, TIntgrBkg, IntgrSig, IntgrBkg, Yield1S, YieldBkg, Significance);
-		fprintf(ftxt, "mean  U1sigma1  fraction  alpha  n  Erfmean  Erfsigma  Erfp0 \n");
-		fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f  \n", meanout, sigma1out, fracout, ws->var("alpha")->getVal(), ws->var("n")->getVal(), ws->var("Erfmean")->getVal(), ws->var("Erfsigma")->getVal(), ws->var("Erfp0")->getVal());
-		//fprintf(ftxt, "mean  U1sigma1  U1sigma2  U2sigma1  U2sigma2  U3sigma1  U3sigma2  fraction  alpha  n  Erfmean  Erfsigma  Erfp0 \n");
-		//fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f  \n", meanout, sigma1out, sigma2out, ws->var("sigma2S_1")->getVal(), ws->var("sigma2S_2")->getVal(), ws->var("sigma3S_1")->getVal(), ws->var("sigma3S_2")->getVal(), fracout, ws->var("alpha")->getVal(), ws->var("n")->getVal(), ws->var("Erfmean")->getVal(), ws->var("Erfsigma")->getVal(), ws->var("Erfp0")->getVal());
-		fprintf(ftxt, "1SYield  2SYield  3SYield  BkgYield  1SIntgr  2STIntgr  3STIntgr  BkgTIntgr  \n");
-		fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f \n", Yield1S, Yield2S, Yield3S, YieldBkg, TIntgr1S, TIntgr2S, TIntgr3S, TIntgrBkg);
-	}
-//}}}
-
-    
 	c1->SaveAs(Form("MassDist/NoStatMassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_weight%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, Weight, MupT.Data()));
-	TH1D* hmass = new TH1D("hmass", ";M (GeV/c^{2});Counts", Nmassbins, RangeLow, RangeHigh);
-	reducedDS->fillHistogram(hmass, (*ws->var("mass")));
-	FormTH1Marker(hmass, 0, 0, 1.4);
-	c2->cd();
-	hmass->Draw("pe");
-	CMSP(0.12, 0.92);
-	lumiText(0.56, 0.92);
-	FormLatex(lt1, 12, 0.04);
-	lt1->DrawLatex(0.6,0.85, Form("%d #leq #N^{trk} < %d", multMin, multMax));
-	lt1->DrawLatex(0.6,0.80, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.6,0.75, Form("%d #leq p_{T}^{#mu#mu} < %d GeV/c", (int) ptMin, (int) ptMax));
 	
-	c2->SaveAs(Form("MassDist/NoStatWithoutFit_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_weight%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, Weight, MupT.Data()));
 	fout->cd();
 	massPlot->Write();
-	hYield->Write();
-	hmass->Write();
-	Sgnfc1S->Write();
-	Sgnfc2S->Write();
-	Sgnfc3S->Write();
 }
