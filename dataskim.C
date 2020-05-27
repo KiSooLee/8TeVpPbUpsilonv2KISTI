@@ -98,6 +98,7 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 //Tree variables{{{
 	UInt_t eventNb;
 	ULong64_t HLTriggers;
+	Int_t Ntracks;
 
 	Int_t Reco_QQ_size;
 	Int_t Reco_QQ_type[MaxQQ];
@@ -133,6 +134,7 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 //Branch{{{
 	TBranch* b_eventNb;
 	TBranch* b_HLTriggers;
+	TBranch* b_Ntracks;
 	TBranch* b_Reco_QQ_size;
 	TBranch* b_Reco_QQ_type;
 	TBranch* b_Reco_QQ_sign;
@@ -163,6 +165,7 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 //Branch address{{{
 	tin->SetBranchAddress("eventNb", &eventNb, &b_eventNb);
 	tin->SetBranchAddress("HLTriggers", &HLTriggers, &b_HLTriggers);
+	tin->SetBranchAddress("Ntracks", &Ntracks, &b_Ntracks);
 	tin->SetBranchAddress("Reco_QQ_size", &Reco_QQ_size, &b_Reco_QQ_size);
 	tin->SetBranchAddress("Reco_QQ_type", Reco_QQ_type, &b_Reco_QQ_type);
 	tin->SetBranchAddress("Reco_QQ_sign", Reco_QQ_sign, &b_Reco_QQ_sign);
@@ -238,19 +241,7 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 		hEvent->GetXaxis()->SetBinLabel(2, "Event trigger");
 		hEvent->Fill(2);
 
-//Get track multiplicity{{{
-		Int_t Tot_Ntrk = 0;
-		for(Int_t itrk = 0; itrk < Reco_trk_size; itrk++)
-		{
-			if( Reco_isgoodTrk[itrk] && !Reco_isMuTrk[itrk] )
-			{
-				Trk_Reco_4mom = (TLorentzVector*) Reco_trk_4mom->At(itrk);
-				if(Trk_Reco_4mom->Pt() > 0.4) Tot_Ntrk++;
-			}
-		}
-//}}}
-
-		DMset.mult = Tot_Ntrk;
+		DMset.mult = Ntracks;
 		DMset.eventNb = eventNb;
 
 //Get trigger vector{{{
@@ -304,7 +295,7 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 			DMset.pt = Up_Reco_4mom->Pt();
 			if(ievt < Nevtcut) DMset.y = Up_Reco_4mom->Rapidity();
 			else DMset.y = (-1.)*Up_Reco_4mom->Rapidity();
-			DMset.mult = Tot_Ntrk;
+			DMset.mult = Ntracks;
 
             // Get weight number 
 			double eff = 1.0, acc = 1.0, wgt = 1.0;
