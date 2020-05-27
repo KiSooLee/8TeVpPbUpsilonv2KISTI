@@ -80,6 +80,7 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 	UInt_t eventNb;
 	Float_t zVtx;
 	ULong64_t HLTriggers;
+	Int_t Ntracks;
 	Int_t Reco_QQ_size;
 	Int_t Reco_QQ_type[MaxQQ];
 	Int_t Reco_QQ_sign[MaxQQ];
@@ -130,6 +131,7 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 	TBranch* b_eventNb;
 	TBranch* b_zVtx;
 	TBranch* b_HLTriggers;
+	TBranch* b_Ntracks;
 	TBranch* b_Reco_QQ_size;
 	TBranch* b_Reco_QQ_type;
 	TBranch* b_Reco_QQ_sign;
@@ -172,6 +174,7 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 	tin->SetBranchAddress("eventNb", &eventNb, &b_eventNb);
 	tin->SetBranchAddress("zVtx", &zVtx, &b_zVtx);
 	tin->SetBranchAddress("HLTriggers", &HLTriggers, &b_HLTriggers);
+	tin->SetBranchAddress("Ntracks", &Ntracks, &b_Ntracks);
 	tin->SetBranchAddress("Reco_QQ_size", &Reco_QQ_size, &b_Reco_QQ_size);
 	tin->SetBranchAddress("Reco_QQ_type", &Reco_QQ_type, &b_Reco_QQ_type);
 	tin->SetBranchAddress("Reco_QQ_sign", &Reco_QQ_sign, &b_Reco_QQ_sign);
@@ -249,18 +252,6 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 		if(ievt%100000 == 0) cout << "Events: " << ievt << " / " << Nevt << " [" << Form("%.1f", ((double)(ievt)/(double)(Nevt)*100)) << " %]" << endl;
 		tin->GetEntry(ievt);
 
-//Get track multiplicity{{{
-		Int_t Tot_Ntrk = 0;
-		for(Int_t itrk = 0; itrk < Reco_trk_size; itrk++)
-		{
-			if( Reco_isgoodTrk[itrk] && !Reco_isMuTrk[itrk] )
-			{
-				Trk_Reco_4mom = (TLorentzVector*) Reco_trk_4mom->At(itrk);
-				if(Trk_Reco_4mom->Pt() > 0.4) Tot_Ntrk++;
-			}
-		}
-//}}}
-
 		DMset.clear();
 
 		Int_t NtrgReco = 0;
@@ -273,7 +264,7 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 		Bool_t is_inMassGen = false;
 		Bool_t has_AssoGen = false;
 
-		if(Tot_Ntrk >= multMin && Tot_Ntrk < multMax)
+		if(Ntracks >= multMin && Ntracks < multMax)
 		{
 			if(isMC)
 			{
@@ -304,7 +295,7 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 						Trk_Gen_4mom = (TLorentzVector*) Gen_trk_4mom->At(itrk);
 						TVector3 Trk_vector;
 
-						if(Trk_Gen_4mom->Eta() <= 2.4 && Trk_Gen_4mom->Eta() >= -2.4 && Trk_Gen_4mom->Pt() >= TrkptMin && Trk_Gen_4mom->Pt() < TrkptMax && Trk_Gen_4mom->Pt() >= 0.4)
+						if(Trk_Gen_4mom->Eta() <= 2.4 && Trk_Gen_4mom->Eta() >= -2.4 && Trk_Gen_4mom->Pt() >= TrkptMin && Trk_Gen_4mom->Pt() < TrkptMax && Trk_Gen_4mom->Pt() >= 0.3)
 						{
 							new( (*DMset.Vec_ass_Gen)[NassGen] )TLorentzVector(*Trk_Gen_4mom);
 							NassGen++;
@@ -361,7 +352,7 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 					Trk_Reco_4mom = (TLorentzVector*) Reco_trk_4mom->At(itrk);
 					TVector3 Trk_vector;
 	
-					if(Trk_Reco_4mom->Eta() <= 2.4 && Trk_Reco_4mom->Eta() >= -2.4 && Reco_isgoodTrk[itrk] && !Reco_isMuTrk[itrk] && Trk_Reco_4mom->Pt() >= TrkptMin && Trk_Reco_4mom->Pt() < TrkptMax && Trk_Reco_4mom->Pt() > 0.4)
+					if(Trk_Reco_4mom->Eta() <= 2.4 && Trk_Reco_4mom->Eta() >= -2.4 && Reco_isgoodTrk[itrk] && !Reco_isMuTrk[itrk] && Trk_Reco_4mom->Pt() >= TrkptMin && Trk_Reco_4mom->Pt() < TrkptMax && Trk_Reco_4mom->Pt() > 0.3)
 					{
 						new( (*DMset.Vec_ass_Reco)[NassReco] )TLorentzVector(*Trk_Reco_4mom);
 						NassReco++;
@@ -387,7 +378,7 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 		}
 		if( (is_inMassGen && (NassGen != 0)) || (is_inMassReco && (NassReco != 0)) )
 		{
-			DMset.mult = Tot_Ntrk;
+			DMset.mult = Ntracks;
 			tout->Fill();
 		}
 	}
