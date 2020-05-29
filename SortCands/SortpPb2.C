@@ -80,7 +80,7 @@ void SortpPb2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 	UInt_t eventNb;
 	Float_t zVtx;
 	ULong64_t HLTriggers;
-	ULong64_t Ntracks;
+	Int_t Ntracks;
 	Int_t Reco_QQ_size;
 	Int_t Reco_QQ_type[MaxQQ];
 	Int_t Reco_QQ_sign[MaxQQ];
