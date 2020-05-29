@@ -137,7 +137,7 @@ void Collect_Reco_pPb2(const bool isMC = false, const Int_t multMin = 0, const I
 			}
 //}}}
 		}
-		if(TrueNtrgReco != 0 && TrueNassReco != 0 && zVtx > -98)
+		if(TrueNtrgReco != 0 && TrueNassReco != 0 && zVtx > -99)
 		{
 			DMset.Ntrg_Reco = TrueNtrgReco;
 			DMset.Nass_Reco = TrueNassReco;
