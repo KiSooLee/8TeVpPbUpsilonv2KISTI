@@ -200,7 +200,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 			lt1->DrawLatex(0.17,0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 			lt1->DrawLatex(0.17,0.85, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.17,0.80, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.17,0.75, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			if(iaway == 0) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 2.0");
 			else if(iaway == 1) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 1.5");
@@ -215,7 +215,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 			lt1->DrawLatex(0.17,0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 			lt1->DrawLatex(0.17,0.85, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.17,0.80, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.17,0.75, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			if(iaway == 0) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 2.0");
 			else if(iaway == 1) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 1.5");
@@ -258,7 +258,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 			lt1->DrawLatex(0.17,0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 			lt1->DrawLatex(0.17,0.85, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.17,0.80, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.17,0.75, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			if(iaway == 0) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 2.0");
 			else if(iaway == 1) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 1.5");
@@ -285,7 +285,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 			lt1->DrawLatex(0.17,0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 			lt1->DrawLatex(0.17,0.85, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.17,0.80, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.17,0.75, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			if(iaway == 0) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 2.0");
 			else if(iaway == 1) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 1.5");
@@ -300,7 +300,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 			lt1->DrawLatex(0.17,0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 			lt1->DrawLatex(0.17,0.85, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.17,0.80, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.17,0.75, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			if(iaway == 0) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 2.0");
 			else if(iaway == 1) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 1.5");
@@ -343,7 +343,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 			lt1->DrawLatex(0.17,0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 			lt1->DrawLatex(0.17,0.85, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 			lt1->DrawLatex(0.17,0.80, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+			if((int) TrkptMin == 0) lt1->DrawLatex(0.17,0.75, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.17,0.75, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			if(iaway == 0) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 2.0");
 			else if(iaway == 1) lt1->DrawLatex(0.17,0.70, "|#Delta#eta^{trk}| > 1.5");
@@ -407,7 +407,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 		lt2->DrawLatex(0.17,0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 		lt2->DrawLatex(0.50,0.40, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 		lt2->DrawLatex(0.50,0.35, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-		if((int) TrkptMin == 0) lt2->DrawLatex(0.50,0.30, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+		if((int) TrkptMin == 0) lt2->DrawLatex(0.50,0.30, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt2->DrawLatex(0.50,0.20, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		if(iaway == 0) lt2->DrawLatex(0.50,0.25, "|#Delta#eta^{trk}| > 2.0");
 		else if(iaway == 1) lt2->DrawLatex(0.50,0.25, "|#Delta#eta^{trk}| > 1.5");
@@ -426,7 +426,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 		lt2->DrawLatex(0.17,0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 		lt2->DrawLatex(0.50,0.40, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 		lt2->DrawLatex(0.50,0.35, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
-		if((int) TrkptMin == 0) lt2->DrawLatex(0.50,0.30, Form("0.4 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
+		if((int) TrkptMin == 0) lt2->DrawLatex(0.50,0.30, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 		else lt2->DrawLatex(0.50,0.30, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 		if(iaway == 0) lt2->DrawLatex(0.50,0.25, "|#Delta#eta^{trk}| > 2.0");
 		else if(iaway == 1) lt2->DrawLatex(0.50,0.25, "|#Delta#eta^{trk}| > 1.5");
