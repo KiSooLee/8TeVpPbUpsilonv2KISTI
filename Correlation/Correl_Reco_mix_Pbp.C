@@ -25,13 +25,13 @@
 using namespace std;
 //}}}
 
-void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const bool Weight = false, const Int_t imass = 0)
+void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const TString trkptversion = "v1", const bool Weight = false, const Int_t imass = 0)
 {
 	SetStyle();
 
 //make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString saveDIR = mainDIR + Form("/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data());
+	TString saveDIR = mainDIR + Form("/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data());
 	void * dirp = gSystem->OpenDirectory(saveDIR.Data());
 	if(dirp) gSystem->FreeDirectory(dirp);
 	else gSystem->mkdir(saveDIR.Data(), kTRUE);
@@ -47,8 +47,8 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 	TChain* tin2_tmp = new TChain("UpsilonTree");
 	for(Int_t ibin = massBinsArr[imass]; ibin < massBinsArr[imass+1]; ibin++)
 	{
-		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), ibin);
-		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), ibin);
+		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
 		tin1_tmp->Add(fname1.Data());
 		tin2_tmp->Add(fname2.Data());
 	}
@@ -57,7 +57,7 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 	tin1_tmp->Reset();
 	tin2_tmp->Reset();
 
-	TFile* facc = new TFile("../AccEff/Plots/test_acc_upsi_816.root", "READ");
+	TFile* facc = new TFile("../AccEff/Plots/acc_acc_upsi_816.root", "READ");
 	TFile* feff = new TFile("../AccEff/Plots/EffPlots_Upsilon_1S_Ny5_MupT3p5.root", "READ");
 	TFile* ftrk = new TFile("../AccEff/Plots/Hijing_8TeV_dataBS.root", "READ");
 //}}}
@@ -403,7 +403,7 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 //}}}
 
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Reco_Pbp_distribution_mix_%s_weight%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), Weight, imass), "RECREATE");
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_Pbp_distribution_mix_%s_weight%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), MorD.Data(), Weight, imass), "RECREATE");
 	fout->cd();
 	hReco1_1->Write();
 	hReco1_2->Write();
