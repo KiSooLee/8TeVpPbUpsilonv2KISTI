@@ -207,7 +207,7 @@ Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 66, 77, 89, 104, 12
 //v28: multiplciity 0~50 Trk pT 0~3{{{
 Int_t multBinsArr[] = {0, 50};
 Double_t rapBinsArr[] = {-2.4, 2.4};
-Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
 Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 66, 77, 89, 104, 120};
 //}}}
 */
@@ -219,12 +219,164 @@ Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0};
 Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 66, 77, 89, 104, 120};
 //}}}
 */
-
+/*
 //v30: multiplciity 0~60 Trk pT 0~3{{{
 Int_t multBinsArr[] = {0, 60};
 Double_t rapBinsArr[] = {-2.4, 2.4};
 Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0};
 Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v31: multiplciity 0~40 Trk pT 0~3{{{
+Int_t multBinsArr[] = {0, 40};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v32: 110, 300 track pt 0.3 {{{
+Int_t multBinsArr[] = {110, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v33: 110, 300 track pt 0.4 {{{
+Int_t multBinsArr[] = {110, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v34: 110, 300 track pt 0.5 {{{
+Int_t multBinsArr[] = {110, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v35: 120, 300 track pt 0.3 {{{
+Int_t multBinsArr[] = {120, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v36: 100, 300 track pt 0.3 {{{
+Int_t multBinsArr[] = {100, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v37: 90, 300 track pt 0.3 {{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v38: pt binnig for jet ratio 110~300 {{{
+Int_t multBinsArr[] = {110, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v39: pt binnig for jet ratio 0~50 {{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v40: pt binnig for jet ratio 110~300 with extended mass range{{{
+Int_t multBinsArr[] = {110, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v41: pt binnig for jet ratio 0~50 with extended mass range{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v42: 0, 50 Trk pT 0.3{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v43: 0, 40 Trk pT 0.3{{{
+Int_t multBinsArr[] = {0, 40};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v44: pt binnig for jet ratio 0~40 {{{
+Int_t multBinsArr[] = {0, 40};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v45: pt binnig for jet ratio 0~40 with extended mass range{{{
+Int_t multBinsArr[] = {0, 40};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v46: pt binnig for jet ratio 90~300{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v47: pt binnig for jet ratio 90~300 with extended mass range{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v48: 90, 300 track pt 0.3, wide mass bin for S/B ratio plot{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {20, 41};
+//}}}
+*/
+
+//v49: low-multiplicity scan for 9~10 mass range, track pt 0.3{{{
+Int_t multBinsArr[] = {0, 10, 20, 30, 40, 50, 60};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {20, 41};
 //}}}
 
 //}}}
