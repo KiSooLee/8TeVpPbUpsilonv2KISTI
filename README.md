@@ -1,36 +1,66 @@
 # 8TeVpPbUpsilonv2KISTI
 
-1. pPb v2 study is using track multiplicity instead of centrality. By running GetNtrack.C multiplicity distribution can be achieved.
+1. Upsilon v2 analysis is using onia analyzer. All the sequences are using onia tree.
 
-2. With the selected track multiplicity onia tree is skimmed by dataskim.C in order to draw mass distribution. do_skim.sh is used to run dataskim.C
+2. With the selected track multiplicity, onia tree is skimmed by dataskim.C in order to draw mass distribution. do_skim.sh is used to run dataskim.C
 
-3. To determine pT range mass distribution is fitted by two Crystal ball function. Initial and final parameters for the Crystal ball are stored in the SkimmedFiles/Parameter/ directory.
-	Mass fitting is done by SkimmedFiles/GetYield.C. SkimmedFiles/do_GetYield.sh is used to run GetYield.C
+3. To determine pT range, mass distribution is fitted by two Crystal ball function. Initial and final parameters for the Crystal ball are stored in the SkimmedFiles/Parameter/ directory.
+	Mass fitting is done in the SkimmedFiles/ directory. Macros are separated into GetYieldData.C and GetYieldMC.C because the fitting range is different for Data and MC. do_GetYield.sh is used to run GetYieldData.C and GetYieldMC.C.
+	There is another directory inside the SkimmedFiles/ directory Yield/. The yield distribution is ploted by YieldDist.C. The macro runs by do_YieldDist.sh.
 
 4. Trigger and associate particles should be matched to analysis condition. Single muon, dimuon, tracks should be checked. Trigger, soft muon cut, dimuon mass range etc. are applied in the sorting process.
-	submit_Sort_Pbp1.jds, submit_Sort_Pbp2.jds, submit_Sort_pPb1.jds, submit_Sort_pPb2.jds are submit batch jobs using condor system. Each file makes 120 jobs which is seperated by 50 MeV mass range.
-	Batch job runs do_mSortPbp1.sh, do_mSortPbp2.sh, do_mSortpPb1.sh, do_mSortpPb2.sh and these shells run mSortPbp1.C, mSortPbp2.C, mSortpPb1.C, mSortpPb2.C macros. 
-	The results are automatically stored in the storage.
+	Sorting process is done in the SortCands/ directory.
+	submit_Sort_Pbp1.jds, submit_Sort_Pbp2.jds, submit_Sort_pPb1.jds, submit_Sort_pPb2.jds are submitting batch jobs using condor system. Each file makes 120 jobs which is seperated by 50 MeV mass range.
+	Batch job runs do_mSortPbp1.sh, do_mSortPbp2.sh, do_mSortpPb1.sh, do_mSortpPb2.sh and these shells run SortPbp1.C, SortPbp2.C, SortpPb1.C, SortpPb2.C macros. 
+	The results are automatically stored in the storage (based on KISTI T3 server).
 
-5. Because of the large events, correlation process takes too long time. In order to reduce running time, root file is collected in selected pT, y, multiplicity range.
-	Same jds and shell files with sorting process are used. So jds files need to be modified output name. Shell files also need to be modified command line.
-	Collect_Pbp1.C, Collect_Pbp2.C, Collect_pPb1.C, Collect_pPb2.C macros are used.
+5. Because of the large tracks, correlation process takes too long time. In order to reduce running time, root file is collected in selected pT, y, multiplicity range.
+	Collecting process is done in the CollectingCands/ directory.
+	submit_Coll_Pbp1.jds, submit_Coll_Pbp2.jds, submit_Coll_pPb1.jds, submit_Coll_pPb2.jds are used for batch job.
+	do_CollectPbp1.sh, do_CollectPbp2.sh, do_CollectpPb1.sh, do_CollectpPb2.sh run the macros.
+	Collect_Reco_Pbp1.C, Collect_Reco_Pbp2.C, Collect_Reco_pPb1.C, Collect_Reco_pPb2.C macros are used.
+	Due to server issue output files are stored in the scratch. The files should be moved to the storage with movefile.sh
 
-6. With the mass ranges defined in the Upsilon.h collected files are merged to retain enough statistics. Using this statistics Upsilon and tracks are correlated.
-	Correlation also uses batch job. submit_Corr_sig_Pbp.jds, submit_Corr_sig_pPb.jds, submit_Corr_bkg_Pbp.jds, submit_Corr_bkg_pPb.jds are the batch job files.
-	Each file runs do_mCorrel_sig_Pbp.sh, do_mCorrel_sig_pPb.sh, do_mCorrel_bkg_Pbp.sh, do_mCorrel_bkg_pPb.sh.
-	Each shell runs mCorrel_sig_Pbp.C, mCorrel_sig_pPb.C, mCorrel_bkg_Pbp.C, mCorrel_bkg_pPb.C.
+6. With the mass ranges defined in the Headers/Upsilon.h, collected files are merged to retain enough statistics. Using this statistics Upsilon and tracks are correlated (dphi-deta).
+	This correlation process is done in the Correlation/ directory.
+	Batch job can be used also in this process. submit_Corr_same_Pbp.jds, submit_Corr_same_pPb.jds, submit_Corr_mix_Pbp.jds, submit_Corr_mix_pPb.jds, submit_Corr_trk_same_Pbp.jds, submit_Corr_trk_same_pPb.jds, submit_Corr_trk_mix_Pbp.jds, submit_Corr_trk_mix_pPb.jds are prepared. If there is node issue in the server, local run without batch would be better.
+	In this process, same event correlation and mixed event correlation are calculated. The reason why the sorting and collecting are separeted into 1 and 2 is for the mixed event (to avoid same event tracks with trigger).
+	And upsilon-track correlation and track-track correlation are separated. They will be subtracted in the later process.
+	do_Correl_same_Pbp.sh, do_Correl_same_pPb.sh, do_Correl_mix_Pbp.sh, do_Correl_mix_pPb.sh, do_Correl_trk_same_Pbp.sh, do_Correl_trk_same_pPb.sh, do_Correl_trk_mix_Pbp.sh, do_Correl_trk_mix_pPb.sh are shell for the run.
+	Correl_Reco_same_Pbp.C, Correl_Reco_same_pPb.C, Correl_Reco_mix_Pbp.C, Correl_Reco_mix_pPb.C, Correl_trk_Reco_same_Pbp.C, Correl_trk_Reco_same_pPb.C, Correl_trk_Reco_mix_Pbp.C, Correl_trk_Reco_mix_pPb.C are macors.
+	Also there are some different macros. Correl_Reco_same_Pbp_jet.C, Correl_Reco_same_pPb_jet.C, Correl_Reco_mix_Pbp_jet.C, Correl_Reco_mix_pPb_jet.C. They are for the jet yield ratio calculation which is used in the low-multiplicity subtraction.
 
-7. DrawCorrel.C draws correlation plots of same event and mixed event separately as 2-D deta vs. dphi distribution.
-	do_projection.sh runs the macro.
+7. The correlated distribution should be projected to dphi axis and divided in order to subtract combinatorial background.
+	The projection process is done in the Projection/ directory.
+	DrawCorrel.C draws correlation plots of same event and mixed event separately as 2-D deta vs. dphi distribution.
+	RatioNProjection.C projects the 2-D plot into dphi axis.
+	do_projection.sh runs the macros.
 
-8. 2-D plot is projected to dphi axis in order to extract v2 by fitting dN/dphi plot. Same event and mixed event are projected separately and same event is divided by mixed event.
-	RatioNProjection.C is macro for ratio. do_projection.sh runs this macro also.
+8. The projected dphi plot is expressed as the combination of Fourier harmonics. From the second order parameter v2 value is extracted.
+	The extraction process is done in the ExtractV2/ directory.
+	extV23.C extracts observed v2 by fitting dN/dphi. do_extV2.sh runs the macro.
 
-9. extV2.C extracts observed v2 by fitting dN/dphi. do_extV2.sh runs the macro.
-	extV23.C include v3 function.
+9. As mentioned previously, the track component should be subtracted in order to see the v2 of di-muon.
+	Track component subtraction is done in the SubtractTrk/ directory.
+	Track-track correlation contains square of track while upsilon-track contains one track v2. So the square root of track-track is divided form the upsilon-track.
+	do_Subtract.sh runs Subtract_Trk.C macro.
  
-10. Observed v2 is combination of signal v2 and background v2. Separation of signal and background is done by simultaneous fitting of mass and v2. It is assumed that the signal background ratio of mass is same in the v2.
-	SimultaneousFit.C macro extracts signal v2. do_Simul.sh runs the macro.
+10. The v2 after track subtraction is called as observed v2. This observed v2 contains both of signal and background di-muon v2. In order to extract real signal upsilon v2 from the observed v2, signal fraction at each mass point is needed.
+	The simultaneous fitting method is applied. The simultaneous function finds parameters satisfying multiple plots. In this analysis mass plot and v2 plot are used. From the mass plot signal fraction is obtained and the signal fraction is used to distinguish v2 from signal and background.
+	This process is done in the SignalV2/ directory.
+	The two kinds of initial paraemters are used to do the simultaneous fitting. One thing is the result of mass fitting from the SkimmedFiles/ directory. Next thing is background fitting parameter of observed v2 stored in the SignalV2/Parameter/ directory.
+	SimultaneousFitData.C macro extracts signal v2 and do_Simul.sh runs the macro.
+	DrawSigv2.C macro draw the result v2 distribution and do_Drawv2.sh runs the macro.
 
-11. DrawSigv2.C draws final signal v2 distribution.
+11. The extracted v2 is could be not the pure v2. Even if |deta| > 1 is applied to remove jet effect, there is still probability of residual back-to-back jet correlation.
+	To remove this jet effect low-multiplicity subtraction is needed because the low-multiplicity events are expected to have only back-to-back jet events.
+	This process is done in the LMsub/ directory.
+	two factors are needed to calculate the effect of low-multiplicity. The result of low-multiplicity v2 should be scaled by these two factors.
+	First factor is jet ratio. Jet yield at the each multiplicity could be different. So low-multiplicity v2 (from the jet) should be scaled to match to high-multiplicity.
+	Second factor is number of associator. The number of associator affect to the number of jet yield. Because the number of associator is higher at the high-multiplicity, the jet yield should be scaled with the number of associator.
+	The number of associator is calculated with the Nass.C macro. do_Nass.sh runs the macro.
+	The jet yield is uses the files for jet study made in the previous step. ZYAM.C fits the minimum value as 0 in order to get jet yield. The fitting range for each bin should be selected in the macro.
+	JetYieldRatio.C calculates jet ratio between high and low-multiplicity. This ratio as a function of pT is fitted with constant function because the ratio is expected to be constant regardless of pT.
+	These macros run by do_side.sh.
+	With the all values from previous step, low-multiplicity is subtracted by LMsub.C macro.
+	The macro run by do_sub.sh.
