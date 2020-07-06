@@ -373,7 +373,7 @@ Int_t massBinsArr[] = {20, 41};
 */
 
 //v49: low-multiplicity scan for 9~10 mass range, track pt 0.3{{{
-Int_t multBinsArr[] = {0, 10, 20, 30, 40, 50, 60};
+Int_t multBinsArr[] = {0, 10, 20, 30, 40, 50, 60, 70};
 Double_t rapBinsArr[] = {-2.4, 2.4};
 Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
 Int_t massBinsArr[] = {20, 41};
