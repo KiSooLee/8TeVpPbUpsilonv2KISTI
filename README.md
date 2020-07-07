@@ -34,6 +34,7 @@
 	The projection process is done in the Projection/ directory.
 	DrawCorrel.C draws correlation plots of same event and mixed event separately as 2-D deta vs. dphi distribution.
 	RatioNProjection.C projects the 2-D plot into dphi axis.
+	RatioNProjection_jet.C projects the 2-D plot into dphi axis for the jet yield.
 	do_projection.sh runs the macros.
 
 8. The projected dphi plot is expressed as the combination of Fourier harmonics. From the second order parameter v2 value is extracted.
