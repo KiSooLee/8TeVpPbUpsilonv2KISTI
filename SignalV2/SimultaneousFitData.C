@@ -809,12 +809,6 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 	FormTH1Marker(hist, 0, 0, 1.4);
 	hist->GetXaxis()->SetTitle("m_{#mu#mu} (GeV/c^{2})");
 	hist->GetYaxis()->SetTitle("v_{2}^{S+B}");
-	//hist->SetMinimum(-0.05);
-	//hist->SetMaximum(0.3);
-	//hist->SetMinimum(-0.35);//for 110~300
-	//hist->SetMaximum(0.35);//for 110~300
-	hist->SetMinimum(-0.35);//for 0~40
-	hist->SetMaximum(2.5);//for 0~40
 //}}}
 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
@@ -971,7 +965,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		par0[10] = var18;
 		par0[11] = var19;
 		par0[12] = var20;
-		par0[13] = 0.001;
+		par0[13] = 0.1;
 		par0[14] = 0.001;
 		par0[15] = 0.001;
 		par0[16] = bpar1;
@@ -1073,7 +1067,12 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		}
 
 		c1[ipt]->cd(2);
-		hist->SetMaximum(1.0);
+		//for high-multiplicity
+		hist->SetMaximum(0.4);//for high-multiplicity
+		hist->SetMinimum(-0.2);//for high-multiplicity
+		//for low-multiplicity
+		//hist->SetMaximum(1.0);//for low-multiplicity
+		//hist->SetMinimum(-0.4);//for low-multiplicity
 		fvn_bkg->SetLineColor(kMagenta);
 		fvn_bkg->SetLineWidth(1);
 
@@ -1111,6 +1110,9 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		v2_2sE[ipt] = fvn_simul->GetParError(14);
 		v2_3s[ipt] = fvn_simul->GetParameter(15);
 		v2_3sE[ipt] = fvn_simul->GetParError(15);
+
+//cout << fvn_simul->GetParameter(13) << endl;
+//cout << fvn_simul->GetParameter(16) << endl;
 
 //get Chi2{{{
 		Double_t xmass[200];
@@ -1157,7 +1159,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 			}
 		}
 		c1[ipt]->cd(2);
-		lt1->DrawLatex(0.5, 0.38, Form("Chi2/ndf = %.f/%d", Chi2v2, Ndfv2));
+		lt1->DrawLatex(0.5, 0.48, Form("Chi2/ndf = %.f/%d", Chi2v2, Ndfv2));
 //}}}
 
 	}
