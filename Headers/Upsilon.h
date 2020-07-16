@@ -320,7 +320,7 @@ Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50,
 Int_t multBinsArr[] = {0, 50};
 Double_t rapBinsArr[] = {-2.4, 2.4};
 Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
-Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 66, 77, 89, 104, 120};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 64, 77, 89, 104, 120};
 //}}}
 */
 /*
@@ -371,12 +371,68 @@ Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
 Int_t massBinsArr[] = {20, 41};
 //}}}
 */
-
+/*
 //v49: low-multiplicity scan for 9~10 mass range, track pt 0.3{{{
 Int_t multBinsArr[] = {0, 10, 20, 30, 40, 50, 60, 70};
 Double_t rapBinsArr[] = {-2.4, 2.4};
 Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
 Int_t massBinsArr[] = {20, 41};
+//}}}
+*/
+/*
+//v50: additional multiplicity for low-multiplicity scan for 9~10 mass range, track pt 0.3{{{
+Int_t multBinsArr[] = {45, 55};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {20, 41};
+//}}}
+*/
+/*
+//v51: 0, 50 Trk pT 0.3, 13 mass bin{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 4.0, 7.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 8, 14, 20, 25, 30, 33, 42, 48, 65, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v52: 90, 300 Trk pT 10{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 8, 14, 20, 25, 30, 33, 42, 48, 65, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v53: 0, 50 Trk pT 10{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0};
+Int_t massBinsArr[] = {0, 8, 14, 20, 25, 30, 33, 42, 48, 65, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v54: 90, 300 track pt 0.3, new Upsilon pT bin{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v55: 0, 50 Trk pT 0.3, new Upsilon pT bin{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+//}}}
+*/
+
+//v56: same with v54, new mass bin{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
 
 //}}}
