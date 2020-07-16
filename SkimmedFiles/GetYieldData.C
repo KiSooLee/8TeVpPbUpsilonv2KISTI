@@ -241,9 +241,9 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 //}}}
 
 //Draw mass plot{{{
-	RooRealVar* nSig1S = new RooRealVar("nSig1S", "# of 1S signal", 400, -1000, 100000);
-	RooRealVar* nSig2S = new RooRealVar("nSig2S", "# of 2S signal", 100, -1000, 30000);
-	RooRealVar* nSig3S = new RooRealVar("nSig3S", "# of 3S signal", 10, -1000, 9000);
+	RooRealVar* nSig1S = new RooRealVar("nSig1S", "# of 1S signal", 400, -1000, 1000000);
+	RooRealVar* nSig2S = new RooRealVar("nSig2S", "# of 2S signal", 100, -1000, 300000);
+	RooRealVar* nSig3S = new RooRealVar("nSig3S", "# of 3S signal", 10, -1000, 90000);
 	RooRealVar* nBkg = new RooRealVar("nBkg", "number of background", 300, -1000, 10000000);
 	RooAddPdf* model = new RooAddPdf("model", "1S+2S+3S+Bkg", RooArgList(*Signal1S, *Signal2S, *Signal3S, *Background), RooArgList(*nSig1S, *nSig2S, *nSig3S, *nBkg));
 	ws->import(*model);
@@ -341,11 +341,20 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 
 	Double_t Significance = (Yield1S*IntgrSig/TIntgr1S)/TMath::Sqrt(((Yield1S*IntgrSig/TIntgr1S)+(YieldBkg*IntgrBkg/TIntgrBkg)));
 
-	TH1D* hfrac = new TH1D("hfrac", "", 2, 0, 2);
+	TH1D* hfrac = new TH1D("hfrac", "", 6, 0, 6);
 	hfrac->SetBinContent(1, Sgnfc1S->Eval(U1S_mass));
 	hfrac->SetBinContent(2, Bkgfc->Eval(U1S_mass));
-	
+	hfrac->SetBinContent(3, Sgnfc1S->Integral(9.2, 9.6));
+	hfrac->SetBinContent(4, Bkgfc->Integral(9.2, 9.6));
+	hfrac->SetBinContent(5, Sgnfc1S->Integral(9.0, 9.8));
+	hfrac->SetBinContent(6, Bkgfc->Integral(9.0, 9.8));
 
+	TH1D* hfracdist = new TH1D("hfracdist", "", 20, 9, 10);
+	for(Int_t i = 0; i < 20; i++)
+	{
+		hfracdist->SetBinContent(i+1, Sgnfc1S->Eval(9+0.05*i)/(Sgnfc1S->Eval(9+0.05*i)+Bkgfc->Eval(9+0.05*i)));
+	}
+	
 	FILE* ftxt;
 	ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, MupT.Data()), "w");
 	if(ftxt != NULL)
@@ -384,4 +393,5 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	Sgnfc2S->Write();
 	Sgnfc3S->Write();
 	hfrac->Write();
+	hfracdist->Write();
 }
