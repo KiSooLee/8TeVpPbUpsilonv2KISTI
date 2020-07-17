@@ -64,8 +64,8 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 	//fname2 = "oniaTree_Pbp_20170504.root";//KUNPL
 	if(isMC)
 	{
-		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_1S_20190613.root";//KISTI
-		fname2 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_1S_20190613.root";//KISTI
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_1S_private_20200716.root";//KISTI
+		fname2 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_1S_private_20200716.root";//KISTI
 	}
 	else
 	{
