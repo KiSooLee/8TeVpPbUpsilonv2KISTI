@@ -427,11 +427,19 @@ Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
 Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 64, 77, 89, 104, 120};
 //}}}
 */
-
+/*
 //v56: same with v54, new mass bin{{{
 Int_t multBinsArr[] = {90, 300};
 Double_t rapBinsArr[] = {-2.4, 2.4};
 Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+
+//v57: pt bin for MC reweight{{{
+Int_t multBinsArr[] = {0, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 15.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
 
