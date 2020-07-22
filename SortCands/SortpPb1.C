@@ -64,7 +64,7 @@ void SortpPb1(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 	if(isMC)
 	{
 		
-		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb1_MC_1S.root";
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb1_MC_1S_private_20200716.root";
 	}
 	else
 	{
