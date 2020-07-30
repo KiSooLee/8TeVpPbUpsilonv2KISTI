@@ -311,13 +311,13 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 			Double_t mupl_tnp = mupl_muid_tnp*mupl_trk_tnp*mupl_trg_tnp;
 			Double_t mumi_tnp = mumi_muid_tnp*mumi_trk_tnp*mumi_trg_tnp;
 
-			hyNum_tot->Fill(Up_Reco_4mom->Rapidity(), 1./mupl_tnp*mumi_trg_tnp);
-			hptNum_tot->Fill(Up_Reco_4mom->Pt(), 1./mupl_tnp*mumi_trg_tnp);
+			hyNum_tot->Fill(Up_Reco_4mom->Rapidity(), reweight/(mupl_tnp*mumi_trg_tnp));
+			hptNum_tot->Fill(Up_Reco_4mom->Pt(), reweight/(mupl_tnp*mumi_trg_tnp));
 
 			for(Int_t iy = 0; iy < Ny-1; iy++)
 			{
 				if(fabs(Up_Reco_4mom->Rapidity()) > ybins[iy] && fabs(Up_Reco_4mom->Rapidity()) <= ybins[iy+1])
-				hNum[iy]->Fill(Up_Reco_4mom->Pt(), 1./mupl_tnp*mumi_trg_tnp);
+				hNum[iy]->Fill(Up_Reco_4mom->Pt(), reweight/(mupl_tnp*mumi_trg_tnp));
 			}
 		}
 //}}}
