@@ -373,12 +373,12 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 		hDen[iy]->Draw("pe");
 		lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.6, 0.77, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
-		cDen[iy]->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP,, MupT.Data()));
+		cDen[iy]->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP, MupT.Data()));
 		cNum[iy]->cd();
 		hNum[iy]->Draw("pe");
 		lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.6, 0.77, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
-		cNum[iy]->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP,, MupT.Data()));
+		cNum[iy]->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP, MupT.Data()));
 		cEff[iy]->cd();
 		hEff[iy] = (TH1D*) hNum[iy]->Clone(Form("hEff_%d", iy));
 		hEff[iy]->GetYaxis()->SetTitle("Efficiency");
