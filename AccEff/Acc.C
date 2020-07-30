@@ -23,12 +23,29 @@ using namespace std;
 using namespace RooFit;
 //}}}
 
-bool InAcc(Double_t muPt, Double_t muEta);
+bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void Acc()
+void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t isRW = true)
 {
 	SetStyle();
-	const Int_t Generation = 1;//1: 1S, 2: 2S, 3:3S
+
+//define muon pt value{{{
+	Double_t MupTCut;
+	if(MupT == "0") MupTCut = 0;
+	else if(MupT == "0p5") MupTCut = 0.5;
+	else if(MupT == "1") MupTCut = 1.0;
+	else if(MupT == "1p5") MupTCut = 1.5;
+	else if(MupT == "2") MupTCut = 2.0;
+	else if(MupT == "2p5") MupTCut = 2.5;
+	else if(MupT == "3") MupTCut = 3.0;
+	else if(MupT == "3p5") MupTCut = 3.5;
+	else if(MupT == "4") MupTCut = 4.0;
+	else
+	{
+		cout << "There is no such muon pT cut value" << endl;
+		return;
+	}
+//}}}
 
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -40,131 +57,82 @@ void Acc()
 //}}}
 
 //Get files{{{
-	TChain* tin = new TChain("hionia/myTree");
-	TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);
-	//TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);//HIJING
-	//TString fname1 = Form("root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_%dS_MC_20190122.root", Generation);//EPOS
-	tin->Add(fname1.Data());
+	TChain* tin_tmp = new TChain("Ana");
+	for(Int_t i = 0; i < 25; i++)
+	{
+		tin_tmp->Add(Form("root://cms-xrdr.sdfarm.kr:2094///xrd/store/user/kilee/MB/Pbp_Up1S_GENonly_multiplicity_v1_20200704/Upsilon1S_pPb-Bst_8p16-Pythia8/Pbp_Up1S_GENonly_multiplicity_v1_20200704/200703_152703/0000/mcStudy_Up1S_816TeV_%d.root", i+1));
+	}
+	TTree* tin = tin_tmp->CloneTree();
+	tin_tmp->Reset();
+	TFile* freweight = new TFile(Form("../SkimmedFiles/Yield/Kinematic_dist_comp_%dS_v57_MupT%s.root", Generation, MupT.Data()), "READ");
+	TF1* funcrw = (TF1*) freweight->Get("fit1");
 //}}}
 
-	TH2D* hGen = new TH2D("hGen", ";Rapidity;p_{T}^{#varUpsilon}", rap_narr-1, rapBinsArr, pt_narr-1, ptBinsArr);
-	TH2D* hAccGen = new TH2D("hAccGen", ";Rapidity;p_{T}^{#varUpsilon}", rap_narr-1, rapBinsArr, pt_narr-1, ptBinsArr);
-	TH2D* hReco = new TH2D("hReco", ";Rapidity;p_{T}^{#varUpsilon}", rap_narr-1, rapBinsArr, pt_narr-1, ptBinsArr);
-	TH2D* hGeneta = new TH2D("hGeneta", ";p_{T}^{#varUpsilon};PsudoRapidity", pt_narr-1, ptBinsArr, 40, -10, 10);
-	TH2D* hRecoeta = new TH2D("hRecoeta", ";p_{T}^{#varUpsilon};PsudoRapidity", pt_narr-1, ptBinsArr, 40, -10, 10);
+//Define histogram{{{
+	const Int_t npt = 13;
+	Double_t ptBin[npt+1] = {0,1,2,3,4,5,6,7,8,9,10,15,20,30};
 
-	FormTH2(hGen);
-	FormTH2(hAccGen);
-	FormTH2(hReco);
-	FormTH2(hGeneta);
-	FormTH2(hRecoeta);
+	TH1D* hGen0016 = new TH1D("hGen0016", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
+	TH1D* hGen1618 = new TH1D("hGen1618", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
+	TH1D* hGen1821 = new TH1D("hGen1821", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
+	TH1D* hGen2124 = new TH1D("hGen2124", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
 
-	const Int_t MaxQQ = 250;
+	TH1D* hAccGen0016 = new TH1D("hAccGen0016", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
+	TH1D* hAccGen1618 = new TH1D("hAccGen1618", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
+	TH1D* hAccGen1821 = new TH1D("hAccGen1821", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
+	TH1D* hAccGen2124 = new TH1D("hAccGen2124", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
+
+	TH1D* hGenPt = new TH1D("hGenPt", ";p_{T}^{#varUpsilon} GeV/c;", 30, 0, 30);
+	TH1D* hAccGenPt = new TH1D("hAccGenPt", ";p_{T}^{#varUpsilon} GeV/c;", 30, 0, 30);
+	TH1D* hGeny = new TH1D("hGeny", ";y;", 48, -2.4, 2.4);
+	TH1D* hAccGeny = new TH1D("hAccGeny", ";y;", 48, -2.4, 2.4);
+
+	FormTH1Marker(hGen0016);
+	FormTH1Marker(hGen1618);
+	FormTH1Marker(hGen1821);
+	FormTH1Marker(hGen2124);
+	FormTH1Marker(hAccGen0016);
+	FormTH1Marker(hAccGen1618);
+	FormTH1Marker(hAccGen1821);
+	FormTH1Marker(hAccGen2124);
+	FormTH1Marker(hGenPt);
+	FormTH1Marker(hAccGenPt);
+	FormTH1Marker(hGeny);
+	FormTH1Marker(hAccGeny);
+//}}}
 
 //Tree variables{{{
-	ULong64_t HLTriggers;
-	Int_t Reco_QQ_size;
-	Int_t Reco_QQ_type[MaxQQ];
-	Int_t Reco_QQ_sign[MaxQQ];
-	Float_t Reco_QQ_VtxProb[MaxQQ];
-	ULong64_t Reco_QQ_trig[MaxQQ];
-	Bool_t Reco_QQ_mupl_TMOneStaTight[MaxQQ];
-	Bool_t Reco_QQ_mumi_TMOneStaTight[MaxQQ];
-	Bool_t Reco_QQ_mupl_highPurity[MaxQQ];
-	Bool_t Reco_QQ_mumi_highPurity[MaxQQ];
-	Int_t Reco_QQ_mupl_nTrkWMea[MaxQQ];
-	Int_t Reco_QQ_mumi_nTrkWMea[MaxQQ];
-	Int_t Reco_QQ_mupl_nPixWMea[MaxQQ];
-	Int_t Reco_QQ_mumi_nPixWMea[MaxQQ];
-	Float_t Reco_QQ_mupl_dxy[MaxQQ];
-	Float_t Reco_QQ_mumi_dxy[MaxQQ];
-	Float_t Reco_QQ_mupl_dz[MaxQQ];
-	Float_t Reco_QQ_mumi_dz[MaxQQ];
-	TClonesArray* Reco_QQ_4mom;
-	TClonesArray* Reco_QQ_mupl_4mom;
-	TClonesArray* Reco_QQ_mumi_4mom;
-	Reco_QQ_4mom = 0;
-	Reco_QQ_mupl_4mom = 0;
-	Reco_QQ_mumi_4mom = 0;
+	double mass = 0.0, pt = 0.0, phi = 0.0, eta = 0.0, rap = 0.0;
+	double pt1 = 0.0, phi1 = 0.0, eta1 = 0.0, eng1 = 0.0;
+	double pt2 = 0.0, phi2 = 0.0, eta2 = 0.0, eng2 = 0.0;
 
-	Int_t Gen_QQ_size;
-	TClonesArray* Gen_QQ_4mom;
-	TClonesArray* Gen_QQ_mupl_4mom;
-	TClonesArray* Gen_QQ_mumi_4mom;
-	Gen_QQ_4mom = 0;
-	Gen_QQ_mupl_4mom = 0;
-	Gen_QQ_mumi_4mom = 0;
-//}}}
+	TBranch* b_mass;
+	TBranch* b_pt;
+	TBranch* b_phi;
+	TBranch* b_eta;
+	TBranch* b_rap;
+	TBranch* b_pt1;
+	TBranch* b_phi1;
+	TBranch* b_eta1;
+	TBranch* b_eng1;
+	TBranch* b_pt2;
+	TBranch* b_phi2;
+	TBranch* b_eta2;
+	TBranch* b_eng2;
 
-//Branch{{{
-	TBranch* b_HLTriggers;
-	TBranch* b_Reco_QQ_size;
-	TBranch* b_Reco_QQ_type;
-	TBranch* b_Reco_QQ_sign;
-	TBranch* b_Reco_QQ_VtxProb;
-	TBranch* b_Reco_QQ_trig;
-	TBranch* b_Reco_QQ_mupl_TMOneStaTight;
-	TBranch* b_Reco_QQ_mumi_TMOneStaTight;
-	TBranch* b_Reco_QQ_mupl_highPurity;
-	TBranch* b_Reco_QQ_mumi_highPurity;
-	TBranch* b_Reco_QQ_mupl_nTrkWMea;
-	TBranch* b_Reco_QQ_mumi_nTrkWMea;
-	TBranch* b_Reco_QQ_mupl_nPixWMea;
-	TBranch* b_Reco_QQ_mumi_nPixWMea;
-	TBranch* b_Reco_QQ_mupl_dxy;
-	TBranch* b_Reco_QQ_mumi_dxy;
-	TBranch* b_Reco_QQ_mupl_dz;
-	TBranch* b_Reco_QQ_mumi_dz;
-	TBranch* b_Reco_QQ_4mom;
-	TBranch* b_Reco_QQ_mupl_4mom;
-	TBranch* b_Reco_QQ_mumi_4mom;
-	TBranch* b_Gen_QQ_size;
-	TBranch* b_Gen_QQ_4mom;
-	TBranch* b_Gen_QQ_mupl_4mom;
-	TBranch* b_Gen_QQ_mumi_4mom;
-//}}}
-
-//Branch address{{{
-	tin->SetBranchAddress("HLTriggers", &HLTriggers, &b_HLTriggers);
-	tin->SetBranchAddress("Reco_QQ_size", &Reco_QQ_size, &b_Reco_QQ_size);
-	tin->SetBranchAddress("Reco_QQ_type", Reco_QQ_type, &b_Reco_QQ_type);
-	tin->SetBranchAddress("Reco_QQ_sign", Reco_QQ_sign, &b_Reco_QQ_sign);
-	tin->SetBranchAddress("Reco_QQ_VtxProb", Reco_QQ_VtxProb, &b_Reco_QQ_VtxProb);
-	tin->SetBranchAddress("Reco_QQ_trig", Reco_QQ_trig, &b_Reco_QQ_trig);
-	tin->SetBranchAddress("Reco_QQ_mupl_TMOneStaTight", Reco_QQ_mupl_TMOneStaTight, &b_Reco_QQ_mupl_TMOneStaTight);
-	tin->SetBranchAddress("Reco_QQ_mumi_TMOneStaTight", Reco_QQ_mumi_TMOneStaTight, &b_Reco_QQ_mumi_TMOneStaTight);
-	tin->SetBranchAddress("Reco_QQ_mupl_highPurity", Reco_QQ_mupl_highPurity, &b_Reco_QQ_mupl_highPurity);
-	tin->SetBranchAddress("Reco_QQ_mumi_highPurity", Reco_QQ_mumi_highPurity, &b_Reco_QQ_mumi_highPurity);
-	tin->SetBranchAddress("Reco_QQ_mupl_nTrkWMea", Reco_QQ_mupl_nTrkWMea, &b_Reco_QQ_mupl_nTrkWMea);
-	tin->SetBranchAddress("Reco_QQ_mumi_nTrkWMea", Reco_QQ_mumi_nTrkWMea, &b_Reco_QQ_mumi_nTrkWMea);
-	tin->SetBranchAddress("Reco_QQ_mupl_nPixWMea", Reco_QQ_mupl_nPixWMea, &b_Reco_QQ_mupl_nPixWMea);
-	tin->SetBranchAddress("Reco_QQ_mumi_nPixWMea", Reco_QQ_mumi_nPixWMea, &b_Reco_QQ_mumi_nPixWMea);
-	tin->SetBranchAddress("Reco_QQ_mupl_dxy", Reco_QQ_mupl_dxy, &b_Reco_QQ_mupl_dxy);
-	tin->SetBranchAddress("Reco_QQ_mumi_dxy", Reco_QQ_mumi_dxy, &b_Reco_QQ_mumi_dxy);
-	tin->SetBranchAddress("Reco_QQ_mupl_dz", Reco_QQ_mupl_dz, &b_Reco_QQ_mupl_dz);
-	tin->SetBranchAddress("Reco_QQ_mumi_dz", Reco_QQ_mumi_dz, &b_Reco_QQ_mumi_dz);
-	tin->SetBranchAddress("Reco_QQ_4mom", &Reco_QQ_4mom, &b_Reco_QQ_4mom);
-	tin->SetBranchAddress("Reco_QQ_mupl_4mom", &Reco_QQ_mupl_4mom, &b_Reco_QQ_mupl_4mom);
-	tin->SetBranchAddress("Reco_QQ_mumi_4mom", &Reco_QQ_mumi_4mom, &b_Reco_QQ_mumi_4mom);
-	tin->SetBranchAddress("Gen_QQ_size", &Gen_QQ_size, &b_Gen_QQ_size);
-	tin->SetBranchAddress("Gen_QQ_4mom", &Gen_QQ_4mom, &b_Gen_QQ_4mom);
-	tin->SetBranchAddress("Gen_QQ_mupl_4mom", &Gen_QQ_mupl_4mom, &b_Gen_QQ_mupl_4mom);
-	tin->SetBranchAddress("Gen_QQ_mumi_4mom", &Gen_QQ_mumi_4mom, &b_Gen_QQ_mumi_4mom);
-//}}}
-
-//Define LorentzVector{{{
-	TLorentzVector* Up_Reco_4mom = new TLorentzVector;
-	TLorentzVector* mupl_Reco_4mom = new TLorentzVector;
-	TLorentzVector* mumi_Reco_4mom = new TLorentzVector;
-	TLorentzVector* Up_Gen_4mom = new TLorentzVector;
-	TLorentzVector* mupl_Gen_4mom = new TLorentzVector;
-	TLorentzVector* mumi_Gen_4mom = new TLorentzVector;
-	Up_Reco_4mom = 0;
-	mupl_Reco_4mom = 0;
-	mumi_Reco_4mom = 0;
-	Up_Gen_4mom = 0;
-	mupl_Gen_4mom = 0;
-	mumi_Gen_4mom = 0;
+	tin->SetBranchAddress("mass", &mass,   &b_mass);
+	tin->SetBranchAddress("pt",   &pt,     &b_pt);
+	tin->SetBranchAddress("phi",  &phi,    &b_phi);
+	tin->SetBranchAddress("eta",  &eta,    &b_eta);
+	tin->SetBranchAddress("rap",  &b_rap,  &b_rap);
+	tin->SetBranchAddress("pt1",  &pt1,    &b_pt1);
+	tin->SetBranchAddress("phi1", &phi1,   &b_phi1);
+	tin->SetBranchAddress("eta1", &eta1,   &b_eta1);
+	tin->SetBranchAddress("eng1", &b_rap1, &b_rap1);
+	tin->SetBranchAddress("pt2",  &pt2,    &b_pt2);
+	tin->SetBranchAddress("phi2", &phi2,   &b_phi2);
+	tin->SetBranchAddress("eta2", &eta2,   &b_eta2);
+	tin->SetBranchAddress("eng2", &b_rap2, &b_rap2);
 //}}}
 
 	const Int_t Nevt = tin->GetEntries();
@@ -174,132 +142,107 @@ void Acc()
 		if(ievt%100000 == 0) cout << "Events: " << ievt << " / " << Nevt << "[" << Form("%.1f", ( (double)ievt/(double)Nevt)*100 ) << " %]" << endl;
 		tin->GetEntry(ievt);
 
-//Fill Gen{{{
-		for(Int_t iqq = 0; iqq < Gen_QQ_size; iqq++)
+		Double_t reweight = 1.;
+		if(isRW) reweight = reweight = funcrw->Eval(pt);
+
+		if( fabs(rap) <= 2.4 && pt >= 0.0 && pt <= 30.0)
 		{
-			Up_Gen_4mom = (TLorentzVector*) Gen_QQ_4mom->At(iqq);
-			mupl_Gen_4mom = (TLorentzVector*) Gen_QQ_mupl_4mom->At(iqq);
-			mumi_Gen_4mom = (TLorentzVector*) Gen_QQ_mumi_4mom->At(iqq);
-			hGen->Fill(Up_Gen_4mom->Rapidity(), Up_Gen_4mom->Pt());
-			hGeneta->Fill(Up_Gen_4mom->Pt(), Up_Gen_4mom->Eta());
-			if( !InAcc(mupl_Gen_4mom->Pt(), mupl_Gen_4mom->Eta()) ) continue;
-			if( !InAcc(mumi_Gen_4mom->Pt(), mumi_Gen_4mom->Eta()) ) continue;
-			hAccGen->Fill(Up_Gen_4mom->Rapidity(), Up_Gen_4mom->Pt());
-		}
+//Fill total{{{
+			hGenPt->Fill(pt, reweight);
+			hGeny->Fill(rap, reweight);
+			if( fbas(rap) <= 1.6) hGen0016->Fill(pt, reweight);
+			if( fbas(rap) > 1.6 && fabs(rap) <= 1.8 ) hGen0016->Fill(pt, reweight);
+			if( fbas(rap) > 1.8 && fabs(rap) <= 2.1 ) hGen0016->Fill(pt, reweight);
+			if( fbas(rap) > 2.1 && fabs(rap) <= 2.4 ) hGen0016->Fill(pt, reweight);
 //}}}
 
-		if( (HLTriggers&1)!=1 ) continue;
-
-		for(Int_t iqq = 0; iqq < Reco_QQ_size; iqq++)
-		{
-			Up_Reco_4mom = (TLorentzVector*) Reco_QQ_4mom->At(iqq);
-			mupl_Reco_4mom = (TLorentzVector*) Reco_QQ_mupl_4mom->At(iqq);
-			mumi_Reco_4mom = (TLorentzVector*) Reco_QQ_mumi_4mom->At(iqq);
-
-//Cuts for muon and Upsilon{{{
-			if( (Reco_QQ_trig[iqq]&1) != 1 ) continue;
-
-			if( !InAcc(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta()) ) continue;
-			if( !InAcc(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta()) ) continue;
-
-			bool muplSoft = ( (Reco_QQ_mupl_TMOneStaTight[iqq] == true) &&
-									(Reco_QQ_mupl_nTrkWMea[iqq] > 5) &&
-									(Reco_QQ_mupl_nPixWMea[iqq] > 0) &&
-									(Reco_QQ_mupl_dxy[iqq] < 0.3) &&
-									(Reco_QQ_mupl_dz[iqq] < 20.0) &&
-									(Reco_QQ_mupl_highPurity[iqq] == true) //purity used for pPb not PbPb
-									);
-			bool mumiSoft = ( (Reco_QQ_mumi_TMOneStaTight[iqq] == true) &&
-									(Reco_QQ_mumi_nTrkWMea[iqq] > 5) &&
-									(Reco_QQ_mumi_nPixWMea[iqq] > 0) &&
-									(Reco_QQ_mumi_dxy[iqq] < 0.3) &&
-									(Reco_QQ_mumi_dz[iqq] < 20.0) &&
-									(Reco_QQ_mumi_highPurity[iqq] == true) //purity used for pPb not PbPb
-									);
-			if( !(muplSoft && mumiSoft) ) continue;
-
-			if( Reco_QQ_VtxProb[iqq] < 0.01 ) continue;
-
-			if( Reco_QQ_sign[iqq] != 0) continue;
+			if( InAcc(pt1, eta1) && InAcc(pt2, eta2) );
+			{
+//Fill within acceptance{{{
+				hAccGenPt->Fill(pt, reweight);
+				hAccGeny->Fill(rap, reweight);
+				if( fbas(rap) <= 1.6) hAccGen0016->Fill(pt, reweight);
+				if( fbas(rap) > 1.6 && fabs(rap) <= 1.8 ) hAccGen0016->Fill(pt, reweight);
+				if( fbas(rap) > 1.8 && fabs(rap) <= 2.1 ) hAccGen0016->Fill(pt, reweight);
+				if( fbas(rap) > 2.1 && fabs(rap) <= 2.4 ) hAccGen0016->Fill(pt, reweight);
 //}}}
-
-			hReco->Fill(Up_Reco_4mom->Rapidity(), Up_Reco_4mom->Pt());
-			hRecoeta->Fill(Up_Reco_4mom->Pt(), Up_Reco_4mom->Eta());
+			}
 		}
 	}
 
-	TCanvas* cGen = new TCanvas("cGen", "", 0, 0, 600, 600);
-	cGen->cd();
-	hGen->Draw("colztext");
-	cGen->SaveAs(Form("Plots/Gen_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+//Draw{{{
+	TCanvas* cGenPt = new TCanvas("cGenPt", "", 0, 0, 600, 600);
+	cGenPt->cd();
+	hGenPt->Draw("pe");
+	cGenPt->SaveAs(Form("Plots/GenPt_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
 
-	TCanvas* cGeneta = new TCanvas("cGeneta", "", 0, 0, 600, 600);
-	cGeneta->cd();
-	hGeneta->Draw("colztext");
-	cGeneta->SaveAs(Form("Plots/Geneta_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	TCanvas* cAccGenPt = new TCanvas("cAccGenPt", "", 0, 0, 600, 600);
+	cAccGenPt->cd();
+	hAccGenPt->Draw("pe");
+	cAccGenPt->SaveAs(Form("Plots/GenPt_inAcc_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
 
-	TCanvas* cAccGen = new TCanvas("cAccGen", "", 0, 0, 600, 600);
-	cAccGen->cd();
-	hAccGen->Draw("colztext");
-	cAccGen->SaveAs(Form("Plots/GenwAcc_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	TH1D* hAccPt = (TH1D*) hAccGenPt->Clone("hAccPt");
+	hAccPt->Divide(hGenPt);
 
-	TCanvas* cReco = new TCanvas("cReco", "", 0, 0, 600, 600);
-	cReco->cd();
-	hReco->Draw("colztext");
-	cReco->SaveAs(Form("Plots/Reco_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	TCanvas* cAccPt = new TCanvas("cAccPt", "", 0, 0, 600, 600);
+	cAccPt->cd();
+	hAccPt->Draw("pe");
+	cAccPt->SaveAs(Form("Plots/AccPt_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
 
-	TCanvas* cRecoeta = new TCanvas("cRecoeta", "", 0, 0, 600, 600);
-	cRecoeta->cd();
-	hRecoeta->Draw("colztext");
-	cRecoeta->SaveAs(Form("Plots/Recoeta_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	TCanvas* cGeny = new TCanvas("cGeny", "", 0, 0, 600, 600);
+	cGeny->cd();
+	hGeny->Draw("pe");
+	cGeny->SaveAs(Form("Plots/Geny_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
 
-	TH2D* hAcc = (TH2D*) hAccGen->Clone("hAcc");
-	hAcc->Divide(hGen);
+	TCanvas* cAccGeny = new TCanvas("cAccGeny", "", 0, 0, 600, 600);
+	cAccGeny->cd();
+	hAccGeny->Draw("pe");
+	cAccGeny->SaveAs(Form("Plots/Geny_inAcc_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
 
-	TCanvas* cAcc = new TCanvas("cAcc", "", 0, 0, 600, 600);
-	cAcc->cd();
-	hAcc->Draw("colztext");
-	cAcc->SaveAs(Form("Plots/Acc_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	TH1D* hAccy = (TH1D*) hAccGeny->Clone("hAccy");
+	hAccy->Divide(hGeny);
 
-	TH2D* hEff = (TH2D*) hReco->Clone("hEff");
-	hEff->Divide(hAccGen);
+	TCanvas* cAccy = new TCanvas("cAccy", "", 0, 0, 600, 600);
+	cAccy->cd();
+	hAccy->Draw("pe");
+	cAccy->SaveAs(Form("Plots/Accy_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
+//}}}
 
-	TCanvas* cEff = new TCanvas("cEff", "", 0, 0, 600, 600);
-	cEff->cd();
-	hEff->Draw("colztext");
-	cEff->SaveAs(Form("Plots/Eff_Upsilon_%dS_%s.pdf", Generation, version.Data()));
+	TH1D* hAcc0016 = (TH1D*) hAccGen0016->Clone("hAcc0016");
+	TH1D* hAcc1618 = (TH1D*) hAccGen1618->Clone("hAcc1618");
+	TH1D* hAcc1821 = (TH1D*) hAccGen1821->Clone("hAcc1821");
+	TH1D* hAcc2124 = (TH1D*) hAccGen2124->Clone("hAcc2124");
+	hAcc0016->Divide(hGen0016);
+	hAcc1618->Divide(hGen1618);
+	hAcc1821->Divide(hGen1821);
+	hAcc2124->Divide(hGen2124);
 
-	TH2D* hAccEff = (TH2D*) hAcc->Clone("hAccEff");
-	hAccEff->Multiply(hEff);
-
-	TCanvas* cAccEff = new TCanvas("cAccEff", "", 0, 0, 600, 600);
-	cAccEff->cd();
-	hAccEff->Draw("colztext");
-	cAccEff->SaveAs(Form("Plots/AccEff_Upsilon_%dS_%s.pdf", Generation, version.Data()));
-
-	TH2D* hEffeta = (TH2D*) hRecoeta->Clone("hEffeta");
-	hEffeta->Divide(hGeneta);
-
-	TCanvas* cEffeta = new TCanvas("cEffeta", "", 0, 0, 600, 600);
-	cEffeta->cd();
-	hEffeta->Draw("colztext");
-	cEffeta->SaveAs(Form("Plots/Effeta_Upsilon_%dS_%s.pdf", Generation, version.Data()));
-
-	TFile* fout = new TFile(Form("Plots/AccEffPlots_Upsilon_%dS_%s.root", Generation, version.Data()), "RECREATE");
+//save{{{
+	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_%s.root", Generation, isRW, version.Data()), "RECREATE");
 	fout->cd();
-	hGen->Write();
-	hGeneta->Write();
-	hAccGen->Write();
-	hReco->Write();
-	hRecoeta->Write();
-	hAcc->Write();
-	hEff->Write();
-	hEffeta->Write();
-	hAccEff->Write();
+	hGenPt->Write();
+	hGeny->Write();
+	hAccGenPt->Write();
+	hAccGeny->Write();
+	hAccPt->Write();
+	hAccy->Write();
+	hGen0016-Write();
+	hGen1618-Write();
+	hGen1821-Write();
+	hGen2124-Write();
+	hAccGen0016-Write();
+	hAccGen1618-Write();
+	hAccGen1821-Write();
+	hAccGen2124-Write();
+	hAcc0016-Write();
+	hAcc1618-Write();
+	hAcc1821-Write();
+	hAcc2124-Write();
 	fout->Close();
+//}}}
 }
 
-bool InAcc(Double_t muPt, Double_t muEta)
+bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut)
 {
-	return( TMath::Abs(muEta) < 2.4 && muPt >= 4);
+	return( TMath::Abs(muEta) < 2.4 && muPt >= MupTCut);
 }
