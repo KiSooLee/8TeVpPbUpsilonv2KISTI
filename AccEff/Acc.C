@@ -171,15 +171,18 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	}
 
 //Draw{{{
+	TLatex* lt1 = new TLatex();
+	FormLatex(lt1, 12, 0.045);
+
 	TCanvas* cGenPt = new TCanvas("cGenPt", "", 0, 0, 600, 600);
 	cGenPt->cd();
 	hGenPt->Draw("pe");
-	cGenPt->SaveAs(Form("Plots/GenPt_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cGenPt->SaveAs(Form("Plots/GenPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
 
 	TCanvas* cAccGenPt = new TCanvas("cAccGenPt", "", 0, 0, 600, 600);
 	cAccGenPt->cd();
 	hAccGenPt->Draw("pe");
-	cAccGenPt->SaveAs(Form("Plots/GenPt_inAcc_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cAccGenPt->SaveAs(Form("Plots/GenPt_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
 
 	TH1D* hAccPt = (TH1D*) hAccGenPt->Clone("hAccPt");
 	hAccPt->Divide(hGenPt);
@@ -188,17 +191,19 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TCanvas* cAccPt = new TCanvas("cAccPt", "", 0, 0, 600, 600);
 	cAccPt->cd();
 	hAccPt->Draw("pe");
-	cAccPt->SaveAs(Form("Plots/AccPt_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4", MupTCut));
+	cAccPt->SaveAs(Form("Plots/AccPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
 
 	TCanvas* cGeny = new TCanvas("cGeny", "", 0, 0, 600, 600);
 	cGeny->cd();
 	hGeny->Draw("pe");
-	cGeny->SaveAs(Form("Plots/Geny_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cGeny->SaveAs(Form("Plots/Geny_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
 
 	TCanvas* cAccGeny = new TCanvas("cAccGeny", "", 0, 0, 600, 600);
 	cAccGeny->cd();
 	hAccGeny->Draw("pe");
-	cAccGeny->SaveAs(Form("Plots/Geny_inAcc_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cAccGeny->SaveAs(Form("Plots/Geny_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
 
 	TH1D* hAccy = (TH1D*) hAccGeny->Clone("hAccy");
 	hAccy->Divide(hGeny);
@@ -207,7 +212,9 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TCanvas* cAccy = new TCanvas("cAccy", "", 0, 0, 600, 600);
 	cAccy->cd();
 	hAccy->Draw("pe");
-	cAccy->SaveAs(Form("Plots/Accy_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4", MupTCut));
+	cAccy->SaveAs(Form("Plots/Accy_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
 //}}}
 
 	TH1D* hAcc0016 = (TH1D*) hAccGen0016->Clone("hAcc0016");
