@@ -72,20 +72,20 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	const Int_t npt = 13;
 	Double_t ptBin[npt+1] = {0,1,2,3,4,5,6,7,8,9,10,15,20,30};
 
-	TH1D* hGen0016 = new TH1D("hGen0016", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
-	TH1D* hGen1618 = new TH1D("hGen1618", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
-	TH1D* hGen1821 = new TH1D("hGen1821", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
-	TH1D* hGen2124 = new TH1D("hGen2124", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
+	TH1D* hGen0016 = new TH1D("hGen0016", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
+	TH1D* hGen1618 = new TH1D("hGen1618", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
+	TH1D* hGen1821 = new TH1D("hGen1821", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
+	TH1D* hGen2124 = new TH1D("hGen2124", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
 
-	TH1D* hAccGen0016 = new TH1D("hAccGen0016", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
-	TH1D* hAccGen1618 = new TH1D("hAccGen1618", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
-	TH1D* hAccGen1821 = new TH1D("hAccGen1821", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
-	TH1D* hAccGen2124 = new TH1D("hAccGen2124", ";p_{T}^{#varUpsilon} GeV/c;", npt, ptBin);
+	TH1D* hAccGen0016 = new TH1D("hAccGen0016", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
+	TH1D* hAccGen1618 = new TH1D("hAccGen1618", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
+	TH1D* hAccGen1821 = new TH1D("hAccGen1821", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
+	TH1D* hAccGen2124 = new TH1D("hAccGen2124", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
 
-	TH1D* hGenPt = new TH1D("hGenPt", ";p_{T}^{#varUpsilon} GeV/c;", 30, 0, 30);
-	TH1D* hAccGenPt = new TH1D("hAccGenPt", ";p_{T}^{#varUpsilon} GeV/c;", 30, 0, 30);
-	TH1D* hGeny = new TH1D("hGeny", ";y;", 48, -2.4, 2.4);
-	TH1D* hAccGeny = new TH1D("hAccGeny", ";y;", 48, -2.4, 2.4);
+	TH1D* hGenPt = new TH1D("hGenPt", ";p_{T}^{#varUpsilon} GeV/c;Entries", 30, 0, 30);
+	TH1D* hAccGenPt = new TH1D("hAccGenPt", ";p_{T}^{#varUpsilon} GeV/c;Entries", 30, 0, 30);
+	TH1D* hGeny = new TH1D("hGeny", ";y;Entries", 48, -2.4, 2.4);
+	TH1D* hAccGeny = new TH1D("hAccGeny", ";y;Entries", 48, -2.4, 2.4);
 
 	FormTH1Marker(hGen0016, 0, 0, 1.2);
 	FormTH1Marker(hGen1618, 0, 0, 1.2);
@@ -183,6 +183,7 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 
 	TH1D* hAccPt = (TH1D*) hAccGenPt->Clone("hAccPt");
 	hAccPt->Divide(hGenPt);
+	hAccPt->GetYaxis()->SetTitle("Acc.");
 
 	TCanvas* cAccPt = new TCanvas("cAccPt", "", 0, 0, 600, 600);
 	cAccPt->cd();
@@ -201,6 +202,7 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 
 	TH1D* hAccy = (TH1D*) hAccGeny->Clone("hAccy");
 	hAccy->Divide(hGeny);
+	hAccy->GetYaxis()->SetTitle("Acc.");
 
 	TCanvas* cAccy = new TCanvas("cAccy", "", 0, 0, 600, 600);
 	cAccy->cd();
@@ -216,6 +218,10 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	hAcc1618->Divide(hGen1618);
 	hAcc1821->Divide(hGen1821);
 	hAcc2124->Divide(hGen2124);
+	hAcc0016->GetYaxis()->SetTitle("Acc.");
+	hAcc1618->GetYaxis()->SetTitle("Acc.");
+	hAcc1821->GetYaxis()->SetTitle("Acc.");
+	hAcc2124->GetYaxis()->SetTitle("Acc.");
 
 //save{{{
 	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_%s.root", Generation, isRW, version.Data()), "RECREATE");
