@@ -18,6 +18,7 @@
 
 #include "../Headers/Style_Upv2.h"
 #include "../Headers/Upsilon.h"
+#include "../Headers/tnp_weight_lowptpPb.h"
 
 using namespace std;
 using namespace RooFit;
@@ -25,7 +26,7 @@ using namespace RooFit;
 
 bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
+void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t isRW = true, const Bool_t isTnP = true)
 {
 	SetStyle();
 
@@ -58,8 +59,8 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 
 //Get files{{{
 	TChain* tin = new TChain("hionia/myTree");
-	TString fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_20190613.root", Generation);
-	TString fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_20190613.root", Generation);
+	TString fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_private_20200716.root", Generation);
+	TString fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_private_20200716.root", Generation);
 	tin->Add(fname1.Data());
 	const Int_t Nevtcut = tin->GetEntries();
 	tin->Add(fname2.Data());
@@ -76,25 +77,25 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 //}}}
 
 //Define canvas and histogram{{{
-	TCanvas* cyDenintgr = new TCanvas("cyDenintgr", "", 0, 0, 600, 600);
-	TCanvas* cyNumintgr = new TCanvas("cyNumintgr", "", 0, 0, 600, 600);
-	TCanvas* cyEffintgr = new TCanvas("cyEffintgr", "", 0, 0, 600, 600);
-	TCanvas* cptDenintgr = new TCanvas("cptDenintgr", "", 0, 0, 600, 600);
-	TCanvas* cptNumintgr = new TCanvas("cptNumintgr", "", 0, 0, 600, 600);
-	TCanvas* cptEffintgr = new TCanvas("cptEffintgr", "", 0, 0, 600, 600);
+	TCanvas* cyDen_tot = new TCanvas("cyDen_tot", "", 0, 0, 600, 600);
+	TCanvas* cyNum_tot = new TCanvas("cyNum_tot", "", 0, 0, 600, 600);
+	TCanvas* cyEff_tot = new TCanvas("cyEff_tot", "", 0, 0, 600, 600);
+	TCanvas* cptDen_tot = new TCanvas("cptDen_tot", "", 0, 0, 600, 600);
+	TCanvas* cptNum_tot = new TCanvas("cptNum_tot", "", 0, 0, 600, 600);
+	TCanvas* cptEff_tot = new TCanvas("cptEff_tot", "", 0, 0, 600, 600);
 	TCanvas* cDen[Ny-1];
 	TCanvas* cNum[Ny-1];
 	TCanvas* cEff[Ny-1];
-	TH1D* hyDenintgr = new TH1D("hyDenintgr", ";y^{#varUpsilon};Entries", 250, -2.5, 2.5);
-	TH1D* hyNumintgr = new TH1D("hyNumintgr", ";y^{#varUpsilon};Entries", 250, -2.5, 2.5);
-	TH1D* hptDenintgr = new TH1D("hptDenintgr", ";p_{T}y^{#varUpsilon};Entries", 300, 0, 30);
-	TH1D* hptNumintgr = new TH1D("hptNumintgr", ";p_{T}y^{#varUpsilon};Entries", 300, 0, 30);
-	FormTH1Marker(hyDenintgr, 0, 0, 1.2);
-	FormTH1Marker(hyNumintgr, 0, 0, 1.2);
-	FormTH1Marker(hptDenintgr, 0, 0, 1.2);
-	FormTH1Marker(hptNumintgr, 0, 0, 1.2);
-	TH1D* hyEffintgr;
-	TH1D* hptEffintgr;
+	TH1D* hyDen_tot = new TH1D("hyDen_tot", ";y^{#varUpsilon};Entries", 250, -2.5, 2.5);
+	TH1D* hyNum_tot = new TH1D("hyNum_tot", ";y^{#varUpsilon};Entries", 250, -2.5, 2.5);
+	TH1D* hptDen_tot = new TH1D("hptDen_tot", ";p_{T}y^{#varUpsilon};Entries", 300, 0, 30);
+	TH1D* hptNum_tot = new TH1D("hptNum_tot", ";p_{T}y^{#varUpsilon};Entries", 300, 0, 30);
+	FormTH1Marker(hyDen_tot, 0, 0, 1.2);
+	FormTH1Marker(hyNum_tot, 0, 0, 1.2);
+	FormTH1Marker(hptDen_tot, 0, 0, 1.2);
+	FormTH1Marker(hptNum_tot, 0, 0, 1.2);
+	TH1D* hyEff_tot;
+	TH1D* hptEff_tot;
 	TH1D* hDen[Ny-1];
 	TH1D* hNum[Ny-1];
 	TH1D* hEff[Ny-1];
@@ -233,6 +234,8 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 		if(ievt%100000 == 0) cout << "Events: " << ievt << " / " << Nevt << "[" << Form("%.1f", ( (double)ievt/(double)Nevt)*100 ) << " %]" << endl;
 		tin->GetEntry(ievt);
 
+		Double_t reweight = 1.;
+
 //Fill Denominator{{{
 		for(Int_t iqq = 0; iqq < Gen_QQ_size; iqq++)
 		{
@@ -241,13 +244,14 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 			mumi_Gen_4mom = (TLorentzVector*) Gen_QQ_mumi_4mom->At(iqq);
 			if( !InAcc(mupl_Gen_4mom->Pt(), mupl_Gen_4mom->Eta(), MupTCut) ) continue;
 			if( !InAcc(mumi_Gen_4mom->Pt(), mumi_Gen_4mom->Eta(), MupTCut) ) continue;
-			if(ievt < Nevtcut) hyDenintgr->Fill(Up_Gen_4mom->Rapidity());
-			else hyDenintgr->Fill(-1.*Up_Gen_4mom->Rapidity());
-			hptDenintgr->Fill(Up_Gen_4mom->Pt());
+			if(isRW) reweight = funcrw->Eval(Up_Gen_4mom->Pt());
+			if(ievt < Nevtcut) hyDen_tot->Fill(Up_Gen_4mom->Rapidity(), reweight);
+			else hyDen_tot->Fill(-1.*Up_Gen_4mom->Rapidity(), reweight);
+			hptDen_tot->Fill(Up_Gen_4mom->Pt(), reweight);
 			for(Int_t iy = 0; iy < Ny-1; iy++)
 			{
 				if(fabs(Up_Gen_4mom->Rapidity()) > ybins[iy] && fabs(Up_Gen_4mom->Rapidity()) <= ybins[iy+1])
-				hDen[iy]->Fill(Up_Gen_4mom->Pt());
+				hDen[iy]->Fill(Up_Gen_4mom->Pt(), reweight);
 			}
 		}
 //}}}
@@ -288,13 +292,32 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 			if( Reco_QQ_sign[iqq] != 0) continue;
 //}}}
 
-			hyNumintgr->Fill(Up_Reco_4mom->Rapidity());
-			hptNumintgr->Fill(Up_Reco_4mom->Pt());
+			if(isRW) reweight = funcrw->Eval(Up_Reco_4mom->Pt());
+			Double_t mupl_muid_tnp = 1.;
+			Double_t mupl_trk_tnp = 1.;
+			Double_t mupl_trg_tnp = 1.;
+			Double_t mumi_muid_tnp = 1.;
+			Double_t mumi_trk_tnp = 1.;
+			Double_t mumi_trg_tnp = 1.;
+			if(isTnP)
+			{
+				mupl_muid_tnp = tnp_weight_muid_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 0);
+				mupl_trk_tnp = tnp_weight_trk_ppb(mupl_Reco_4mom->Eta(), 0);
+				mupl_trg_tnp = tnp_weight_trg_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 3, 0);
+				mumi_muid_tnp = tnp_weight_muid_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 0);
+				mumi_trk_tnp = tnp_weight_trk_ppb(mumi_Reco_4mom->Eta(), 0);
+				mumi_trg_tnp = tnp_weight_trg_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 3, 0);
+			}
+			Double_t mupl_tnp = mupl_muid_tnp*mupl_trk_tnp*mupl_trg_tnp;
+			Double_t mumi_tnp = mumi_muid_tnp*mumi_trk_tnp*mumi_trg_tnp;
+
+			hyNum_tot->Fill(Up_Reco_4mom->Rapidity(), 1./mupl_tnp*mumi_trg_tnp);
+			hptNum_tot->Fill(Up_Reco_4mom->Pt(), 1./mupl_tnp*mumi_trg_tnp);
 
 			for(Int_t iy = 0; iy < Ny-1; iy++)
 			{
 				if(fabs(Up_Reco_4mom->Rapidity()) > ybins[iy] && fabs(Up_Reco_4mom->Rapidity()) <= ybins[iy+1])
-				hNum[iy]->Fill(Up_Reco_4mom->Pt());
+				hNum[iy]->Fill(Up_Reco_4mom->Pt(), 1./mupl_tnp*mumi_trg_tnp);
 			}
 		}
 //}}}
@@ -304,45 +327,45 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 	FormLatex(lt1, 12, 0.05);
 	lt1->SetNDC();
 
-	cyDenintgr->cd();
-	hyDenintgr->Draw("pe");
+	cyDen_tot->cd();
+	hyDen_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cyDenintgr->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_yintegral_MupT%s.pdf", Generation, MupT.Data()));
+	cyDen_tot->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_yintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
 
-	cptDenintgr->cd();
-	hptDenintgr->Draw("pe");
+	cptDen_tot->cd();
+	hptDen_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cptDenintgr->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_ptintegral_MupT%s.pdf", Generation, MupT.Data()));
+	cptDen_tot->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_ptintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
 
-	cyNumintgr->cd();
-	hyNumintgr->Draw("pe");
+	cyNum_tot->cd();
+	hyNum_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cyNumintgr->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_yintegral_MupT%s.pdf", Generation, MupT.Data()));
+	cyNum_tot->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_yintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
 
-	cptNumintgr->cd();
-	hptNumintgr->Draw("pe");
+	cptNum_tot->cd();
+	hptNum_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cptNumintgr->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_ptintegral_MupT%s.pdf", Generation, MupT.Data()));
+	cptNum_tot->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_ptintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
 
-	cyEffintgr->cd();
-	hyEffintgr = (TH1D*) hyNumintgr->Clone(Form("hEffyintgr"));
-	hyEffintgr->GetYaxis()->SetTitle("Efficiency");
-	hyEffintgr->Divide(hyDenintgr);
-	hyEffintgr->SetMaximum(1.1);
-	hyEffintgr->SetMinimum(0.);
-	hyEffintgr->Draw("pe");
+	cyEff_tot->cd();
+	hyEff_tot = (TH1D*) hyNum_tot->Clone(Form("hyEff_tot"));
+	hyEff_tot->GetYaxis()->SetTitle("Efficiency");
+	hyEff_tot->Divide(hyDen_tot);
+	hyEff_tot->SetMaximum(1.1);
+	hyEff_tot->SetMinimum(0.0);
+	hyEff_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cyEffintgr->SaveAs(Form("Plots/eff_Up%dS_yintegral_MupT%s.pdf", Generation, MupT.Data()));
+	cyEff_tot->SaveAs(Form("Plots/Eff_Up%dS_yintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
 
-	cptEffintgr->cd();
-	hptEffintgr = (TH1D*) hptNumintgr->Clone(Form("hEffptintgr"));
-	hptEffintgr->GetYaxis()->SetTitle("Efficiency");
-	hptEffintgr->Divide(hptDenintgr);
-	hptEffintgr->SetMaximum(1.1);
-	hptEffintgr->SetMinimum(0.);
-	hptEffintgr->Draw("pe");
+	cptEff_tot->cd();
+	hptEff_tot = (TH1D*) hptNum_tot->Clone(Form("hptEff_tot"));
+	hptEff_tot->GetYaxis()->SetTitle("Efficiency");
+	hptEff_tot->Divide(hptDen_tot);
+	hptEff_tot->SetMaximum(1.1);
+	hptEff_tot->SetMinimum(0.0);
+	hptEff_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cptEffintgr->SaveAs(Form("Plots/eff_Up%dS_ptintegral_MupT%s.pdf", Generation, MupT.Data()));
+	cptEff_tot->SaveAs(Form("Plots/Eff_Up%dS_ptintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
 
 	for(Int_t iy = 0; iy < Ny-1; iy++)
 	{
@@ -350,32 +373,32 @@ void Eff(const TString MupT = "3p5", const Int_t Generation = 1)
 		hDen[iy]->Draw("pe");
 		lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.6, 0.77, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
-		cDen[iy]->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_Ny%d_etabin%d_MupT%s.pdf", Generation, Ny, iy, MupT.Data()));
+		cDen[iy]->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP,, MupT.Data()));
 		cNum[iy]->cd();
 		hNum[iy]->Draw("pe");
 		lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.6, 0.77, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
-		cNum[iy]->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_Ny%d_etabin%d_MupT%s.pdf", Generation, Ny, iy, MupT.Data()));
+		cNum[iy]->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP,, MupT.Data()));
 		cEff[iy]->cd();
 		hEff[iy] = (TH1D*) hNum[iy]->Clone(Form("hEff_%d", iy));
-		hEff[iy]->GetYaxis()->SetTitle("efficiency");
+		hEff[iy]->GetYaxis()->SetTitle("Efficiency");
 		hEff[iy]->Divide(hDen[iy]);
 		hEff[iy]->SetMaximum(1.1);
 		hEff[iy]->SetMinimum(0.);
 		hEff[iy]->Draw("pe");
 		lt1->DrawLatex(0.6, 0.44, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.6, 0.37, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
-		cEff[iy]->SaveAs(Form("Plots/eff_Up%dS_Ny%d_etabin%d_MupT%s.pdf", Generation, Ny, iy, MupT.Data()));
+		cEff[iy]->SaveAs(Form("Plots/eff_Up%dS_Ny%d_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP,, MupT.Data()));
 	}
 
-	TFile* fout = new TFile(Form("Plots/EffPlots_Upsilon_%dS_Ny%d_MupT%s.root", Generation, Ny, MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Plots/EffPlots_Upsilon_%dS_RW%o_TnP%o_MupT%s.root", Generation, isRW, isTnP, MupT.Data()), "RECREATE");
 	fout->cd();
-	hyDenintgr->Write();
-	hyNumintgr->Write();
-	hyEffintgr->Write();
-	hptDenintgr->Write();
-	hptNumintgr->Write();
-	hptEffintgr->Write();
+	hyDen_tot->Write();
+	hyNum_tot->Write();
+	hyEff_tot->Write();
+	hptDen_tot->Write();
+	hptNum_tot->Write();
+	hptEff_tot->Write();
 	for(Int_t iy = 0; iy < Ny-1; iy++)
 	{
 		hDen[iy]->Write();
