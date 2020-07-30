@@ -18,6 +18,7 @@
 
 #include "Headers/Style_Upv2.h"
 #include "Headers/Upsilon.h"
+#include "Headers/tnp_weight_lowptpPb.h"
 
 using namespace std;
 using namespace RooFit;
@@ -25,7 +26,7 @@ using namespace RooFit;
 
 bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void dataskim(const bool isMC = false, const bool Weight = false, const TString MupT = "3p5")
+void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_t Weight = true, const Bool_t isAccRW = true, const Bool_t isEffRW = true, cosnt Bool_t isTnP = true, const TString MupT = "3p5")
 {
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -64,8 +65,8 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 	//fname2 = "oniaTree_Pbp_20170504.root";//KUNPL
 	if(isMC)
 	{
-		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_1S_private_20200716.root";//KISTI
-		fname2 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_1S_private_20200716.root";//KISTI
+		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_private_20200716.root", Generation);//KISTI
+		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_private_20200716.root", Generation);//KISTI
 	}
 	else
 	{
@@ -76,23 +77,20 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 	const Int_t Nevtcut = tin->GetEntries();
 	tin->Add(fname2.Data());
 
-	// dmoon add : Acc and Eff file uploaed.
-	TFile *ineff = new TFile("AccEff/Plots/EffPlots_Upsilon_1S_Ny5_MupT3p5.root","READ"); // efficiency file
-	TFile *inacc = new TFile("AccEff/Plots/acc_acc_upsi_816.root","READ");
-	TH1F *hAcc0016 = (TH1F*)inacc->Get("hAccPt0016"); 
-	TH1F *hAcc1618 = (TH1F*)inacc->Get("hAccPt1618"); 
-	TH1F *hAcc1821 = (TH1F*)inacc->Get("hAccPt1821"); 
-	TH1F *hAcc2124 = (TH1F*)inacc->Get("hAccPt2124"); 
-	TH1F *hEff0016 = (TH1F*)ineff->Get("hEff_0");
-	TH1F *hEff1618 = (TH1F*)ineff->Get("hEff_1");
-	TH1F *hEff1821 = (TH1F*)ineff->Get("hEff_2");
-	TH1F *hEff2124 = (TH1F*)ineff->Get("hEff_3");
-	//TFile* fTnP = new TFile("AccEff/Plots/.root", "READ");
-	//TH1D* hTnP = (TH1F*) fTnP->Get("");
+	TFile *facc = new TFile(Form("AccEff/Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isAccRW, MupT.Data()),"READ");
+	TFile *feff = new TFile(Form("AccEff/Plots/EffPlots_Upsilon_%dS_RW%o_TnP%o_MupT%s.root", Generation, isEffRW, isTnP, MupT.Data()),"READ");
+	TH1F *hAcc0016 = (TH1F*)facc->Get("hAcc0016"); 
+	TH1F *hAcc1618 = (TH1F*)facc->Get("hAcc1618"); 
+	TH1F *hAcc1821 = (TH1F*)facc->Get("hAcc1821"); 
+	TH1F *hAcc2124 = (TH1F*)facc->Get("hAcc2124"); 
+	TH1F *hEff0016 = (TH1F*)feff->Get("hEff_0");
+	TH1F *hEff1618 = (TH1F*)feff->Get("hEff_1");
+	TH1F *hEff1821 = (TH1F*)feff->Get("hEff_2");
+	TH1F *hEff2124 = (TH1F*)feff->Get("hEff_3");
 //}}}
 
 	TFile* fout;
-	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_weight%o_MupT%s.root", MorD.Data(), Weight, MupT.Data()), "RECREATE");
+	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_Acc%o_Eff%o_TnP%o_MupT%s.root", MorD.Data(), Generation, isAccRW, isEffRW, isTnP, MupT.Data()), "RECREATE");
 
 	const Int_t MaxQQ = 250;
 	const Int_t MaxTrk = 1500;
@@ -311,26 +309,23 @@ void dataskim(const bool isMC = false, const bool Weight = false, const TString 
 				{
 					eff = hEff0016->GetBinContent(hEff0016->FindBin(Up_Reco_4mom->Pt()));
 					acc = hAcc0016->GetBinContent(hAcc0016->FindBin(Up_Reco_4mom->Pt()));
-					wgt = 1.0/(eff*acc);
 				}
 				else if(fabs(Up_Reco_4mom->Rapidity()) > 1.6 && fabs(Up_Reco_4mom->Rapidity()) <= 1.8)
 				{
 					eff = hEff1618->GetBinContent(hEff1618->FindBin(Up_Reco_4mom->Pt()));
 					acc = hAcc1618->GetBinContent(hAcc1618->FindBin(Up_Reco_4mom->Pt()));
-					wgt = 1.0/(eff*acc);
 				}
 				else if(fabs(Up_Reco_4mom->Rapidity()) > 1.8 && fabs(Up_Reco_4mom->Rapidity()) <= 2.1)
 				{
 					eff = hEff1821->GetBinContent(hEff1821->FindBin(Up_Reco_4mom->Pt()));
 					acc = hAcc1821->GetBinContent(hAcc1821->FindBin(Up_Reco_4mom->Pt()));
-					wgt = 1.0/(eff*acc);
 				}
 				else if(fabs(Up_Reco_4mom->Rapidity()) > 2.1 && fabs(Up_Reco_4mom->Rapidity()) <= 2.4)
 				{
 					eff = hEff2124->GetBinContent(hEff2124->FindBin(Up_Reco_4mom->Pt()));
 					acc = hAcc2124->GetBinContent(hAcc2124->FindBin(Up_Reco_4mom->Pt()));
-					wgt = 1.0/(eff*acc);
 				}
+				wgt = 1.0/(eff*acc);
 			}
 			//DMset.weight = 1.;
             //cout<<" Weighting number check, acc : "<<acc<<", eff : "<<eff<<", weight : " << wgt << endl;;
