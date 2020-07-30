@@ -174,12 +174,12 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TCanvas* cGenPt = new TCanvas("cGenPt", "", 0, 0, 600, 600);
 	cGenPt->cd();
 	hGenPt->Draw("pe");
-	cGenPt->SaveAs(Form("Plots/GenPt_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
+	cGenPt->SaveAs(Form("Plots/GenPt_Upsilon_%dS_RW%o_%s.pdf", Generation, MupT.Data()));
 
 	TCanvas* cAccGenPt = new TCanvas("cAccGenPt", "", 0, 0, 600, 600);
 	cAccGenPt->cd();
 	hAccGenPt->Draw("pe");
-	cAccGenPt->SaveAs(Form("Plots/GenPt_inAcc_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
+	cAccGenPt->SaveAs(Form("Plots/GenPt_inAcc_Upsilon_%dS_RW%o_%s.pdf", Generation, MupT.Data()));
 
 	TH1D* hAccPt = (TH1D*) hAccGenPt->Clone("hAccPt");
 	hAccPt->Divide(hGenPt);
@@ -188,17 +188,17 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TCanvas* cAccPt = new TCanvas("cAccPt", "", 0, 0, 600, 600);
 	cAccPt->cd();
 	hAccPt->Draw("pe");
-	cAccPt->SaveAs(Form("Plots/AccPt_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
+	cAccPt->SaveAs(Form("Plots/AccPt_Upsilon_%dS_RW%o_%s.pdf", Generation, MupT.Data()));
 
 	TCanvas* cGeny = new TCanvas("cGeny", "", 0, 0, 600, 600);
 	cGeny->cd();
 	hGeny->Draw("pe");
-	cGeny->SaveAs(Form("Plots/Geny_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
+	cGeny->SaveAs(Form("Plots/Geny_Upsilon_%dS_RW%o_%s.pdf", Generation, MupT.Data()));
 
 	TCanvas* cAccGeny = new TCanvas("cAccGeny", "", 0, 0, 600, 600);
 	cAccGeny->cd();
 	hAccGeny->Draw("pe");
-	cAccGeny->SaveAs(Form("Plots/Geny_inAcc_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
+	cAccGeny->SaveAs(Form("Plots/Geny_inAcc_Upsilon_%dS_RW%o_%s.pdf", Generation, MupT.Data()));
 
 	TH1D* hAccy = (TH1D*) hAccGeny->Clone("hAccy");
 	hAccy->Divide(hGeny);
@@ -207,7 +207,7 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TCanvas* cAccy = new TCanvas("cAccy", "", 0, 0, 600, 600);
 	cAccy->cd();
 	hAccy->Draw("pe");
-	cAccy->SaveAs(Form("Plots/Accy_Upsilon_%dS_RW%o_%s.pdf", Generation, version.Data()));
+	cAccy->SaveAs(Form("Plots/Accy_Upsilon_%dS_RW%o_%s.pdf", Generation, MupT.Data()));
 //}}}
 
 	TH1D* hAcc0016 = (TH1D*) hAccGen0016->Clone("hAcc0016");
@@ -224,7 +224,7 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	hAcc2124->GetYaxis()->SetTitle("Acc.");
 
 //save{{{
-	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_%s.root", Generation, isRW, version.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_%s.root", Generation, isRW, MupT.Data()), "RECREATE");
 	fout->cd();
 	hGenPt->Write();
 	hGeny->Write();
