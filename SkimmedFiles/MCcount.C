@@ -76,7 +76,7 @@ void MCcount()
 		Double_t mumi_trg_tnp = tnp_weight_trg_ppb(mumi_pt, mumi_eta, 3, 0);
 		Double_t mupl_tnp = mupl_muid_tnp*mupl_trk_tnp*mupl_trg_tnp;
 		Double_t mumi_tnp = mumi_muid_tnp*mumi_trk_tnp*mumi_trg_tnp;
-		h1->Fill(pt/(mupl_tnp*mumi_tnp));
+		h1->Fill(pt, 1./(mupl_tnp*mumi_tnp));
 	}
 
 	fout->cd();
