@@ -388,7 +388,7 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 		hEff[iy]->Draw("pe");
 		lt1->DrawLatex(0.6, 0.44, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.6, 0.37, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
-		cEff[iy]->SaveAs(Form("Plots/eff_Up%dS_Ny%d_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP,, MupT.Data()));
+		cEff[iy]->SaveAs(Form("Plots/eff_Up%dS_Ny%d_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP, MupT.Data()));
 	}
 
 	TFile* fout = new TFile(Form("Plots/EffPlots_Upsilon_%dS_RW%o_TnP%o_MupT%s.root", Generation, isRW, isTnP, MupT.Data()), "RECREATE");
