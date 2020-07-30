@@ -87,18 +87,18 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TH1D* hGeny = new TH1D("hGeny", ";y;", 48, -2.4, 2.4);
 	TH1D* hAccGeny = new TH1D("hAccGeny", ";y;", 48, -2.4, 2.4);
 
-	FormTH1Marker(hGen0016);
-	FormTH1Marker(hGen1618);
-	FormTH1Marker(hGen1821);
-	FormTH1Marker(hGen2124);
-	FormTH1Marker(hAccGen0016);
-	FormTH1Marker(hAccGen1618);
-	FormTH1Marker(hAccGen1821);
-	FormTH1Marker(hAccGen2124);
-	FormTH1Marker(hGenPt);
-	FormTH1Marker(hAccGenPt);
-	FormTH1Marker(hGeny);
-	FormTH1Marker(hAccGeny);
+	FormTH1Marker(hGen0016, 0, 0, 1.2);
+	FormTH1Marker(hGen1618, 0, 0, 1.2);
+	FormTH1Marker(hGen1821, 0, 0, 1.2);
+	FormTH1Marker(hGen2124, 0, 0, 1.2);
+	FormTH1Marker(hAccGen0016, 0, 0, 1.2);
+	FormTH1Marker(hAccGen1618, 0, 0, 1.2);
+	FormTH1Marker(hAccGen1821, 0, 0, 1.2);
+	FormTH1Marker(hAccGen2124, 0, 0, 1.2);
+	FormTH1Marker(hGenPt, 0, 0, 1.2);
+	FormTH1Marker(hAccGenPt, 0, 0, 1.2);
+	FormTH1Marker(hGeny, 0, 0, 1.2);
+	FormTH1Marker(hAccGeny, 0, 0, 1.2);
 //}}}
 
 //Tree variables{{{
