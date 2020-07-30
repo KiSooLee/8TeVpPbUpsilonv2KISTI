@@ -192,7 +192,7 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	cAccPt->cd();
 	hAccPt->Draw("pe");
 	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4", MupTCut));
+	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4"));
 	cAccPt->SaveAs(Form("Plots/AccPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
 
 	TCanvas* cGeny = new TCanvas("cGeny", "", 0, 0, 600, 600);
@@ -213,7 +213,7 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	cAccy->cd();
 	hAccy->Draw("pe");
 	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4", MupTCut));
+	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4"));
 	cAccy->SaveAs(Form("Plots/Accy_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
 //}}}
 
