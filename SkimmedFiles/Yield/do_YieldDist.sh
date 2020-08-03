@@ -1,6 +1,5 @@
 #!/bin/bash
-#YieldDist.C(version, MupT)
+#YieldDist.C(version, Weight, isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT)
 
-version="v16"
-root -l -b -q 'YieldDist.C+('\"$version\"', "4")'
-root -l -b -q 'YieldDist.C+('\"$version\"', "3p5")'
+version="v57"
+root -l -b -q 'YieldDist.C+('\"$version\"', false, false, false, false, false, false, "3p5")'
