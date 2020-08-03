@@ -15,9 +15,9 @@
 #include "../../Headers/Style_Upv2.h"
 //}}}
 
-void ReweightFunction(const Int_t multMin = 90, const Int_t multMax = 300, const TString version = "v1", const TString MupT = "4", const Bool_t isTnP = false)
+void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const TString version = "v1", const TString MupT = "4")
 {
-	gStyle->SetOptStat(0000);
+	SetStyle();
 
 //define muon pt value{{{
 	Double_t MupTCut;
@@ -37,7 +37,7 @@ void ReweightFunction(const Int_t multMin = 90, const Int_t multMax = 300, const
 	}
 //}}}
 
-	TFile* fMC  = new TFile(Form("Yield_count_MC_MupT%s.root", MupT.Data()), "READ");
+	TFile* fMC  = new TFile(Form("Yield_count_MC_PADoubleMuon_1S_MupT%s.root", MupT.Data()), "READ");
 	TH1D* hMCtmp = (TH1D*) fMC->Get("h1");
 	TH1D* hdata = new TH1D("hdata", """;p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
 	TH1D* hMC = new TH1D("hMC", """;p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
@@ -50,7 +50,7 @@ void ReweightFunction(const Int_t multMin = 90, const Int_t multMax = 300, const
 	Double_t binwidth = 0;
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
-		TFile* fin  = new TFile(Form("Yield_Mult_%d-%d_pt_%d-%d_rap_-24-24_Data_%s_weight0_sigsys0_bkgsys0_MupT%s.root", multMin, multMax, (int)ptBinsArr[ipt], (int)ptBinsArr[ipt+1], version.Data(), MupT.Data()), "READ");
+		TFile* fin  = new TFile(Form("Yield_Mult_%d-%d_pt_%d-%d_rap_-24-24_Data_%s_noWeight_MupT%s.root", multMin, multMax, (int)ptBinsArr[ipt], (int)ptBinsArr[ipt+1], version.Data(), MupT.Data()), "READ");
 		TH1D* htmp = (TH1D*) fin->Get("hYield");
 		binwidth = hdata->GetBinWidth(ipt+1);
 		hdata->SetBinContent(ipt+1, (double)htmp->GetBinContent(1)/binwidth);
@@ -63,7 +63,7 @@ void ReweightFunction(const Int_t multMin = 90, const Int_t multMax = 300, const
 	c1->SaveAs(Form("BinWidth_Kinematic_dist_Data_1S_%s_MupT%s.pdf", version.Data(), MupT.Data()));
 	c2->cd();
 	hMC->Draw("pe");
-	c2->SaveAs(Form("BinWidth_Kinematic_dist_MC_TnP%o_1S_%s_MupT%s.pdf", isTnP, version.Data(), MupT.Data()));
+	c2->SaveAs(Form("BinWidth_Kinematic_dist_MC_1S_%s_MupT%s.pdf", version.Data(), MupT.Data()));
 
 	hdata->Scale(1./hdata->Integral());
 	hMC->Scale(1./hMC->Integral());
@@ -83,7 +83,7 @@ void ReweightFunction(const Int_t multMin = 90, const Int_t multMax = 300, const
 	TLatex* lt1 = new TLatex();
 	lt1->SetNDC();
 	lt1->SetTextSize(0.04);
-	lt1->DrawLatex(0.54,0.63, Form("0 < N^{offline}_{trk} < 300"));
+	lt1->DrawLatex(0.54,0.63, Form("%d < N^{offline}_{trk} < %d", multMin, multMax));
 	lt1->DrawLatex(0.54,0.55, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 	lt1->DrawLatex(0.54,0.47,"|y^{#Upsilon}| < 2.4");
 	TLegend* leg1 = new TLegend(0.65, 0.7, 0.9, 0.9);
@@ -106,10 +106,9 @@ void ReweightFunction(const Int_t multMin = 90, const Int_t multMax = 300, const
 	//fit1->SetParameters(-0.1, 2, 5, 0);
 	hratio->Fit(fit1, "rqm");
 	SetLine(2, 0, 1, 30, 1, 0, 3);
+	c3->SaveAs(Form("Kinematic_dist_comp_1S_%s_MupT%s.pdf", version.Data(), MupT.Data()));
 
-	c3->SaveAs(Form("Kinematic_dist_comp_1S_%s_TnP%o_MupT%s.pdf", version.Data(), isTnP, MupT.Data()));
-
-	TFile* fout = new TFile(Form("Kinematic_dist_comp_1S_%s_TnP%o_MupT%s.root", version.Data(), isTnP, MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Kinematic_dist_comp_1S_%s_MupT%s.root", version.Data(), MupT.Data()), "RECREATE");
 	fout->cd();
 	hdata->Write();
 	hMC->Write();
