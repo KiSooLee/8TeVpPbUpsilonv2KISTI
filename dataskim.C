@@ -103,7 +103,8 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 
 	TFile* fout;
 	if(isMC) fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
-	else fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_Weight%o_Acc%o_Eff%o_TnP%o_MupT%s.root", MorD.Data(), Weight, isAccRW, isEffRW, isTnP, MupT.Data()), "RECREATE");
+	else if(!Weight) fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_noWeight_MupT%s.root", MorD.Data(), MupT.Data()), "RECREATE");
+	else fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_Acc%o_Eff%o_TnP%o_MupT%s.root", MorD.Data(), isAccRW, isEffRW, isTnP, MupT.Data()), "RECREATE");
 
 	const Int_t MaxQQ = 250;
 	const Int_t MaxTrk = 1500;
