@@ -18,7 +18,6 @@
 
 #include "Headers/Style_Upv2.h"
 #include "Headers/Upsilon.h"
-#include "Headers/tnp_weight_lowptpPb.h"
 
 using namespace std;
 using namespace RooFit;
@@ -26,7 +25,7 @@ using namespace RooFit;
 
 bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_t Weight = true, const Bool_t isAccRW = true, const Bool_t isEffRW = true, cosnt Bool_t isTnP = true, const TString MupT = "3p5")
+void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_t Weight = true, const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const TString MupT = "3p5")
 {
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -77,20 +76,34 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	const Int_t Nevtcut = tin->GetEntries();
 	tin->Add(fname2.Data());
 
-	TFile *facc = new TFile(Form("AccEff/Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isAccRW, MupT.Data()),"READ");
-	TFile *feff = new TFile(Form("AccEff/Plots/EffPlots_Upsilon_%dS_RW%o_TnP%o_MupT%s.root", Generation, isEffRW, isTnP, MupT.Data()),"READ");
-	TH1F *hAcc0016 = (TH1F*)facc->Get("hAcc0016"); 
-	TH1F *hAcc1618 = (TH1F*)facc->Get("hAcc1618"); 
-	TH1F *hAcc1821 = (TH1F*)facc->Get("hAcc1821"); 
-	TH1F *hAcc2124 = (TH1F*)facc->Get("hAcc2124"); 
-	TH1F *hEff0016 = (TH1F*)feff->Get("hEff_0");
-	TH1F *hEff1618 = (TH1F*)feff->Get("hEff_1");
-	TH1F *hEff1821 = (TH1F*)feff->Get("hEff_2");
-	TH1F *hEff2124 = (TH1F*)feff->Get("hEff_3");
+	TFile* facc;
+	TFile* feff;
+	TH1F* hAcc0016 = 0;
+	TH1F* hAcc1618 = 0;
+	TH1F* hAcc1821 = 0;
+	TH1F* hAcc2124 = 0;
+	TH1F* hEff0016 = 0;
+	TH1F* hEff1618 = 0;
+	TH1F* hEff1821 = 0;
+	TH1F* hEff2124 = 0;
+	if(!isMC)
+	{
+		facc = new TFile(Form("AccEff/Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isAccRW, MupT.Data()),"READ");
+		feff = new TFile(Form("AccEff/Plots/EffPlots_Upsilon_%dS_RW%o_TnP%o_MupT%s.root", Generation, isEffRW, isTnP, MupT.Data()),"READ");
+		hAcc0016 = (TH1F*) facc->Get("hAcc0016");
+		hAcc1618 = (TH1F*) facc->Get("hAcc1618");
+		hAcc1821 = (TH1F*) facc->Get("hAcc1821");
+		hAcc2124 = (TH1F*) facc->Get("hAcc2124");
+		hEff0016 = (TH1F*) feff->Get("hEff_0");
+		hEff1618 = (TH1F*) feff->Get("hEff_1");
+		hEff1821 = (TH1F*) feff->Get("hEff_2");
+		hEff2124 = (TH1F*) feff->Get("hEff_3");
+	}
 //}}}
 
 	TFile* fout;
-	fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_Acc%o_Eff%o_TnP%o_MupT%s.root", MorD.Data(), Generation, isAccRW, isEffRW, isTnP, MupT.Data()), "RECREATE");
+	if(isMC) fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
+	else fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_Weight%o_Acc%o_Eff%o_TnP%o_MupT%s.root", MorD.Data(), Weight, isAccRW, isEffRW, isTnP, MupT.Data()), "RECREATE");
 
 	const Int_t MaxQQ = 250;
 	const Int_t MaxTrk = 1500;
@@ -303,7 +316,7 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 
          // Get weight number 
 			double eff = 1.0, acc = 1.0, wgt = 1.0;
-			if(Weight)
+			if(!isMC && Weight)
 			{
 				if(fabs(Up_Reco_4mom->Rapidity()) <= 1.6)
 				{
@@ -327,8 +340,6 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 				}
 				wgt = 1.0/(eff*acc);
 			}
-			//DMset.weight = 1.;
-            //cout<<" Weighting number check, acc : "<<acc<<", eff : "<<eff<<", weight : " << wgt << endl;;
 			DMset.weight = wgt;
 			tout->Fill();
 
