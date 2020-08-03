@@ -11,13 +11,14 @@
 #include <iostream>
 #include <fstream>
 #include <TSystem.h>
+#include <TF1.h>
 
 #include <RooRealVar.h>
 #include <RooDataSet.h>
 #include <RooArgSet.h>
 
-#include "../Style_Upv2.h"
-#include "../Upsilon.h"
+#include "../Headers/Style_Upv2.h"
+#include "../Headers/Upsilon.h"
 
 using namespace std;
 using namespace RooFit;
@@ -60,7 +61,7 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TChain* tin_tmp = new TChain("Ana");
 	for(Int_t i = 0; i < 25; i++)
 	{
-		tin_tmp->Add(Form("root://cms-xrdr.sdfarm.kr:2094///xrd/store/user/kilee/MB/Pbp_Up1S_GENonly_multiplicity_v1_20200704/Upsilon1S_pPb-Bst_8p16-Pythia8/Pbp_Up1S_GENonly_multiplicity_v1_20200704/200703_152703/0000/mcStudy_Up1S_816TeV_%d.root", i+1));
+		tin_tmp->Add(Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/MB/Pbp_Up1S_GENonly_multiplicity_v1_20200704/Upsilon1S_pPb-Bst_8p16-Pythia8/Pbp_Up1S_GENonly_multiplicity_v1_20200704/200703_152703/0000/mcStudy_Up1S_816TeV_%d.root", i+1));
 	}
 	TTree* tin = tin_tmp->CloneTree();
 	tin_tmp->Reset();
@@ -124,15 +125,15 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	tin->SetBranchAddress("pt",   &pt,     &b_pt);
 	tin->SetBranchAddress("phi",  &phi,    &b_phi);
 	tin->SetBranchAddress("eta",  &eta,    &b_eta);
-	tin->SetBranchAddress("rap",  &b_rap,  &b_rap);
+	tin->SetBranchAddress("rap",  &rap,  &b_rap);
 	tin->SetBranchAddress("pt1",  &pt1,    &b_pt1);
 	tin->SetBranchAddress("phi1", &phi1,   &b_phi1);
 	tin->SetBranchAddress("eta1", &eta1,   &b_eta1);
-	tin->SetBranchAddress("eng1", &b_rap1, &b_rap1);
+	tin->SetBranchAddress("eng1", &eng1, &b_eng1);
 	tin->SetBranchAddress("pt2",  &pt2,    &b_pt2);
 	tin->SetBranchAddress("phi2", &phi2,   &b_phi2);
 	tin->SetBranchAddress("eta2", &eta2,   &b_eta2);
-	tin->SetBranchAddress("eng2", &b_rap2, &b_rap2);
+	tin->SetBranchAddress("eng2", &eng2, &b_eng2);
 //}}}
 
 	const Int_t Nevt = tin->GetEntries();
@@ -143,28 +144,28 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 		tin->GetEntry(ievt);
 
 		Double_t reweight = 1.;
-		if(isRW) reweight = reweight = funcrw->Eval(pt);
+		if(isRW) reweight = funcrw->Eval(pt);
 
 		if( fabs(rap) <= 2.4 && pt >= 0.0 && pt <= 30.0)
 		{
 //Fill total{{{
 			hGenPt->Fill(pt, reweight);
 			hGeny->Fill(rap, reweight);
-			if( fbas(rap) <= 1.6) hGen0016->Fill(pt, reweight);
-			if( fbas(rap) > 1.6 && fabs(rap) <= 1.8 ) hGen0016->Fill(pt, reweight);
-			if( fbas(rap) > 1.8 && fabs(rap) <= 2.1 ) hGen0016->Fill(pt, reweight);
-			if( fbas(rap) > 2.1 && fabs(rap) <= 2.4 ) hGen0016->Fill(pt, reweight);
+			if( fabs(rap) <= 1.6) hGen0016->Fill(pt, reweight);
+			if( fabs(rap) > 1.6 && fabs(rap) <= 1.8 ) hGen0016->Fill(pt, reweight);
+			if( fabs(rap) > 1.8 && fabs(rap) <= 2.1 ) hGen0016->Fill(pt, reweight);
+			if( fabs(rap) > 2.1 && fabs(rap) <= 2.4 ) hGen0016->Fill(pt, reweight);
 //}}}
 
-			if( InAcc(pt1, eta1) && InAcc(pt2, eta2) );
+			if( InAcc(pt1, eta1, MupTCut) && InAcc(pt2, eta2, MupTCut) )
 			{
 //Fill within acceptance{{{
 				hAccGenPt->Fill(pt, reweight);
 				hAccGeny->Fill(rap, reweight);
-				if( fbas(rap) <= 1.6) hAccGen0016->Fill(pt, reweight);
-				if( fbas(rap) > 1.6 && fabs(rap) <= 1.8 ) hAccGen0016->Fill(pt, reweight);
-				if( fbas(rap) > 1.8 && fabs(rap) <= 2.1 ) hAccGen0016->Fill(pt, reweight);
-				if( fbas(rap) > 2.1 && fabs(rap) <= 2.4 ) hAccGen0016->Fill(pt, reweight);
+				if( fabs(rap) <= 1.6) hAccGen0016->Fill(pt, reweight);
+				if( fabs(rap) > 1.6 && fabs(rap) <= 1.8 ) hAccGen0016->Fill(pt, reweight);
+				if( fabs(rap) > 1.8 && fabs(rap) <= 2.1 ) hAccGen0016->Fill(pt, reweight);
+				if( fabs(rap) > 2.1 && fabs(rap) <= 2.4 ) hAccGen0016->Fill(pt, reweight);
 //}}}
 			}
 		}
@@ -177,12 +178,12 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TCanvas* cGenPt = new TCanvas("cGenPt", "", 0, 0, 600, 600);
 	cGenPt->cd();
 	hGenPt->Draw("pe");
-	cGenPt->SaveAs(Form("Plots/GenPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cGenPt->SaveAs(Form("Plots/GenPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
 
 	TCanvas* cAccGenPt = new TCanvas("cAccGenPt", "", 0, 0, 600, 600);
 	cAccGenPt->cd();
 	hAccGenPt->Draw("pe");
-	cAccGenPt->SaveAs(Form("Plots/GenPt_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cAccGenPt->SaveAs(Form("Plots/GenPt_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
 
 	TH1D* hAccPt = (TH1D*) hAccGenPt->Clone("hAccPt");
 	hAccPt->Divide(hGenPt);
@@ -193,17 +194,17 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	hAccPt->Draw("pe");
 	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4"));
-	cAccPt->SaveAs(Form("Plots/AccPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cAccPt->SaveAs(Form("Plots/AccPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
 
 	TCanvas* cGeny = new TCanvas("cGeny", "", 0, 0, 600, 600);
 	cGeny->cd();
 	hGeny->Draw("pe");
-	cGeny->SaveAs(Form("Plots/Geny_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cGeny->SaveAs(Form("Plots/Geny_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
 
 	TCanvas* cAccGeny = new TCanvas("cAccGeny", "", 0, 0, 600, 600);
 	cAccGeny->cd();
 	hAccGeny->Draw("pe");
-	cAccGeny->SaveAs(Form("Plots/Geny_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cAccGeny->SaveAs(Form("Plots/Geny_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
 
 	TH1D* hAccy = (TH1D*) hAccGeny->Clone("hAccy");
 	hAccy->Divide(hGeny);
@@ -214,7 +215,7 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	hAccy->Draw("pe");
 	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4"));
-	cAccy->SaveAs(Form("Plots/Accy_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, MupT.Data()));
+	cAccy->SaveAs(Form("Plots/Accy_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
 //}}}
 
 	TH1D* hAcc0016 = (TH1D*) hAccGen0016->Clone("hAcc0016");
@@ -239,18 +240,18 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	hAccGeny->Write();
 	hAccPt->Write();
 	hAccy->Write();
-	hGen0016-Write();
-	hGen1618-Write();
-	hGen1821-Write();
-	hGen2124-Write();
-	hAccGen0016-Write();
-	hAccGen1618-Write();
-	hAccGen1821-Write();
-	hAccGen2124-Write();
-	hAcc0016-Write();
-	hAcc1618-Write();
-	hAcc1821-Write();
-	hAcc2124-Write();
+	hGen0016->Write();
+	hGen1618->Write();
+	hGen1821->Write();
+	hGen2124->Write();
+	hAccGen0016->Write();
+	hAccGen1618->Write();
+	hAccGen1821->Write();
+	hAccGen2124->Write();
+	hAcc0016->Write();
+	hAcc1618->Write();
+	hAcc1821->Write();
+	hAcc2124->Write();
 	fout->Close();
 //}}}
 }
