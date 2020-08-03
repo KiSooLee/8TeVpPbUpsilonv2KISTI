@@ -35,17 +35,19 @@ using namespace std;
 using namespace RooFit;
 //}}}
 
-void MCcount()
+void MCcount(const Int_t Generation = 1, const TString MupT = "3p5")
 {
+//Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
 	TString yieldDIR = mainDIR + "/Yield";
 	void * dirpY = gSystem->OpenDirectory(yieldDIR.Data());
 	if(dirpY) gSystem->FreeDirectory(dirpY);
 	else gSystem->mkdir(yieldDIR.Data(), kTRUE);
+//}}}
 
-	TFile* fout = new TFile(Form("Yield/Yield_count_MC_MupT3p5_test.root"), "RECREATE");
+	TFile* fout = new TFile(Form("Yield/Yield_count_MC_PADoubleMuon_%dS_MupT%s.root", Generation, MupT.Data()), "RECREATE");
 
-	TFile* fin = new TFile(Form("Skim_OniaTree_MC_PADoubleMuon_weight0_MupT3p5.root"), "READ");
+	TFile* fin = new TFile(Form("Skim_OniaTree_MC_PADoubleMuon_%dS_MupT%s.root", Generation, MupT.Data()), "READ");
 	TTree* tin = (TTree*) fin->Get("UpsilonTree");
 
 	Double_t pt;
@@ -68,12 +70,18 @@ void MCcount()
 	for(Int_t ievt = 0; ievt < tin->GetEntries(); ievt++)
 	{
 		tin->GetEntry(ievt);
-		Double_t mupl_muid_tnp = tnp_weight_muid_ppb(mupl_pt, mupl_eta, 0);
-		Double_t mupl_trk_tnp = tnp_weight_trk_ppb(mupl_eta, 0);
-		Double_t mupl_trg_tnp = tnp_weight_trg_ppb(mupl_pt, mupl_eta, 3, 0);
-		Double_t mumi_muid_tnp = tnp_weight_muid_ppb(mumi_pt, mumi_eta, 0);
-		Double_t mumi_trk_tnp = tnp_weight_trk_ppb(mumi_eta, 0);
-		Double_t mumi_trg_tnp = tnp_weight_trg_ppb(mumi_pt, mumi_eta, 3, 0);
+		//Double_t mupl_muid_tnp = tnp_weight_muid_ppb(mupl_pt, mupl_eta, 0);
+		//Double_t mupl_trk_tnp = tnp_weight_trk_ppb(mupl_eta, 0);
+		//Double_t mupl_trg_tnp = tnp_weight_trg_ppb(mupl_pt, mupl_eta, 3, 0);
+		//Double_t mumi_muid_tnp = tnp_weight_muid_ppb(mumi_pt, mumi_eta, 0);
+		//Double_t mumi_trk_tnp = tnp_weight_trk_ppb(mumi_eta, 0);
+		//Double_t mumi_trg_tnp = tnp_weight_trg_ppb(mumi_pt, mumi_eta, 3, 0);
+		Double_t mupl_muid_tnp = 1.;
+		Double_t mupl_trk_tnp = 1.;
+		Double_t mupl_trg_tnp = 1.;
+		Double_t mumi_muid_tnp = 1.;
+		Double_t mumi_trk_tnp = 1.;
+		Double_t mumi_trg_tnp = 1.;
 		Double_t mupl_tnp = mupl_muid_tnp*mupl_trk_tnp*mupl_trg_tnp;
 		Double_t mumi_tnp = mumi_muid_tnp*mumi_trk_tnp*mumi_trg_tnp;
 		h1->Fill(pt, 1./(mupl_tnp*mumi_tnp));
