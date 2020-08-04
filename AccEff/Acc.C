@@ -26,7 +26,7 @@ using namespace RooFit;
 
 bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t isRW = true)
+void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t isRW = true, const Int_t ifile = 1)
 {
 	SetStyle();
 
@@ -57,17 +57,11 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	else gSystem->mkdir(saveDIR.Data(), kTRUE);
 //}}}
 
-//Get files{{{
-	TChain* tin_tmp = new TChain("Ana");
-	for(Int_t i = 0; i < 25; i++)
-	{
-		tin_tmp->Add(Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/MB/Pbp_Up1S_GENonly_multiplicity_v1_20200704/Upsilon1S_pPb-Bst_8p16-Pythia8/Pbp_Up1S_GENonly_multiplicity_v1_20200704/200703_152703/0000/mcStudy_Up1S_816TeV_%d.root", i+1));
-	}
-	TTree* tin = tin_tmp->CloneTree();
-	tin_tmp->Reset();
+	TFile* fin = TFile::Open(Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/MB/Pbp_Up1S_GENonly_multiplicity_v1_20200704/Upsilon1S_pPb-Bst_8p16-Pythia8/Pbp_Up1S_GENonly_multiplicity_v1_20200704/200703_152703/0000/mcStudy_Up1S_816TeV_%d.root", ifile), "READ");
+	TTree* tin = (TTree*) fin->Get("Ana");
+
 	TFile* freweight = new TFile(Form("../SkimmedFiles/Yield/Kinematic_dist_comp_%dS_v57_MupT%s.root", Generation, MupT.Data()), "READ");
 	TF1* funcrw = (TF1*) freweight->Get("fit1");
-//}}}
 
 //Define histogram{{{
 	const Int_t npt = 13;
@@ -88,18 +82,18 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TH1D* hGeny = new TH1D("hGeny", ";y;Entries", 48, -2.4, 2.4);
 	TH1D* hAccGeny = new TH1D("hAccGeny", ";y;Entries", 48, -2.4, 2.4);
 
-	FormTH1Marker(hGen0016, 0, 0, 1.2);
-	FormTH1Marker(hGen1618, 0, 0, 1.2);
-	FormTH1Marker(hGen1821, 0, 0, 1.2);
-	FormTH1Marker(hGen2124, 0, 0, 1.2);
-	FormTH1Marker(hAccGen0016, 0, 0, 1.2);
-	FormTH1Marker(hAccGen1618, 0, 0, 1.2);
-	FormTH1Marker(hAccGen1821, 0, 0, 1.2);
-	FormTH1Marker(hAccGen2124, 0, 0, 1.2);
-	FormTH1Marker(hGenPt, 0, 0, 1.2);
-	FormTH1Marker(hAccGenPt, 0, 0, 1.2);
-	FormTH1Marker(hGeny, 0, 0, 1.2);
-	FormTH1Marker(hAccGeny, 0, 0, 1.2);
+	FormTH1Marker(hGen0016, 0, 0, 2.0);
+	FormTH1Marker(hGen1618, 1, 1, 2.0);
+	FormTH1Marker(hGen1821, 2, 2, 2.0);
+	FormTH1Marker(hGen2124, 3, 3, 2.0);
+	FormTH1Marker(hAccGen0016, 0, 0, 2.0);
+	FormTH1Marker(hAccGen1618, 1, 1, 2.0);
+	FormTH1Marker(hAccGen1821, 2, 2, 2.0);
+	FormTH1Marker(hAccGen2124, 3, 3, 2.0);
+	FormTH1Marker(hGenPt, 0, 0, 2.0);
+	FormTH1Marker(hAccGenPt, 0, 0, 2.0);
+	FormTH1Marker(hGeny, 0, 0, 2.0);
+	FormTH1Marker(hAccGeny, 0, 0, 2.0);
 //}}}
 
 //Tree variables{{{
@@ -152,9 +146,9 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 			hGenPt->Fill(pt, reweight);
 			hGeny->Fill(rap, reweight);
 			if( fabs(rap) <= 1.6) hGen0016->Fill(pt, reweight);
-			if( fabs(rap) > 1.6 && fabs(rap) <= 1.8 ) hGen0016->Fill(pt, reweight);
-			if( fabs(rap) > 1.8 && fabs(rap) <= 2.1 ) hGen0016->Fill(pt, reweight);
-			if( fabs(rap) > 2.1 && fabs(rap) <= 2.4 ) hGen0016->Fill(pt, reweight);
+			if( fabs(rap) > 1.6 && fabs(rap) <= 1.8 ) hGen1618->Fill(pt, reweight);
+			if( fabs(rap) > 1.8 && fabs(rap) <= 2.1 ) hGen1821->Fill(pt, reweight);
+			if( fabs(rap) > 2.1 && fabs(rap) <= 2.4 ) hGen2124->Fill(pt, reweight);
 //}}}
 
 			if( InAcc(pt1, eta1, MupTCut) && InAcc(pt2, eta2, MupTCut) )
@@ -163,83 +157,21 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 				hAccGenPt->Fill(pt, reweight);
 				hAccGeny->Fill(rap, reweight);
 				if( fabs(rap) <= 1.6) hAccGen0016->Fill(pt, reweight);
-				if( fabs(rap) > 1.6 && fabs(rap) <= 1.8 ) hAccGen0016->Fill(pt, reweight);
-				if( fabs(rap) > 1.8 && fabs(rap) <= 2.1 ) hAccGen0016->Fill(pt, reweight);
-				if( fabs(rap) > 2.1 && fabs(rap) <= 2.4 ) hAccGen0016->Fill(pt, reweight);
+				if( fabs(rap) > 1.6 && fabs(rap) <= 1.8 ) hAccGen1618->Fill(pt, reweight);
+				if( fabs(rap) > 1.8 && fabs(rap) <= 2.1 ) hAccGen1821->Fill(pt, reweight);
+				if( fabs(rap) > 2.1 && fabs(rap) <= 2.4 ) hAccGen2124->Fill(pt, reweight);
 //}}}
 			}
 		}
 	}
 
-//Draw{{{
-	TLatex* lt1 = new TLatex();
-	FormLatex(lt1, 12, 0.045);
-
-	TCanvas* cGenPt = new TCanvas("cGenPt", "", 0, 0, 600, 600);
-	cGenPt->cd();
-	hGenPt->Draw("pe");
-	cGenPt->SaveAs(Form("Plots/GenPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
-
-	TCanvas* cAccGenPt = new TCanvas("cAccGenPt", "", 0, 0, 600, 600);
-	cAccGenPt->cd();
-	hAccGenPt->Draw("pe");
-	cAccGenPt->SaveAs(Form("Plots/GenPt_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
-
-	TH1D* hAccPt = (TH1D*) hAccGenPt->Clone("hAccPt");
-	hAccPt->Divide(hGenPt);
-	hAccPt->GetYaxis()->SetTitle("Acc.");
-
-	TCanvas* cAccPt = new TCanvas("cAccPt", "", 0, 0, 600, 600);
-	cAccPt->cd();
-	hAccPt->Draw("pe");
-	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4"));
-	cAccPt->SaveAs(Form("Plots/AccPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
-
-	TCanvas* cGeny = new TCanvas("cGeny", "", 0, 0, 600, 600);
-	cGeny->cd();
-	hGeny->Draw("pe");
-	cGeny->SaveAs(Form("Plots/Geny_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
-
-	TCanvas* cAccGeny = new TCanvas("cAccGeny", "", 0, 0, 600, 600);
-	cAccGeny->cd();
-	hAccGeny->Draw("pe");
-	cAccGeny->SaveAs(Form("Plots/Geny_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
-
-	TH1D* hAccy = (TH1D*) hAccGeny->Clone("hAccy");
-	hAccy->Divide(hGeny);
-	hAccy->GetYaxis()->SetTitle("Acc.");
-
-	TCanvas* cAccy = new TCanvas("cAccy", "", 0, 0, 600, 600);
-	cAccy->cd();
-	hAccy->Draw("pe");
-	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4"));
-	cAccy->SaveAs(Form("Plots/Accy_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
-//}}}
-
-	TH1D* hAcc0016 = (TH1D*) hAccGen0016->Clone("hAcc0016");
-	TH1D* hAcc1618 = (TH1D*) hAccGen1618->Clone("hAcc1618");
-	TH1D* hAcc1821 = (TH1D*) hAccGen1821->Clone("hAcc1821");
-	TH1D* hAcc2124 = (TH1D*) hAccGen2124->Clone("hAcc2124");
-	hAcc0016->Divide(hGen0016);
-	hAcc1618->Divide(hGen1618);
-	hAcc1821->Divide(hGen1821);
-	hAcc2124->Divide(hGen2124);
-	hAcc0016->GetYaxis()->SetTitle("Acc.");
-	hAcc1618->GetYaxis()->SetTitle("Acc.");
-	hAcc1821->GetYaxis()->SetTitle("Acc.");
-	hAcc2124->GetYaxis()->SetTitle("Acc.");
-
 //save{{{
-	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isRW, MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s_%d.root", Generation, isRW, MupT.Data(), ifile), "RECREATE");
 	fout->cd();
 	hGenPt->Write();
 	hGeny->Write();
 	hAccGenPt->Write();
 	hAccGeny->Write();
-	hAccPt->Write();
-	hAccy->Write();
 	hGen0016->Write();
 	hGen1618->Write();
 	hGen1821->Write();
@@ -248,10 +180,6 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	hAccGen1618->Write();
 	hAccGen1821->Write();
 	hAccGen2124->Write();
-	hAcc0016->Write();
-	hAcc1618->Write();
-	hAcc1821->Write();
-	hAcc2124->Write();
 	fout->Close();
 //}}}
 }
