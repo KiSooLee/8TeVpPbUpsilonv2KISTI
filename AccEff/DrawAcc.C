@@ -59,19 +59,82 @@ void DrawAcc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_
 	const TString yabin[Ny+1] = {"00", "16", "18", "21", "24"};
 
 	TFile* fAcc = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isRW, MupT.Data()), "READ");
+	TH1D* hGenPt = (TH1D*) fAcc->Get("hGenPt");
+	TH1D* hAccGenPt = (TH1D*) fAcc->Get("hAccGenPt");
+	TH1D* hGeny = (TH1D*) fAcc->Get("hGeny");
+	TH1D* hAccGeny = (TH1D*) fAcc->Get("hAccGeny");
+	TH1D* hGen[Ny];
+	TH1D* hAccGen[Ny];
+	for(Int_t iy = 0; iy < Ny; iy++)
+	{
+		hGen[iy] = (TH1D*) fAcc->Get(Form("hGen%s%s", yabin[iy].Data(), yabin[iy+1].Data()));
+		hAccGen[iy] = (TH1D*) fAcc->Get(Form("hAccGen%s%s", yabin[iy].Data(), yabin[iy+1].Data()));
+	}
+
+//Draw integrated{{{
+	TLatex* lt1 = new TLatex();
+	FormLatex(lt1, 12, 0.045);
+
+	TCanvas* cGenPt = new TCanvas("cGenPt", "", 0, 0, 600, 600);
+	cGenPt->cd();
+	hGenPt->Draw("pe");
+	cGenPt->SaveAs(Form("Plots/GenPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
+
+	TCanvas* cAccGenPt = new TCanvas("cAccGenPt", "", 0, 0, 600, 600);
+	cAccGenPt->cd();
+	hAccGenPt->Draw("pe");
+	cAccGenPt->SaveAs(Form("Plots/GenPt_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
+
+	TH1D* hAccPt = (TH1D*) hAccGenPt->Clone("hAccPt");
+	hAccPt->Divide(hGenPt);
+	hAccPt->GetYaxis()->SetTitle("Acc.");
+
+	TCanvas* cAccPt = new TCanvas("cAccPt", "", 0, 0, 600, 600);
+	cAccPt->cd();
+	hAccPt->SetMaximum(1.0);
+	hAccPt->SetMinimum(0.0);
+	hAccPt->Draw("pe");
+	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4"));
+	cAccPt->SaveAs(Form("Plots/AccPt_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
+
+	TCanvas* cGeny = new TCanvas("cGeny", "", 0, 0, 600, 600);
+	cGeny->cd();
+	hGeny->Draw("pe");
+	cGeny->SaveAs(Form("Plots/Geny_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
+
+	TCanvas* cAccGeny = new TCanvas("cAccGeny", "", 0, 0, 600, 600);
+	cAccGeny->cd();
+	hAccGeny->Draw("pe");
+	cAccGeny->SaveAs(Form("Plots/Geny_inAcc_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
+
+	TH1D* hAccy = (TH1D*) hAccGeny->Clone("hAccy");
+	hAccy->Divide(hGeny);
+	hAccy->GetYaxis()->SetTitle("Acc.");
+
+	TCanvas* cAccy = new TCanvas("cAccy", "", 0, 0, 600, 600);
+	cAccy->cd();
+	hAccy->SetMaximum(1.0);
+	hAccy->SetMinimum(0.0);
+	hAccy->Draw("pe");
+	lt1->DrawLatex(0.2, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	lt1->DrawLatex(0.2, 0.75, Form("|#eta^{#mu}| < 2.4"));
+	cAccy->SaveAs(Form("Plots/Accy_tot_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
+//}}}
+
 	TH1D* hAcc[Ny];
 	for(Int_t iy = 0; iy < Ny; iy++)
 	{
-		hAcc[iy] = (TH1D*) fAcc->Get(Form("hAcc%s%s", yabin[iy].Data(), yabin[iy+1].Data()));
-		FormTH1Marker(hAcc[iy], iy, iy, 2.0);
+		hAcc[iy] = (TH1D*) hAccGen[iy]->Clone(Form("hAcc%s%s", yabin[iy].Data(), yabin[iy+1].Data()));
+		hAcc[iy]->Divide(hGen[iy]);
+		hAcc[iy]->GetYaxis()->SetTitle("Acc.");
 	}
-
 	TCanvas* c1 = new TCanvas("c1", "", 0, 0, 600, 600);
 	c1->cd();
-	TLegend* leg1 = new TLegend(0.5, 0.5, 0.9, 0.8);
+	TLegend* leg1 = new TLegend(0.15, 0.6, 0.5, 0.85);
 	FormLegend(leg1, 0.045);
-	TLatex* lt1 = new TLatex();
-	FormLatex(lt1, 12, 0.045);
+	TLatex* lt2 = new TLatex();
+	FormLatex(lt2, 12, 0.045);
 	for(Int_t iy = 0; iy < Ny; iy++)
 	{
 		if(iy == 0)
@@ -84,7 +147,7 @@ void DrawAcc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_
 		leg1->AddEntry(hAcc[iy], Form("%.1f < |y^{#varUpsilon}| #leq %.1f", ybin[iy], ybin[iy+1]), "pe");
 	}
 	leg1->Draw();
-	lt1->DrawLatex(0.7, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.7, 0.75, Form("|#eta^{#mu}| < 2.4"));
+	lt2->DrawLatex(0.65, 0.82, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	lt2->DrawLatex(0.65, 0.75, Form("|#eta^{#mu}| < 2.4"));
 	c1->SaveAs(Form("Plots/Acc_comp_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
 }
