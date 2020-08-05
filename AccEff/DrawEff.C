@@ -51,20 +51,20 @@ void DrawEff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_
 	TLatex* lt1 = new TLatex();
 	FormLatex(lt1, 12, 0.05);
 	lt1->SetNDC();
-	TLegend* leg1 = new TLegend(0.5, 0.4, 0.9, 0.7);
+	TLegend* leg1 = new TLegend(0.5, 0.33, 0.9, 0.65);
 	FormLegend(leg1, 0.05);
 	c1->cd();
 	for(Int_t iy = 0; iy < Ny-1; iy++)
 	{
 		h1[iy] = (TH1D*) fin->Get(Form("hEff_%d", iy));
-		if(iy < 2) FormTH1Marker(h1[iy], iy, iy, 2.0);
-		else FormTH1Marker(h1[iy], iy, iy, 2.4);
+		if(iy < 2) FormTH1Marker(h1[iy], iy, iy, 1.6);
+		else FormTH1Marker(h1[iy], iy, iy, 2.0);
 		if(iy == 0) h1[iy]->Draw("pe");
 		else h1[iy]->Draw("samepe");
 		leg1->AddEntry(h1[iy], Form("%.1f < |y^{#varUpsilon}| #leq %.1f", ybins[iy], ybins[iy+1]), "pe");
 	}
 	leg1->Draw();
-	lt1->DrawLatex(0.5, 0.3, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.5, 0.15, Form("|#eta^{#mu}| > 2.4 GeV/c"));
+	lt1->DrawLatex(0.5, 0.26, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	lt1->DrawLatex(0.5, 0.18, Form("|#eta^{#mu}| > 2.4 GeV/c"));
 	c1->SaveAs(Form("Plots/Eff_comp_Upsilon_%dS_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
 }
