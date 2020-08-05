@@ -64,36 +64,38 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TF1* funcrw = (TF1*) freweight->Get("fit1");
 
 //Define histogram{{{
-	const Int_t npt = 13;
-	Double_t ptBin[npt+1] = {0,1,2,3,4,5,6,7,8,9,10,15,20,30};
+	const Int_t npt1 = 13;
+	Double_t ptBin1[npt1+1] = {0,1,2,3,4,5,6,7,8,9,10,15,20,30};
+	const Int_t npt2 = 7;
+	Double_t ptBin2[npt2+1] = {0,2,4,6,8,10,15,30};
 
-	TH1D* hGen0016 = new TH1D("hGen0016", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
-	TH1D* hGen1618 = new TH1D("hGen1618", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
-	TH1D* hGen1821 = new TH1D("hGen1821", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
-	TH1D* hGen2124 = new TH1D("hGen2124", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
+	TH1D* hGen0016 = new TH1D("hGen0016", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt1, ptBin1);
+	TH1D* hGen1618 = new TH1D("hGen1618", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt2, ptBin2);
+	TH1D* hGen1821 = new TH1D("hGen1821", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt2, ptBin2);
+	TH1D* hGen2124 = new TH1D("hGen2124", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt2, ptBin2);
 
-	TH1D* hAccGen0016 = new TH1D("hAccGen0016", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
-	TH1D* hAccGen1618 = new TH1D("hAccGen1618", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
-	TH1D* hAccGen1821 = new TH1D("hAccGen1821", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
-	TH1D* hAccGen2124 = new TH1D("hAccGen2124", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt, ptBin);
+	TH1D* hAccGen0016 = new TH1D("hAccGen0016", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt1, ptBin1);
+	TH1D* hAccGen1618 = new TH1D("hAccGen1618", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt2, ptBin2);
+	TH1D* hAccGen1821 = new TH1D("hAccGen1821", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt2, ptBin2);
+	TH1D* hAccGen2124 = new TH1D("hAccGen2124", ";p_{T}^{#varUpsilon} GeV/c;Entries", npt2, ptBin2);
 
 	TH1D* hGenPt = new TH1D("hGenPt", ";p_{T}^{#varUpsilon} GeV/c;Entries", 30, 0, 30);
 	TH1D* hAccGenPt = new TH1D("hAccGenPt", ";p_{T}^{#varUpsilon} GeV/c;Entries", 30, 0, 30);
 	TH1D* hGeny = new TH1D("hGeny", ";y;Entries", 48, -2.4, 2.4);
 	TH1D* hAccGeny = new TH1D("hAccGeny", ";y;Entries", 48, -2.4, 2.4);
 
-	FormTH1Marker(hGen0016, 0, 0, 2.0);
-	FormTH1Marker(hGen1618, 1, 1, 2.0);
+	FormTH1Marker(hGen0016, 0, 0, 1.6);
+	FormTH1Marker(hGen1618, 1, 1, 1.6);
 	FormTH1Marker(hGen1821, 2, 2, 2.0);
 	FormTH1Marker(hGen2124, 3, 3, 2.0);
-	FormTH1Marker(hAccGen0016, 0, 0, 2.0);
-	FormTH1Marker(hAccGen1618, 1, 1, 2.0);
+	FormTH1Marker(hAccGen0016, 0, 0, 1.6);
+	FormTH1Marker(hAccGen1618, 1, 1, 1.6);
 	FormTH1Marker(hAccGen1821, 2, 2, 2.0);
 	FormTH1Marker(hAccGen2124, 3, 3, 2.0);
-	FormTH1Marker(hGenPt, 0, 0, 2.0);
-	FormTH1Marker(hAccGenPt, 0, 0, 2.0);
-	FormTH1Marker(hGeny, 0, 0, 2.0);
-	FormTH1Marker(hAccGeny, 0, 0, 2.0);
+	FormTH1Marker(hGenPt, 0, 0, 1.6);
+	FormTH1Marker(hAccGenPt, 0, 0, 1.6);
+	FormTH1Marker(hGeny, 0, 0, 1.6);
+	FormTH1Marker(hAccGeny, 0, 0, 1.6);
 //}}}
 
 //Tree variables{{{
