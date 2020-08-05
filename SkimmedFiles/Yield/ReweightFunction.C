@@ -44,8 +44,8 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	TCanvas* c1 = new TCanvas("c1", "", 0, 0, 600, 600);
 	TCanvas* c2 = new TCanvas("c2", "", 0, 0, 600, 600);
 	TCanvas* c3 = new TCanvas("c3", "", 0, 0, 600, 800);
-	FormTH1Marker(hdata, 0, 1, 1);
-	FormTH1Marker(hMC, 1, 1, 1);
+	FormTH1Marker(hdata, 1, 1, 1);
+	FormTH1Marker(hMC, 0, 1, 1);
 
 	Double_t binwidth = 0;
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
@@ -83,10 +83,10 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	TLatex* lt1 = new TLatex();
 	lt1->SetNDC();
 	lt1->SetTextSize(0.04);
-	lt1->DrawLatex(0.54,0.63, Form("%d < N^{offline}_{trk} < %d", multMin, multMax));
-	lt1->DrawLatex(0.54,0.55, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.54,0.47,"|y^{#Upsilon}| < 2.4");
-	TLegend* leg1 = new TLegend(0.65, 0.7, 0.9, 0.9);
+	lt1->DrawLatex(0.54,0.59, Form("%d < N^{offline}_{trk} < %d", multMin, multMax));
+	lt1->DrawLatex(0.54,0.51, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	lt1->DrawLatex(0.54,0.43,"|y^{#Upsilon}| < 2.4");
+	TLegend* leg1 = new TLegend(0.65, 0.70, 0.9, 0.85);
 	FormLegend(leg1, 0.04);
 	leg1->AddEntry(hdata, "DATA", "pe");
 	leg1->AddEntry(hMC, "MC", "pe");
@@ -95,15 +95,16 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	pad_ratio->cd();
 	TH1D* hratio = (TH1D*) hdata->Clone("hratio");
 	hratio->Divide(hMC);
+	hratio->SetMarkerColor(1);
+	hratio->SetLineColor(1);
 	hratio->GetYaxis()->SetTitle("DATA/MC");
 	hratio->GetYaxis()->SetTitleSize(0.15);
 	hratio->GetYaxis()->SetTitleOffset(0.2);
 	hratio->GetXaxis()->SetTitleSize(0.1);
 	hratio->GetXaxis()->SetTitleOffset(0.8);
 	hratio->Draw("pe");
-	//TF1* fit1 = new TF1("fit1", "([0]*sin([1]*x+[2])*TMath::Exp(x-[3])+[4]", 0, 30);
 	TF1* fit1 = new TF1("fit1", "([0]*x*x+[1]*x+[2])/((x-[3])*(x-[3])*(x-[3]))", 0, 30);
-	//fit1->SetParameters(-0.1, 2, 5, 0);
+	fit1->SetLineColor(100);
 	hratio->Fit(fit1, "rqm");
 	SetLine(2, 0, 1, 30, 1, 0, 3);
 	c3->SaveAs(Form("Kinematic_dist_comp_1S_%s_MupT%s.pdf", version.Data(), MupT.Data()));
