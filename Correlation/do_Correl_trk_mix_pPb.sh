@@ -9,34 +9,34 @@
 #cd -
 
 #root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 110, 300, 10, 30, -2.4, 2.4, 0, 3, "v17", "4", '$1')'
-#root -l -b -q 'Correl_trk_Gen_mix_pPb.C+(0, 40, 10, 30, -2.4, 2.4, 0, 3, "v18", "4", '$1')'
+#root -l -b -q 'Correl_trk_Gen_mix_pPb.C+(0, 40, 0, 3, -2.4, 2.4, 0, 3, "v18", "4", '$1')'
 #root -l -b -q 'Correl_trk_Reco_mix_pPb_jet.C+(false, 110, 300, 10, 30, -2.4, 2.4, 0, 3, "v19", "3p5", true, true)'
 #root -l -b -q 'Correl_trk_Reco_mix_pPb_jet.C+(false, 110, 300, 10, 30, -2.4, 2.4, 0, 3, "v19", "3p5", true, false)'
-for((i=0; i<20; i++))
-do
-	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 120, 300, 10, 30, -2.4, 2.4, 0, 3, "v35", "3p5", "v1", true, '$i')'
-done
 #for((i=0; i<20; i++))
 #do
-#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 0, 40, 10, 30, -2.4, 2.4, 0, 3, "v20", "3p5", true, '$i')'
+#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 90, 300, 10, 30, -2.4, 2.4, 0, 3, "v56", "3p5", "v1", true, '$i')'
+#done
+root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 90, 300, 0, 3, -2.4, 2.4, 0, 3, "v56", "3p5", "v1", true)'
+#for((i=0; i<20; i++))
+#do
+#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 0, 40, 0, 3, -2.4, 2.4, 0, 3, "v20", "3p5", true, '$i')'
 #done
 #for((i=0; i<20; i++))
 #do
-#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 40, 90, 10, 30, -2.4, 2.4, 0, 3, "v21", "3p5", false, '$i')'
-#done
-#for((i=0; i<20; i++))
-#do
-#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 90, 110, 10, 30, -2.4, 2.4, 0, 3, "v22", "3p5", false, '$i')'
-#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 90, 110, 10, 30, -2.4, 2.4, 0, 3, "v22", "3p5", false, '$i')'
-#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 90, 110, 10, 30, -2.4, 2.4, 0, 3, "v22", "3p5", false, '$i')'
-#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 90, 110, 10, 30, -2.4, 2.4, 0, 3, "v22", "3p5", false, '$i')'
+#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 40, 90, 0, 3, -2.4, 2.4, 0, 3, "v21", "3p5", false, '$i')'
 #done
 #for((i=0; i<18; i++))
 #do
-#	root -l -b -q 'Correl_trk_Gen_mix_pPb.C+(0, 40, 10, 30, -2.4, 2.4, 0, 3, "v18", "4", '$i')'
+#	root -l -b -q 'Correl_trk_Gen_mix_pPb.C+(0, 40, 0, 3, -2.4, 2.4, 0, 3, "v18", "4", '$i')'
 #done
 #for((i=0; i<14; i++))
 #do
-#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 0, 40, 10, 30, -2.4, 2.4, 0, 3, "v31", "3p5", true, '$i')'
+#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 0, 50, 0, 3, -2.4, 2.4, 0, 3, "v55", "3p5", "v1", true, '$i')'
 #done
-#root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 0, 45, 10, 30, -2.4, 2.4, 0, 3, "v27", "3p5", true, 13)'
+#for((i=0; i<13; i++))
+#do
+#	root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 0, 50, 0, 3, -2.4, 2.4, 0, 3, "v51", "3p5", "v1", true, '$i')'
+#done
+#root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 0, 50, 0, 3, -2.4, 2.4, 0, 3, "v42", "3p5", "v1", true, 9)'
+#root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 0, 50, 0, 3, -2.4, 2.4, 0, 3, "v42", "3p5", "v1", true, 10)'
+#root -l -b -q 'Correl_trk_Reco_mix_pPb.C+(false, 45, 55, 0, 3, -2.4, 2.4, 0, 3, "v50", "3p5", "v1", true, 0)'
