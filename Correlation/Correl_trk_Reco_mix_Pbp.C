@@ -26,7 +26,7 @@
 using namespace std;
 //}}}
 
-void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const TString trkptversion = "v1", const bool Weight = false, const Int_t imass = 0)
+void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const TString trkptversion = "v1", const Int_t imass = 0)
 {
 	SetStyle();
 
@@ -46,34 +46,13 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 	TString fname1, fname2;
 	TChain* tin1_tmp = new TChain("UpsilonTree");
 	TChain* tin2_tmp = new TChain("UpsilonTree");
-	for(Int_t ibin = massBinsArr[imass]; ibin < massBinsArr[imass+1]; ibin++)
+	for(Int_t ibin = 0; ibin < 120; ibin++)
 	{
 		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
 		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
 		tin1_tmp->Add(fname1.Data());
 		tin2_tmp->Add(fname2.Data());
 	}
-/*
-	if( tin1_tmp->GetEntry() == 0 || tin2_tmp->GetEntry() == 0 )
-	{
-		cout << "no events to correlate" << endl;
-
-//store{{{
-		fout->cd();
-		hReco1_1->Write();
-		hReco1_2->Write();
-		hReco2_1->Write();
-		hReco2_2->Write();
-		hReco3_1->Write();
-		hReco3_2->Write();
-		hReco4_1->Write();
-		hReco4_2->Write();
-		fout->Close();
-//}}}
-
-		return;
-	}
-*/
 	TTree* tin1 = tin1_tmp->CloneTree();
 	TTree* tin2 = tin2_tmp->CloneTree();
 	tin1_tmp->Reset();
@@ -183,7 +162,7 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 				Double_t trg_pt = vec_trk_Reco1->Pt();
 
 				Double_t trkeff_trg = 1.;
-				if(Weight) trkeff_trg = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(trg_eta), htrk->GetYaxis()->FindBin(trg_pt)));
+				if(!isMC) trkeff_trg = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(trg_eta), htrk->GetYaxis()->FindBin(trg_pt)));
 
 //correlation{{{
 				for(Int_t irand = 0; irand < 10; irand++)
@@ -214,7 +193,7 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 
 //fill hist{{{
 						Double_t trkeff_ass = 1.;
-						if(Weight) trkeff_ass = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+						if(!isMC) trkeff_ass = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
 
 						hReco1_1->Fill(deta, dphi, 1/( (double)(10*Nass_Reco1*trkeff_trg*trkeff_ass) ));
 						hReco1_2->Fill(deta, dphi, 1/( (double)(10*Nass_Reco1*trkeff_trg*trkeff_ass) ));
@@ -260,7 +239,7 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 				Double_t trg_pt = vec_trk_Reco2->Pt();
 
 				Double_t trkeff_trg = 1.;
-				if(Weight) trkeff_trg = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(trg_eta), htrk->GetYaxis()->FindBin(trg_pt)));
+				if(!isMC) trkeff_trg = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(trg_eta), htrk->GetYaxis()->FindBin(trg_pt)));
 
 //correlation{{{
 				for(Int_t irand = 0; irand < 10; irand++)
@@ -291,7 +270,7 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 
 //fill hist{{{
 						Double_t trkeff_ass = 1.;
-						if(Weight) trkeff_ass = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+						if(!isMC) trkeff_ass = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
 
 						hReco1_1->Fill(deta, dphi, 1/( (double)(10*Nass_Reco2*trkeff_trg*trkeff_ass) ));
 						hReco1_2->Fill(deta, dphi, 1/( (double)(10*Nass_Reco2*trkeff_trg*trkeff_ass) ));
@@ -325,29 +304,39 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 
 //draw{{{
 	cReco1_1->cd();
+	hReco1_1->Scale(1./(Nevt1+Nevt2));
 	hReco1_1->Draw("Surf1");
 	cReco1_2->cd();
+	hReco1_2->Scale(1./(Nevt1+Nevt2));
 	hReco1_2->Draw("Surf1");
 	cReco2_1->cd();
+	hReco2_1->Scale(1./(Nevt1+Nevt2));
 	hReco2_1->Draw("Surf1");
 	cReco2_2->cd();
+	hReco2_2->Scale(1./(Nevt1+Nevt2));
 	hReco2_2->Draw("Surf1");
 	cReco3_1->cd();
+	hReco3_1->Scale(1./(Nevt1+Nevt2));
 	hReco3_1->Draw("Surf1");
 	cReco3_2->cd();
+	hReco3_2->Scale(1./(Nevt1+Nevt2));
 	hReco3_2->Draw("Surf1");
 	cReco4_1->cd();
+	hReco4_1->Scale(1./(Nevt1+Nevt2));
 	hReco4_1->Draw("Surf1");
 	cReco4_2->cd();
+	hReco4_2->Scale(1./(Nevt1+Nevt2));
 	hReco4_2->Draw("Surf1");
 	cReco5_1->cd();
+	hReco5_1->Scale(1./(Nevt1+Nevt2));
 	hReco5_1->Draw("Surf1");
 	cReco5_2->cd();
+	hReco5_2->Scale(1./(Nevt1+Nevt2));
 	hReco5_2->Draw("Surf1");
 //}}}
 
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/trk_deta-dphi_Reco_Pbp_distribution_mix_%s_weight%o_%d.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), MorD.Data(), Weight, imass), "RECREATE");
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/trk_deta-dphi_Reco_Pbp_distribution_mix_%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), MorD.Data()), "RECREATE");
 	fout->cd();
 	hReco1_1->Write();
 	hReco1_2->Write();
