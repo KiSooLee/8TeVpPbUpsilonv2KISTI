@@ -51,7 +51,7 @@ void DrawEff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_
 	TLatex* lt1 = new TLatex();
 	FormLatex(lt1, 12, 0.05);
 	lt1->SetNDC();
-	TLegend* leg1 = new TLegend(0.5, 0.33, 0.9, 0.65);
+	TLegend* leg1 = new TLegend(0.5, 0.18, 0.85, 0.48);
 	FormLegend(leg1, 0.05);
 	c1->cd();
 	for(Int_t iy = 0; iy < Ny-1; iy++)
@@ -64,7 +64,7 @@ void DrawEff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_
 		leg1->AddEntry(h1[iy], Form("%.1f < |y^{#varUpsilon}| #leq %.1f", ybins[iy], ybins[iy+1]), "pe");
 	}
 	leg1->Draw();
-	lt1->DrawLatex(0.5, 0.26, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.5, 0.18, Form("|#eta^{#mu}| > 2.4 GeV/c"));
+	lt1->DrawLatex(0.16, 0.28, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
+	lt1->DrawLatex(0.16, 0.20, Form("|#eta^{#mu}| > 2.4 GeV/c"));
 	c1->SaveAs(Form("Plots/Eff_comp_Upsilon_%dS_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
 }
