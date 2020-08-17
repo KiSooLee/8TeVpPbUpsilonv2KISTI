@@ -34,7 +34,7 @@ using namespace std;
 using namespace RooFit;
 //}}}
 
-void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const TString version = "v1", const bool Weight = false, const bool SigSys = false, const bool BkgSys = false, const TString MupT = "4")
+void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const TString version = "v1", const Bool_t Weight = true, const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const bool SigSys = false, const bool BkgSys = false, const TString MupT = "4")
 {
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -55,7 +55,9 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	const Double_t RangeLow = 8;
 	const Double_t RangeHigh = 14;
 	const Int_t Nmassbins = 120;
-	TFile* fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_sigsys%o_bkgsys%o_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, SigSys, BkgSys, MupT.Data()), "RECREATE");
+	TFile* fout;
+	if(Weight) fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()), "RECREATE");
+	else fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_noWeight_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
 
 //define muon pt value{{{
 	Double_t MupTCut;
@@ -84,7 +86,8 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 
 //Get parameter{{{
 	ifstream in;
-	in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_SigSys%o_BkgSys%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, SigSys, BkgSys, MupT.Data()));
+	if(Weight) in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()));
+	else in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_noWeight_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()));
 	if(in.is_open())
 	{
 		while(!in.eof())
@@ -106,7 +109,9 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 //}}}
 
 //Get data{{{
-	TFile* fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_weight%o_MupT%s.root", Weight, MupT.Data()), "READ");
+	TFile* fin;
+	if(Weight) fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_Acc%o_Eff%o_TnP%o_MupT%s.root", isAccRW, isEffRW, isTnP, MupT.Data()), "READ");
+	else fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_noWeight_MupT%s.root", MupT.Data()), "READ");
 	RooDataSet* dataset = (RooDataSet*) fin->Get("dataset");
 	RooWorkspace* ws = new RooWorkspace(Form("workspace"));
 	ws->import(*dataset);
@@ -392,10 +397,10 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	TH1D* hfrac = new TH1D("hfrac", "", 6, 0, 6);
 	hfrac->SetBinContent(1, Sgnfc1S->Eval(U1S_mass));
 	hfrac->SetBinContent(2, Bkgfc->Eval(U1S_mass));
-	hfrac->SetBinContent(3, Sgnfc1S->Integral(9.2, 9.6));
-	hfrac->SetBinContent(4, Bkgfc->Integral(9.2, 9.6));
-	hfrac->SetBinContent(5, Sgnfc1S->Integral(9.0, 9.8));
-	hfrac->SetBinContent(6, Bkgfc->Integral(9.0, 9.8));
+	hfrac->SetBinContent(3, Sgnfc1S->Integral(9.3, 9.6));
+	hfrac->SetBinContent(4, Bkgfc->Integral(9.3, 9.6));
+	hfrac->SetBinContent(5, Sgnfc1S->Integral(9.1, 9.8));
+	hfrac->SetBinContent(6, Bkgfc->Integral(9.1, 9.8));
 
 	TH1D* hfracdist = new TH1D("hfracdist", "", 20, 9, 10);
 	for(Int_t i = 0; i < 20; i++)
@@ -403,8 +408,8 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 		hfracdist->SetBinContent(i+1, Sgnfc1S->Eval(9+0.05*i)/(Sgnfc1S->Eval(9+0.05*i)+Bkgfc->Eval(9+0.05*i)));
 	}
 	
-	FILE* ftxt;
-	ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_SigSys%o_BkgSys%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, SigSys, BkgSys, MupT.Data()), "w");
+	FILE* ftxt = 0;
+	if(Weight) ftxt = fopen(Form("Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()), "w");
 	if(ftxt != NULL)
 	{
 		fprintf(ftxt, "mean  sigma1  sigma2  fraction  totsigma  totsig  totbkg sig  bkg  nsig  nbkg  significance \n");
@@ -419,14 +424,13 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 			fprintf(ftxt, "mean  U1sigma1  fraction  alpha  n  Erfmean  Erfsigma  Erfp0 \n");
 			fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f  \n", meanout, sigma1out, fracout, ws->var("alpha")->getVal(), ws->var("n")->getVal(), ws->var("Erfmean")->getVal(), ws->var("Erfsigma")->getVal(), ws->var("Erfp0")->getVal());
 		}
-		//fprintf(ftxt, "mean  U1sigma1  U1sigma2  U2sigma1  U2sigma2  U3sigma1  U3sigma2  fraction  alpha  n  Erfmean  Erfsigma  Erfp0 \n");
-		//fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f  \n", meanout, sigma1out, sigma2out, ws->var("sigma2S_1")->getVal(), ws->var("sigma2S_2")->getVal(), ws->var("sigma3S_1")->getVal(), ws->var("sigma3S_2")->getVal(), fracout, ws->var("alpha")->getVal(), ws->var("n")->getVal(), ws->var("Erfmean")->getVal(), ws->var("Erfsigma")->getVal(), ws->var("Erfp0")->getVal());
 		fprintf(ftxt, "1SYield  2SYield  3SYield  BkgYield  1SIntgr  2STIntgr  3STIntgr  BkgTIntgr  \n");
 		fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f \n", Yield1S, Yield2S, Yield3S, YieldBkg, TIntgr1S, TIntgr2S, TIntgr3S, TIntgrBkg);
 	}
 //}}}
 
-	c1->SaveAs(Form("MassDist/MassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_weight%o_SigSys%o_BkgSys%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, Weight, SigSys, BkgSys, MupT.Data()));
+	if(Weight) c1->SaveAs(Form("MassDist/MassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()));
+	else c1->SaveAs(Form("MassDist/MassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_noWeight_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, MupT.Data()));
 	TH1D* hmass = new TH1D("hmass", ";M (GeV/c^2);Counts", Nmassbins, RangeLow, RangeHigh);
 	reducedDS->fillHistogram(hmass, (*ws->var("mass")));
 	FormTH1Marker(hmass, 0, 0, 1.4);
@@ -440,7 +444,8 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	lt1->DrawLatex(0.6,0.80, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 	lt1->DrawLatex(0.6,0.75, Form("%d #leq p_{T}^{#mu#mu} < %d GeV/c", (int) ptMin, (int) ptMax));
 	
-	c2->SaveAs(Form("MassDist/WithoutFit_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_weight%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, Weight, MupT.Data()));
+	if(Weight) c2->SaveAs(Form("MassDist/WithoutFit_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_Acc%o_Eff%o_TnP%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, isAccRW, isEffRW, isTnP, MupT.Data()));
+	else c2->SaveAs(Form("MassDist/WithoutFit_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_noWeight_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, MupT.Data()));
 	fout->cd();
 	massPlot->Write();
 	hYield->Write();
