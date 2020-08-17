@@ -25,23 +25,48 @@
 #include "../Headers/Upsilon.h"
 //}}}
 
-void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t isTrk = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const bool Weight = true, const TString MupT = "4", const TString trkptversion = "v1")
+void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t isTrk = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString trkptversion = "v1", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const TString MupT = "4")
 { 
 	SetStyle();
 
+//set name{{{
+	TString MorD;
+	if(isMC) MorD = "MC";
+	else MorD = "Data";
+	TString RorG;
+	if(isGen) RorG = "Gen";
+	else RorG = "Reco";
+	TString Direction[2] = {"Pbp", "pPb"};
+	const Int_t Naway = 5;
+	TString Away[Naway] = {"Full", "Cut2", "Cut1p5", "Cut1", "Short"};
+	TString Trk;
+	if(isTrk) Trk = "trk_";
+	else Trk = "";
+	TString SysDir;
+	if( isMC || (!isMC && isAccRW && isEffRW && isTnP) ) SysDir = "Nominal";
+	else if(!isMC && !isAccRW && isEffRW && isTnP) SysDir = "SysAcc";
+	else if(!isMC && isAccRW && !isEffRW && isTnP) SysDir = "SysEff";
+	else if(!isMC && isAccRW && isEffRW && !isTnP) SysDir = "SysTnP";
+	else
+	{
+		cout << "There is no such option" << endl;
+		return;
+	}
+//}}}
+
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString fullDIR = mainDIR + Form("/CorrDist/CorrDistFullRatio/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString fullsameDIR = mainDIR + Form("/CorrDist/CorrDistFullSame/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString fullmixDIR = mainDIR + Form("/CorrDist/CorrDistFullMix/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString cut1sameDIR = mainDIR + Form("/CorrDist/CorrDistCut1Same/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString cut1mixDIR = mainDIR + Form("/CorrDist/CorrDistCut1Mix/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString cut1p5sameDIR = mainDIR + Form("/CorrDist/CorrDistCut1p5Same/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString cut1p5mixDIR = mainDIR + Form("/CorrDist/CorrDistCut1p5Mix/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString cut2sameDIR = mainDIR + Form("/CorrDist/CorrDistCut2Same/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString cut2mixDIR = mainDIR + Form("/CorrDist/CorrDistCut2Mix/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString shortsameDIR = mainDIR + Form("/CorrDist/CorrDistShortSame/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
-	TString shortmixDIR = mainDIR + Form("/CorrDist/CorrDistShortMix/%s/MupT%s/Weight%o", version.Data(), MupT.Data(), Weight);
+	TString fullDIR = mainDIR + Form("/CorrDist/CorrDistFullRatio/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString fullsameDIR = mainDIR + Form("/CorrDist/CorrDistFullSame/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString fullmixDIR = mainDIR + Form("/CorrDist/CorrDistFullMix/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString cut1sameDIR = mainDIR + Form("/CorrDist/CorrDistCut1Same/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString cut1mixDIR = mainDIR + Form("/CorrDist/CorrDistCut1Mix/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString cut1p5sameDIR = mainDIR + Form("/CorrDist/CorrDistCut1p5Same/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString cut1p5mixDIR = mainDIR + Form("/CorrDist/CorrDistCut1p5Mix/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString cut2sameDIR = mainDIR + Form("/CorrDist/CorrDistCut2Same/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString cut2mixDIR = mainDIR + Form("/CorrDist/CorrDistCut2Mix/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString shortsameDIR = mainDIR + Form("/CorrDist/CorrDistShortSame/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
+	TString shortmixDIR = mainDIR + Form("/CorrDist/CorrDistShortMix/%s/MupT%s/%s", version.Data(), MupT.Data(), SysDir.Data());
 
 	void * dirf = gSystem->OpenDirectory(fullDIR.Data());
 	if(dirf) gSystem->FreeDirectory(dirf);
@@ -86,21 +111,6 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Boo
 	void * dirshb = gSystem->OpenDirectory(shortmixDIR.Data());
 	if(dirshb) gSystem->FreeDirectory(dirshb);
 	else gSystem->mkdir(shortmixDIR.Data(), kTRUE);
-//}}}
-
-//set name{{{
-	TString MorD;
-	if(isMC) MorD = "MC";
-	else MorD = "Data";
-	TString RorG;
-	if(isGen) RorG = "Gen";
-	else RorG = "Reco";
-	TString Direction[2] = {"Pbp", "pPb"};
-	const Int_t Naway = 5;
-	TString Away[Naway] = {"Full", "Cut2", "Cut1p5", "Cut1", "Short"};
-	TString Trk;
-	if(isTrk) Trk = "trk_";
-	else Trk = "";
 //}}}
 
 	TFile *samePbp[2];
@@ -160,10 +170,19 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Boo
 	for(Int_t imass = 0; imass < mass_narr-1; imass++)
 	{
 //Get files{{{
+		if(isTrk && imass != 0) continue;
 		for(Int_t ipPb = 0; ipPb < 2; ipPb++)
 		{
-			samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_%s_%s_distribution_same_%s_weight%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data(), Weight, imass), "READ");
-			mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_%s_%s_distribution_mix_%s_weight%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data(), Weight, imass), "READ");
+			if(isTrk)
+			{
+				samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_%s_%s_distribution_same_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data()), "READ");
+					mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_%s_%s_distribution_mix_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data()), "READ");
+			}
+			else
+			{
+				samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_%s_%s_distribution_same_%s_Acc%o_Eff%o_TnP%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data(), isAccRW, isEffRW, isTnP, imass), "READ");
+				mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_%s_%s_distribution_mix_%s_Acc%o_Eff%o_TnP%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data(), isAccRW, isEffRW, isTnP, imass), "READ");
+			}
 		}
 //}}}
 
@@ -201,8 +220,8 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Boo
 			if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 8+0.05*(massBinsArr[imass+1])));
-			//lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 14.0));
-			c_same_fine[iaway]->SaveAs(Form("CorrDist/CorrDist%sSame/%s/MupT%s/Weight%o/%splot_corr_same_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_weight%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), Weight, Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data(), Weight, imass));
+			if(isTrk) c_same_fine[iaway]->SaveAs(Form("CorrDist/CorrDist%sSame/%s/MupT%s/%s/%splot_corr_same_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data()));
+			else c_same_fine[iaway]->SaveAs(Form("CorrDist/CorrDist%sSame/%s/MupT%s/%s/%splot_corr_same_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_Acc%o_Eff%o_TnP%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, imass));
 //}}}
 
 //mix fine{{{
@@ -214,8 +233,8 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Boo
 			if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 8+0.05*(massBinsArr[imass+1])));
-			//lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 14.0));
-			c_mix_fine[iaway]->SaveAs(Form("CorrDist/CorrDist%sMix/%s/MupT%s/Weight%o/%splot_corr_mix_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_weight%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), Weight, Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data(), Weight, imass));
+			if(isTrk) c_mix_fine[iaway]->SaveAs(Form("CorrDist/CorrDist%sMix/%s/MupT%s/%s/%splot_corr_mix_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data()));
+			else c_mix_fine[iaway]->SaveAs(Form("CorrDist/CorrDist%sMix/%s/MupT%s/%s/%splot_corr_mix_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_Acc%o_Eff%o_TnP%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, imass));
 //}}}
 
 //ratio fine{{{
@@ -230,8 +249,8 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Boo
 				if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 				else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 				lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 8+0.05*(massBinsArr[imass+1])));
-				//lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 14.0));
-				c_ratio_fine[iaway]->SaveAs(Form("CorrDist/CorrDist%sRatio/%s/MupT%s/Weight%o/%splot_corr_ratio_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_weight%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), Weight, Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data(), Weight, imass));
+				if(isTrk) c_ratio_fine[iaway]->SaveAs(Form("CorrDist/CorrDist%sRatio/%s/MupT%s/%s/%splot_corr_ratio_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data()));
+				else c_ratio_fine[iaway]->SaveAs(Form("CorrDist/CorrDist%sRatio/%s/MupT%s/%s/%splot_corr_ratio_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_Acc%o_Eff%o_TnP%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, MorD.Data(), version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, imass));
 			}
 //}}}
 
@@ -244,8 +263,8 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Boo
 			if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 8+0.05*(massBinsArr[imass+1])));
-			//lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 14.0));
-			c_same_coarse[iaway]->SaveAs(Form("CorrDist/CorrDist%sSame/%s/MupT%s/Weight%o/%splot_corr_same_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_weight%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), Weight, Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data(), Weight, imass));
+			if(isTrk) c_same_coarse[iaway]->SaveAs(Form("CorrDist/CorrDist%sSame/%s/MupT%s/%s/%splot_corr_same_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data()));
+			else c_same_coarse[iaway]->SaveAs(Form("CorrDist/CorrDist%sSame/%s/MupT%s/%s/%splot_corr_same_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_Acc%o_Eff%o_TnP%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, imass));
 //}}}
 
 //mix coarse{{{
@@ -257,8 +276,8 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Boo
 			if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 			else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 			lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 8+0.05*(massBinsArr[imass+1])));
-			//lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 14.0));
-			c_mix_coarse[iaway]->SaveAs(Form("CorrDist/CorrDist%sMix/%s/MupT%s/Weight%o/%splot_corr_mix_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_weight%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), Weight, Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data(), Weight, imass));
+			if(isTrk) c_mix_coarse[iaway]->SaveAs(Form("CorrDist/CorrDist%sMix/%s/MupT%s/%s/%splot_corr_mix_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data()));
+			else c_mix_coarse[iaway]->SaveAs(Form("CorrDist/CorrDist%sMix/%s/MupT%s/%s/%splot_corr_mix_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_Acc%o_Eff%o_TnP%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, imass));
 //}}}
 
 //ratio coarse{{{
@@ -273,8 +292,8 @@ void DrawCorrel(const Bool_t isMC = false, const Bool_t isGen = false, const Boo
 				if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 				else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 				lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 8+0.05*(massBinsArr[imass+1])));
-				//lt1->DrawLatex(0.15,0.75, Form("%.2f #leq m_{#mu+#mu-} < %.2f GeV/c^{2}", 8+0.05*massBinsArr[imass], 14.0));
-				c_ratio_coarse[iaway]->SaveAs(Form("CorrDist/CorrDist%sRatio/%s/MupT%s/Weight%o/%splot_corr_ratio_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_weight%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), Weight, Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data(), Weight, imass));
+				if(isTrk) c_ratio_coarse[iaway]->SaveAs(Form("CorrDist/CorrDist%sRatio/%s/MupT%s/%s/%splot_corr_ratio_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data()));
+				else c_ratio_coarse[iaway]->SaveAs(Form("CorrDist/CorrDist%sRatio/%s/MupT%s/%s/%splot_corr_ratio_%s_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_%s_%s_MupT%s_Acc%o_Eff%o_TnP%o_%d.pdf", Away[iaway].Data(), version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), Away[iaway].Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, MorD.Data(), version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, imass));
 			}
 //}}}
 
