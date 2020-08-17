@@ -151,8 +151,10 @@ void DrawAcc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_
 	lt2->DrawLatex(0.65, 0.75, Form("|#eta^{#mu}| < 2.4"));
 	c1->SaveAs(Form("Plots/Acc_comp_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
 
-	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isRW, MupT.Data()), "READ");
+	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isRW, MupT.Data()), "RECREATE");
 	fout->cd();
+	hAccPt->Write();
+	hAccy->Write();
 	for(Int_t iy = 0; iy < Ny; iy++)
 	{
 		hAcc[iy]->Write();
