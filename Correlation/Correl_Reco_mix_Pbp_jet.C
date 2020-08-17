@@ -25,7 +25,7 @@
 using namespace std;
 //}}}
 
-void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const bool Weight = false, const Bool_t Bkg = true)
+void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const TString trkptversion = "v1", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const Bool_t isBkg = true)
 {
 	SetStyle();
 
@@ -40,9 +40,9 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 	TString MorD;
 	if(isMC) MorD = "MC";
 	else MorD = "Data";
-	TString SorB;
-	if(Bkg) SorB = "bkg";
-	else SorB = "sig";
+	TString PorB;
+	if(isBkg) PorB = "bkg";
+	else PorB = "peak";
 
 //Get files{{{
 	TString fname1, fname2;
@@ -50,10 +50,11 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 	TChain* tin2_tmp = new TChain("UpsilonTree");
 	for(Int_t ibin = 0; ibin < 120; ibin++)
 	{
-		if( (Bkg && (ibin < 20 || ibin >= 60)) || (!Bkg && (ibin >= 24 && ibin < 32)) )
+		//if( (isBkg && (ibin < 20 || ibin >= 60)) || (!isBkg && (ibin >= 26 && ibin < 32)) )
+		if( (isBkg && (ibin < 20 || ibin >= 60)) || (!isBkg && (ibin >= 22 && ibin < 36)) )
 		{
-			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), ibin);
-			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), ibin);
+			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
 			tin1_tmp->Add(fname1.Data());
 			tin2_tmp->Add(fname2.Data());
 		}
@@ -63,8 +64,8 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 	tin1_tmp->Reset();
 	tin2_tmp->Reset();
 
-	TFile* facc = new TFile("../AccEff/Plots/acc_acc_upsi_816.root", "READ");
-	TFile* feff = new TFile("../AccEff/Plots/EffPlots_Upsilon_1S_Ny5_MupT3p5.root", "READ");
+	TFile* facc = new TFile(Form("../AccEff/Plots/AccPlots_Upsilon_1S_RW%o_MupT%s.root", isAccRW, MupT.Data()), "READ");
+	TFile* feff = new TFile(Form("../AccEff/Plots/EffPlots_Upsilon_1S_RW%o_TnP%o_MupT%s.root", isEffRW, isTnP, MupT.Data()), "READ");
 	TFile* ftrk = new TFile("../AccEff/Plots/Hijing_8TeV_dataBS.root", "READ");
 //}}}
 
@@ -76,7 +77,7 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 	TH1D* heff[Ny];
 	for(Int_t iy = 0; iy < Ny; iy++)
 	{
-		hacc[iy] = (TH1D*) facc->Get(Form("hAccPt%s%s", yabin[iy].Data(), yabin[iy+1].Data()));
+		hacc[iy] = (TH1D*) facc->Get(Form("hAcc%s%s", yabin[iy].Data(), yabin[iy+1].Data()));
 		heff[iy] = (TH1D*) feff->Get(Form("hEff_%d", iy));
 	}
 	TH2D* htrk = (TH2D*) ftrk->Get("rTotalEff3D_0");
@@ -114,18 +115,18 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 
 /*
 //wide bin first case{{{
-	TH2D* h1_1 = new TH2D("hBkgPbp1_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1,-7.5,7.5,Nphibin1,-(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());//wide1
-	TH2D* h1_2 = new TH2D("hBkgPbp1_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2,-7.5,7.5,Nphibin2,-(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());//wide1
-	TH2D* h4_1 = new TH2D("hBkgPbp4_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1,-7.5,7.5,Nphibin1,-(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());//wide1
-	TH2D* h4_2 = new TH2D("hBkgPbp4_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2,-7.5,7.5,Nphibin2,-(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());//wide1
+	TH2D* h1_1 = new TH2D("hisBkgPbp1_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1,-7.5,7.5,Nphibin1,-(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());//wide1
+	TH2D* h1_2 = new TH2D("hisBkgPbp1_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2,-7.5,7.5,Nphibin2,-(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());//wide1
+	TH2D* h4_1 = new TH2D("hisBkgPbp4_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1,-7.5,7.5,Nphibin1,-(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());//wide1
+	TH2D* h4_2 = new TH2D("hisBkgPbp4_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2,-7.5,7.5,Nphibin2,-(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());//wide1
 //}}}
 */
 /*
 //wide bin second case{{{
-	TH2D* h1_1 = new TH2D("hBkgPbp1_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1,-10.5,10.5,Nphibin1,-(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());//wide2
-	TH2D* h1_2 = new TH2D("hBkgPbp1_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2,-10.5,10.5,Nphibin2,-(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());//wide2
-	TH2D* h4_1 = new TH2D("hBkgPbp4_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1,-10.5,10.5,Nphibin1,-(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());//wide2
-	TH2D* h4_2 = new TH2D("hBkgPbp4_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2,-10.5,10.5,Nphibin2,-(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());//wide2
+	TH2D* h1_1 = new TH2D("hisBkgPbp1_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1,-10.5,10.5,Nphibin1,-(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());//wide2
+	TH2D* h1_2 = new TH2D("hisBkgPbp1_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2,-10.5,10.5,Nphibin2,-(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());//wide2
+	TH2D* h4_1 = new TH2D("hisBkgPbp4_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1,-10.5,10.5,Nphibin1,-(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());//wide2
+	TH2D* h4_2 = new TH2D("hisBkgPbp4_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2,-10.5,10.5,Nphibin2,-(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(),(1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());//wide2
 //za}}}
 */
 	FormTH2(hReco1_1);
@@ -219,7 +220,7 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 
 				Double_t upacc = 1.;
 				Double_t upeff = 1.;
-				if(Weight)
+				if(!isMC)
 				{
 					for(Int_t iy = 0; iy < Ny; iy++)
 					{
@@ -229,7 +230,6 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 							upeff = heff[iy]->GetBinContent(heff[iy]->FindBin(trg_pt));
 							break;
 						}
-						else continue;
 					}
 				}
 
@@ -262,7 +262,7 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 
 //fill hist{{{
 						Double_t trkeff = 1.;
-						if(Weight) trkeff = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+						if(!isMC) trkeff = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
 
 						hReco1_1->Fill(deta, dphi, 1/( (double)(10*Ntrg_Reco1*upacc*upeff*trkeff) ));
 						hReco1_2->Fill(deta, dphi, 1/( (double)(10*Ntrg_Reco1*upacc*upeff*trkeff) ));
@@ -310,7 +310,7 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 
 				Double_t upacc = 1.;
 				Double_t upeff = 1.;
-				if(Weight)
+				if(!isMC)
 				{
 					for(Int_t iy = 0; iy < Ny; iy++)
 					{
@@ -353,7 +353,7 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 
 //fill hist{{{
 						Double_t trkeff = 1.;
-						if(Weight) trkeff = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+						if(!isMC) trkeff = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
 
 						hReco1_1->Fill(deta, dphi, 1/( (double)(10*Ntrg_Reco2*upacc*upeff*trkeff) ));
 						hReco1_2->Fill(deta, dphi, 1/( (double)(10*Ntrg_Reco2*upacc*upeff*trkeff) ));
@@ -385,31 +385,41 @@ void Correl_Reco_mix_Pbp_jet(const bool isMC = false, const Int_t multMin = 0, c
 		}
 	}
 
-//draw{{{
+//Draw{{{
 	cReco1_1->cd();
+	hReco1_1->Scale(1./(Nevt1+Nevt2));
 	hReco1_1->Draw("Surf1");
 	cReco1_2->cd();
+	hReco1_2->Scale(1./(Nevt1+Nevt2));
 	hReco1_2->Draw("Surf1");
 	cReco2_1->cd();
+	hReco2_1->Scale(1./(Nevt1+Nevt2));
 	hReco2_1->Draw("Surf1");
 	cReco2_2->cd();
+	hReco2_2->Scale(1./(Nevt1+Nevt2));
 	hReco2_2->Draw("Surf1");
 	cReco3_1->cd();
+	hReco3_1->Scale(1./(Nevt1+Nevt2));
 	hReco3_1->Draw("Surf1");
 	cReco3_2->cd();
+	hReco3_2->Scale(1./(Nevt1+Nevt2));
 	hReco3_2->Draw("Surf1");
 	cReco4_1->cd();
+	hReco4_1->Scale(1./(Nevt1+Nevt2));
 	hReco4_1->Draw("Surf1");
 	cReco4_2->cd();
+	hReco4_2->Scale(1./(Nevt1+Nevt2));
 	hReco4_2->Draw("Surf1");
 	cReco5_1->cd();
+	hReco5_1->Scale(1./(Nevt1+Nevt2));
 	hReco5_1->Draw("Surf1");
 	cReco5_2->cd();
+	hReco5_2->Scale(1./(Nevt1+Nevt2));
 	hReco5_2->Draw("Surf1");
 //}}}
 
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Reco_Pbp_distribution_mix_%s_weight%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), Weight, SorB.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Reco_Pbp_distribution_mix_%s_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), MorD.Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "RECREATE");
 	fout->cd();
 	hReco1_1->Write();
 	hReco1_2->Write();

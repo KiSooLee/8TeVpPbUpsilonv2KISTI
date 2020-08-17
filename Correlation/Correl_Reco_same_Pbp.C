@@ -25,7 +25,7 @@
 using namespace std;
 //}}}
 
-void Correl_Reco_same_Pbp(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const TString trkptversion = "v1", const bool Weight = false, const Int_t imass = 0)
+void Correl_Reco_same_Pbp(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const TString trkptversion = "v1", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const Int_t imass = 0)
 {
 	SetStyle();
 
@@ -54,8 +54,8 @@ void Correl_Reco_same_Pbp(const bool isMC = false, const Int_t multMin = 0, cons
 	TTree* tin1 = tin1_tmp->CloneTree();
 	tin1_tmp->Reset();
 
-	TFile* facc = new TFile("../AccEff/Plots/acc_acc_upsi_816.root", "READ");
-	TFile* feff = new TFile("../AccEff/Plots/EffPlots_Upsilon_1S_Ny5_MupT3p5.root", "READ");
+	TFile* facc = new TFile(Form("../AccEff/Plots/AccPlots_Upsilon_1S_RW%o_MupT%s.root", isAccRW, MupT.Data()), "READ");
+	TFile* feff = new TFile(Form("../AccEff/Plots/EffPlots_Upsilon_1S_RW%o_TnP%o_MupT%s.root", isEffRW, isTnP, MupT.Data()), "READ");
 	TFile* ftrk = new TFile("../AccEff/Plots/Hijing_8TeV_dataBS.root", "READ");
 //}}}
 
@@ -67,7 +67,7 @@ void Correl_Reco_same_Pbp(const bool isMC = false, const Int_t multMin = 0, cons
 	TH1D* heff[Ny];
 	for(Int_t iy = 0; iy < Ny; iy++)
 	{
-		hacc[iy] = (TH1D*) facc->Get(Form("hAccPt%s%s", yabin[iy].Data(), yabin[iy+1].Data()));
+		hacc[iy] = (TH1D*) facc->Get(Form("hAcc%s%s", yabin[iy].Data(), yabin[iy+1].Data()));
 		heff[iy] = (TH1D*) feff->Get(Form("hEff_%d", iy));
 	}
 	TH2D* htrk = (TH2D*) ftrk->Get("rTotalEff3D_0");
@@ -176,7 +176,7 @@ void Correl_Reco_same_Pbp(const bool isMC = false, const Int_t multMin = 0, cons
 
 			Double_t upacc = 1.;
 			Double_t upeff = 1.;
-			if(Weight)
+			if(!isMC)
 			{
 				for(Int_t iy = 0; iy < Ny; iy++)
 				{
@@ -186,7 +186,6 @@ void Correl_Reco_same_Pbp(const bool isMC = false, const Int_t multMin = 0, cons
 						upeff = heff[iy]->GetBinContent(heff[iy]->FindBin(trg_pt));
 						break;
 					}
-					else continue;
 				}
 			}
 
@@ -209,7 +208,7 @@ void Correl_Reco_same_Pbp(const bool isMC = false, const Int_t multMin = 0, cons
 
 //fill hist{{{
 				Double_t trkeff = 1.;
-				if(Weight) trkeff = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+				if(!isMC) trkeff = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
 
 				hReco1_1->Fill(deta, dphi, 1./( (double)Ntrg_Reco*upacc*upeff*trkeff ));
 				hReco1_2->Fill(deta, dphi, 1./( (double)Ntrg_Reco*upacc*upeff*trkeff ));
@@ -240,29 +239,39 @@ void Correl_Reco_same_Pbp(const bool isMC = false, const Int_t multMin = 0, cons
 
 //Draw{{{
 	cReco1_1->cd();
+	hReco1_1->Scale(1./Nevt);
 	hReco1_1->Draw("Surf1");
 	cReco1_2->cd();
+	hReco1_2->Scale(1./Nevt);
 	hReco1_2->Draw("Surf1");
 	cReco2_1->cd();
+	hReco2_1->Scale(1./Nevt);
 	hReco2_1->Draw("Surf1");
 	cReco2_2->cd();
+	hReco2_2->Scale(1./Nevt);
 	hReco2_2->Draw("Surf1");
 	cReco3_1->cd();
+	hReco3_1->Scale(1./Nevt);
 	hReco3_1->Draw("Surf1");
 	cReco3_2->cd();
+	hReco3_2->Scale(1./Nevt);
 	hReco3_2->Draw("Surf1");
 	cReco4_1->cd();
+	hReco4_1->Scale(1./Nevt);
 	hReco4_1->Draw("Surf1");
 	cReco4_2->cd();
+	hReco4_2->Scale(1./Nevt);
 	hReco4_2->Draw("Surf1");
 	cReco5_1->cd();
+	hReco5_1->Scale(1./Nevt);
 	hReco5_1->Draw("Surf1");
 	cReco5_2->cd();
+	hReco5_2->Scale(1./Nevt);
 	hReco5_2->Draw("Surf1");
 //}}}
 
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_Pbp_distribution_same_%s_weight%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), MorD.Data(), Weight, imass), "RECREATE");
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_Pbp_distribution_same_%s_Acc%o_Eff%o_TnP%o_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), MorD.Data(), isAccRW, isEffRW, isTnP, imass), "RECREATE");
 	fout->cd();
 	hReco1_1->Write();
 	hReco1_2->Write();
