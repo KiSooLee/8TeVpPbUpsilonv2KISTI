@@ -53,7 +53,7 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 	const Int_t Nmassbins = 150;
 	const Double_t RangeLow = 8.5;
 	const Double_t RangeHigh = 10;
-	TFile* fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_MC_%s_MupT%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_MC_%s_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
 
 //Define parameters{{{
 	Double_t sig11;
@@ -84,7 +84,7 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 //}}}
 
 //Get data{{{
-	TFile* fin = new TFile(Form("Skim_OniaTree_MC_PADoubleMuon_MupT%s.root", MupT.Data()), "READ");
+	TFile* fin = new TFile(Form("Skim_OniaTree_MC_PADoubleMuon_1S_MupT%s.root", MupT.Data()), "READ");
 	RooDataSet* dataset = (RooDataSet*) fin->Get("dataset");
 	RooWorkspace* ws = new RooWorkspace(Form("workspace"));
 	ws->import(*dataset);
@@ -132,10 +132,10 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 	RooRealVar* x1S = new RooRealVar("x1S", "sigma ratio", 0.35, 0, 1);
 	RooFormulaVar sigma1S_2("sigma1S_2", "@0*@1", RooArgList(sigma1S_1, *x1S));
 
-	//RooRealVar alpha("alpha", "alpha of Crystal ball", 2., 0.1, 20.0);
-	//RooRealVar n("n", "n of Crystal ball", 2.0, 0.1, 20.0);
-	RooRealVar alpha("alpha", "alpha of Crystal ball", 2., 0.5, 5.5);
-	RooRealVar n("n", "n of Crystal ball", 2.0, 0.5, 5.5);
+	RooRealVar alpha("alpha", "alpha of Crystal ball", 2., 0.1, 20.0);
+	RooRealVar n("n", "n of Crystal ball", 2.0, 0.1, 20.0);
+	//RooRealVar alpha("alpha", "alpha of Crystal ball", 2., 0.5, 5.5);
+	//RooRealVar n("n", "n of Crystal ball", 2.0, 0.5, 5.5);
 	RooRealVar* frac = new RooRealVar("frac", "CB fraction", 0.5, 0, 1);
 
 //twoCB function
@@ -147,8 +147,8 @@ void GetYieldMC(const Double_t multMin = 0, const Double_t multMax = 300, const 
 //}}}
 
 //Background function{{{
-	RooRealVar p0("p0", "1st parameter of bkg", 0.5, -4, 4);
-	RooRealVar p1("p1", "2nd parameter of bkg", 0.5, -4, 4);
+	RooRealVar p0("p0", "1st parameter of bkg", 0.5, -10, 10);
+	RooRealVar p1("p1", "2nd parameter of bkg", 0.5, -10, 10);
 	RooChebychev* bkgch = new RooChebychev("bkgch", "Chebychev background", *(ws->var("mass")), RooArgList(p0, p1));
 	//RooPolynomial* bkgch = new RooPolynomial("bkgch", "bkgch", *(ws->var("mass")), RooArgList());
 //}}}
