@@ -34,7 +34,7 @@ using namespace std;
 using namespace RooFit;
 //}}}
 
-void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const TString version = "v1", const bool Weight = false, TString MupT = "4")
+void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const TString version = "v1", const bool Weight = true, const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const bool SigSys = false, const bool BkgSys = false, const TString MupT = "4")
 {
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -51,11 +51,12 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 
 	SetStyle();
 
-	//const Int_t Nmassbins = 120;
 	const Double_t RangeLow = 8;
 	const Double_t RangeHigh = 14;
 	const Int_t Nmassbins = 120;
-	TFile* fout = new TFile(Form("Yield/Plot_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_MupT%s.root", (int)multMin, (int)multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, MupT.Data()), "RECREATE");
+	TFile* fout;
+	if(Weight) fout = new TFile(Form("Yield/Plot_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()), "RECREATE");
+	else fout = new TFile(Form("Yield/Plot_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_noWeight_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
 
 //define muon pt value{{{
 	Double_t MupTCut;
@@ -77,14 +78,15 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 
 //Define parameters{{{
 	Double_t sig11;
-	//Double_t sig11, sig12, sig21, sig22, sig31, sig32;
 	Double_t Frac, alp, N;
 	Double_t erfm, erfsig, erfp0;
+	Double_t chebyp0, chebyp1, chebyp2, chebyp3, chebyp4;
 //}}}
 
 //Get parameter{{{
 	ifstream in;
-	in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Weight, MupT.Data()));
+	if(Weight) in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()));
+	else in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_noWeight_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()));
 	if(in.is_open())
 	{
 		while(!in.eof())
@@ -96,8 +98,9 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 			}
 			else
 			{
-				in >> sig11 >> Frac >> alp >> N >> erfm >> erfsig >> erfp0;
-				//in >> sig11 >> sig12 >> sig21 >> sig22 >> sig31 >> sig32 >> Frac >> alp >> N >> erfm >> erfsig >> erfp0;
+				if(SigSys) in >> sig11 >> Frac >> alp >> N >> erfm >> erfsig >> erfp0;
+				else if(BkgSys) in >> sig11 >> Frac >> alp >> N >> chebyp0 >> chebyp1 >> chebyp2 >> chebyp3 >> chebyp4;
+				else in >> sig11 >> Frac >> alp >> N >> erfm >> erfsig >> erfp0;
 			}
 		}
 	}
@@ -105,7 +108,9 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 //}}}
 
 //Get data{{{
-	TFile* fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_weight%o_MupT%s.root", Weight, MupT.Data()), "READ");
+	TFile* fin;
+	if(Weight) fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_Acc%o_Eff%o_TnP%o_MupT%s.root", isAccRW, isEffRW, isTnP, MupT.Data()), "READ");
+	else fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_noWeight_MupT%s.root", MupT.Data()), "READ");
 	RooDataSet* dataset = (RooDataSet*) fin->Get("dataset");
 	RooWorkspace* ws = new RooWorkspace(Form("workspace"));
 	ws->import(*dataset);
@@ -168,15 +173,6 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	RooFormulaVar sigma1S_2("sigma1S_2", "@0*@1", RooArgList(sigma1S_1, *x1S));
 	RooFormulaVar sigma2S_2("sigma2S_2", "@0*@1", RooArgList(sigma1S_2, mratio2));
 	RooFormulaVar sigma3S_2("sigma3S_2", "@0*@1", RooArgList(sigma1S_2, mratio3));
-
-/*
-	RooRealVar sigma2S_1("sigma2S_1", "sigma1 of 2S", 0.05, 0.01, 0.2);
-	RooRealVar sigma3S_1("sigma3S_1", "sigma1 of 3S", 0.05, 0.01, 0.2);
-	RooRealVar sigma1S_2("sigma1S_2", "sigma2 of 1S", 0.05, 0.01, 0.2);
-	RooRealVar sigma2S_2("sigma2S_2", "sigma2 of 2S", 0.05, 0.01, 0.2);
-	RooRealVar sigma3S_2("sigma3S_2", "sigma2 of 3S", 0.05, 0.01, 0.2);
-*/
-
 //}}}
 
 	RooRealVar alpha("alpha", "alpha of Crystal ball", 2.0, 0.5, 20.0);
@@ -196,10 +192,16 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	RooCBShape* CB1S_2 = new RooCBShape("CB1S_2", "1S Crystal ball function2", *(ws->var("mass")), mean1S, sigma1S_2, alpha, n);
 	RooCBShape* CB2S_2 = new RooCBShape("CB2S_2", "2S Crystal ball function2", *(ws->var("mass")), mean2S, sigma2S_2, alpha, n);
 	RooCBShape* CB3S_2 = new RooCBShape("CB3S_2", "3S Crystal ball function2", *(ws->var("mass")), mean3S, sigma3S_2, alpha, n);
+	RooGaussian* G1S = new RooGaussian("G1S", "1S Gaussian", *(ws->var("mass")), mean1S, sigma1S_2);
+	RooGaussian* G2S = new RooGaussian("G2S", "2S Gaussian", *(ws->var("mass")), mean2S, sigma2S_2);
+	RooGaussian* G3S = new RooGaussian("G3S", "3S Gaussian", *(ws->var("mass")), mean3S, sigma3S_2);
 
 	RooAddPdf* twoCB1S = new RooAddPdf("twoCB1S", "Sum of 1S Crystal ball", RooArgList(*CB1S_1, *CB1S_2), RooArgList(*frac));
 	RooAddPdf* twoCB2S = new RooAddPdf("twoCB2S", "Sum of 2S Crystal ball", RooArgList(*CB2S_1, *CB2S_2), RooArgList(*frac));
 	RooAddPdf* twoCB3S = new RooAddPdf("twoCB3S", "Sum of 3S Crystal ball", RooArgList(*CB3S_1, *CB3S_2), RooArgList(*frac));
+	RooAddPdf* CBG1S = new RooAddPdf("CBG1S", "Sum of 1S Crystal ball Gauss", RooArgList(*CB1S_1, *G1S), RooArgList(*frac));
+	RooAddPdf* CBG2S = new RooAddPdf("CBG2S", "Sum of 2S Crystal ball Gauss", RooArgList(*CB2S_1, *G2S), RooArgList(*frac));
+	RooAddPdf* CBG3S = new RooAddPdf("CBG3S", "Sum of 3S Crystal ball Gauss", RooArgList(*CB3S_1, *G3S), RooArgList(*frac));
 //}}}
 
 //}}}
@@ -212,17 +214,36 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	//RooRealVar Erfmean("Erfmean", "Mean of Errfunction", 6, 6, 9.5);//for 110~300, 0~2 GeV
 	//RooRealVar Erfsigma("Erfsigma", "Sigma of Errfunction", 1, 0, 3);//for 110~300, 0~2 GeV
 	RooRealVar Erfp0("Erfp0", "1st parameter of Errfunction", 1, 0, 100);
+	RooRealVar Chebp0("Chebp0", "1st parameter of Chebychev", 0.1, -100, 100);
+	RooRealVar Chebp1("Chebp1", "2st parameter of Chebychev", 0.1, -100, 100);
+	RooRealVar Chebp2("Chebp2", "3st parameter of Chebychev", 0.1, -100, 100);
+	RooRealVar Chebp3("Chebp3", "4st parameter of Chebychev", 0.1, -100, 100);
+	RooRealVar Chebp4("Chebp4", "5st parameter of Chebychev", 0.1, -100, 100);
 
 	RooGenericPdf* bkgErf = new RooGenericPdf("bkgErf", "Error background", "TMath::Exp(-@0/@1)*(TMath::Erf((@0-@2)/(TMath::Sqrt(2)*@3))+1)*0.5", RooArgList(*(ws->var("mass")), Erfp0, Erfmean, Erfsigma));
+	RooChebychev* bkgCheb4 = new RooChebychev("bkgCheb4", "Error background", *(ws->var("mass")), RooArgList(Chebp0, Chebp1, Chebp2, Chebp3, Chebp4));
 //}}}
 
 //Select Pdf{{{
-	RooGenericPdf* Signal1S = (RooGenericPdf*) twoCB1S;
-	RooGenericPdf* Signal2S = (RooGenericPdf*) twoCB2S;
-	RooGenericPdf* Signal3S = (RooGenericPdf*) twoCB3S;
+	RooGenericPdf* Signal1S;
+	RooGenericPdf* Signal2S;
+	RooGenericPdf* Signal3S;
+	if(SigSys)
+	{
+		Signal1S = (RooGenericPdf*) CBG1S;
+		Signal2S = (RooGenericPdf*) CBG2S;
+		Signal3S = (RooGenericPdf*) CBG3S;
+	}
+	else
+	{
+		Signal1S = (RooGenericPdf*) twoCB1S;
+		Signal2S = (RooGenericPdf*) twoCB2S;
+		Signal3S = (RooGenericPdf*) twoCB3S;
+	}
 
 	RooGenericPdf* Background;
-	Background = (RooGenericPdf*) bkgErf;
+	if(BkgSys) Background = (RooGenericPdf*) bkgCheb4;
+	else Background = (RooGenericPdf*) bkgErf;
 //}}}
 
 //Set Parameters{{{
@@ -235,15 +256,27 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	alpha.setVal(alp); //alpha.setConstant();
 	n.setVal(N); //n.setConstant();
 	frac->setVal(Frac); //frac->setConstant();
-	Erfmean.setVal(erfm); //Erfmean.setConstant(erfm);
-	Erfsigma.setVal(erfsig); //Erfsigma.setConstant(erfsig);
-	Erfp0.setVal(erfp0); //Erfp0.setConstant(erfp0);
+
+	if(BkgSys)
+	{
+		Chebp0.setVal(chebyp0);
+		Chebp1.setVal(chebyp1);
+		Chebp2.setVal(chebyp2);
+		Chebp3.setVal(chebyp3);
+		Chebp4.setVal(chebyp4);
+	}
+	else
+	{
+		Erfmean.setVal(erfm); //Erfmean.setConstant(erfm);
+		Erfsigma.setVal(erfsig); //Erfsigma.setConstant(erfsig);
+		Erfp0.setVal(erfp0); //Erfp0.setConstant(erfp0);
+	}
 //}}}
 
 //Draw mass plot{{{
-	RooRealVar* nSig1S = new RooRealVar("nSig1S", "# of 1S signal", 400, -1000, 100000);
-	RooRealVar* nSig2S = new RooRealVar("nSig2S", "# of 2S signal", 100, -1000, 30000);
-	RooRealVar* nSig3S = new RooRealVar("nSig3S", "# of 3S signal", 10, -1000, 9000);
+	RooRealVar* nSig1S = new RooRealVar("nSig1S", "# of 1S signal", 400, -1000, 1000000);
+	RooRealVar* nSig2S = new RooRealVar("nSig2S", "# of 2S signal", 100, -1000, 300000);
+	RooRealVar* nSig3S = new RooRealVar("nSig3S", "# of 3S signal", 10, -1000, 90000);
 	RooRealVar* nBkg = new RooRealVar("nBkg", "number of background", 300, -1000, 10000000);
 	RooAddPdf* model = new RooAddPdf("model", "1S+2S+3S+Bkg", RooArgList(*Signal1S, *Signal2S, *Signal3S, *Background), RooArgList(*nSig1S, *nSig2S, *nSig3S, *nBkg));
 	ws->import(*model);
@@ -334,8 +367,10 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	WriteMessage("Writing result is Done !!!");
 //}}}
 
-	c1->SaveAs(Form("MassDist/NoStatMassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_weight%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, Weight, MupT.Data()));
+	if(Weight) c1->SaveAs(Form("MassDist/NoStatMassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()));
+	else c1->SaveAs(Form("MassDist/NoStatMassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_noWeight_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, MupT.Data()));
 	
 	fout->cd();
 	massPlot->Write();
+	fout->Close();
 }
