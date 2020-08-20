@@ -80,7 +80,7 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	Double_t sig11;
 	Double_t Frac, alp, N;
 	Double_t erfm, erfsig, erfp0;
-	Double_t chebyp0, chebyp1, chebyp2, chebyp3, chebyp4;
+	Double_t chebyp0, chebyp1, chebyp2, chebyp3;
 //}}}
 
 //Get parameter{{{
@@ -99,7 +99,7 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 			else
 			{
 				if(SigSys) in >> sig11 >> Frac >> alp >> N >> erfm >> erfsig >> erfp0;
-				else if(BkgSys) in >> sig11 >> Frac >> alp >> N >> chebyp0 >> chebyp1 >> chebyp2 >> chebyp3 >> chebyp4;
+				else if(BkgSys) in >> sig11 >> Frac >> alp >> N >> chebyp0 >> chebyp1 >> chebyp2 >> chebyp3;
 				else in >> sig11 >> Frac >> alp >> N >> erfm >> erfsig >> erfp0;
 			}
 		}
@@ -218,10 +218,10 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	RooRealVar Chebp1("Chebp1", "2st parameter of Chebychev", 0.1, -100, 100);
 	RooRealVar Chebp2("Chebp2", "3st parameter of Chebychev", 0.1, -100, 100);
 	RooRealVar Chebp3("Chebp3", "4st parameter of Chebychev", 0.1, -100, 100);
-	RooRealVar Chebp4("Chebp4", "5st parameter of Chebychev", 0.1, -100, 100);
+	//RooRealVar Chebp4("Chebp4", "5st parameter of Chebychev", 0.1, -100, 100);
 
 	RooGenericPdf* bkgErf = new RooGenericPdf("bkgErf", "Error background", "TMath::Exp(-@0/@1)*(TMath::Erf((@0-@2)/(TMath::Sqrt(2)*@3))+1)*0.5", RooArgList(*(ws->var("mass")), Erfp0, Erfmean, Erfsigma));
-	RooChebychev* bkgCheb4 = new RooChebychev("bkgCheb4", "Error background", *(ws->var("mass")), RooArgList(Chebp0, Chebp1, Chebp2, Chebp3, Chebp4));
+	RooChebychev* bkgCheb4 = new RooChebychev("bkgCheb4", "Error background", *(ws->var("mass")), RooArgList(Chebp0, Chebp1, Chebp2, Chebp3));
 //}}}
 
 //Select Pdf{{{
@@ -263,7 +263,7 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 		Chebp1.setVal(chebyp1);
 		Chebp2.setVal(chebyp2);
 		Chebp3.setVal(chebyp3);
-		Chebp4.setVal(chebyp4);
+		//Chebp4.setVal(chebyp4);
 	}
 	else
 	{

@@ -81,7 +81,7 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	Double_t sig11;
 	Double_t Frac, alp, N;
 	Double_t erfm, erfsig, erfp0;
-	Double_t chebyp0, chebyp1, chebyp2, chebyp3, chebyp4;
+	Double_t chebyp0, chebyp1, chebyp2, chebyp3;
 //}}}
 
 //Get parameter{{{
@@ -100,7 +100,7 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 			else
 			{
 				if(SigSys) in >> sig11 >> Frac >> alp >> N >> erfm >> erfsig >> erfp0;
-				else if(BkgSys) in >> sig11 >> Frac >> alp >> N >> chebyp0 >> chebyp1 >> chebyp2 >> chebyp3 >> chebyp4;
+				else if(BkgSys) in >> sig11 >> Frac >> alp >> N >> chebyp0 >> chebyp1 >> chebyp2 >> chebyp3;
 				else in >> sig11 >> Frac >> alp >> N >> erfm >> erfsig >> erfp0;
 			}
 		}
@@ -218,10 +218,10 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	RooRealVar Chebp1("Chebp1", "2st parameter of Chebychev", 0.1, -100, 100);
 	RooRealVar Chebp2("Chebp2", "3st parameter of Chebychev", 0.1, -100, 100);
 	RooRealVar Chebp3("Chebp3", "4st parameter of Chebychev", 0.1, -100, 100);
-	RooRealVar Chebp4("Chebp4", "5st parameter of Chebychev", 0.1, -100, 100);
+	//RooRealVar Chebp4("Chebp4", "5st parameter of Chebychev", 0.1, -100, 100);
 
 	RooGenericPdf* bkgErf = new RooGenericPdf("bkgErf", "Error background", "TMath::Exp(-@0/@1)*(TMath::Erf((@0-@2)/(TMath::Sqrt(2)*@3))+1)*0.5", RooArgList(*(ws->var("mass")), Erfp0, Erfmean, Erfsigma));
-	RooChebychev* bkgCheb4 = new RooChebychev("bkgCheb4", "Error background", *(ws->var("mass")), RooArgList(Chebp0, Chebp1, Chebp2, Chebp3, Chebp4));
+	RooChebychev* bkgCheb4 = new RooChebychev("bkgCheb4", "Error background", *(ws->var("mass")), RooArgList(Chebp0, Chebp1, Chebp2, Chebp3));
 //}}}
 
 //Select Pdf{{{
@@ -263,7 +263,7 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 		Chebp1.setVal(chebyp1); 
 		Chebp2.setVal(chebyp2); 
 		Chebp3.setVal(chebyp3); 
-		Chebp4.setVal(chebyp4); 
+		//Chebp4.setVal(chebyp4); 
 	}
 	else
 	{
@@ -416,8 +416,8 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 		fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f \n", meanout, sigma1out, sigma2out, fracout, sigmaout, TIntgr1S, TIntgrBkg, IntgrSig, IntgrBkg, Yield1S, YieldBkg, Significance);
 		if(BkgSys)
 		{
-			fprintf(ftxt, "mean  U1sigma1  fraction  alpha  n  Ch2bp0  Ch2bp1  Ch2bp2  Ch2bp3  Ch2bp4  \n");
-			fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f  %.3f  %.3f  \n", meanout, sigma1out, fracout, ws->var("alpha")->getVal(), ws->var("n")->getVal(), ws->var("Chebp0")->getVal(), ws->var("Chebp1")->getVal(), ws->var("Chebp2")->getVal(), ws->var("Chebp3")->getVal(), ws->var("Chebp4")->getVal());
+			fprintf(ftxt, "mean  U1sigma1  fraction  alpha  n  Ch2bp0  Ch2bp1  Ch2bp2  Ch2bp3  \n");
+			fprintf(ftxt, "%.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f   %.3f  %.3f  \n", meanout, sigma1out, fracout, ws->var("alpha")->getVal(), ws->var("n")->getVal(), ws->var("Chebp0")->getVal(), ws->var("Chebp1")->getVal(), ws->var("Chebp2")->getVal(), ws->var("Chebp3")->getVal());
 		}
 		else
 		{
