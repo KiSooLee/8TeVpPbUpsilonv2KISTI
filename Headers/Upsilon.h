@@ -295,7 +295,7 @@ Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50,
 //v39: pt binnig for jet ratio 0~50 {{{
 Int_t multBinsArr[] = {0, 50};
 Double_t rapBinsArr[] = {-2.4, 2.4};
-Double_t ptBinsArr[] = {5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 12.0, 15.0};
+Double_t ptBinsArr[] = {5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 12.0, 15.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
 */
@@ -311,7 +311,8 @@ Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50,
 //v41: pt binnig for jet ratio 0~50 with extended mass range{{{
 Int_t multBinsArr[] = {0, 50};
 Double_t rapBinsArr[] = {-2.4, 2.4};
-Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0};
+//Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 30.0};
+Double_t ptBinsArr[] = {9.0, 12.0, 15.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
 */
@@ -351,7 +352,7 @@ Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50,
 //v46: pt binnig for jet ratio 90~300{{{
 Int_t multBinsArr[] = {90, 300};
 Double_t rapBinsArr[] = {-2.4, 2.4};
-Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0};
+Double_t ptBinsArr[] = {10.0, 12.0, 15.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
 */
@@ -359,7 +360,8 @@ Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50,
 //v47: pt binnig for jet ratio 90~300 with extended mass range{{{
 Int_t multBinsArr[] = {90, 300};
 Double_t rapBinsArr[] = {-2.4, 2.4};
-Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0};
+//Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 30.0};
+Double_t ptBinsArr[] = {9.0, 12.0, 15.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
 */
@@ -443,6 +445,30 @@ Double_t ptBinsArr[] = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 15.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
 
+/*
+//v58: pt binnig for jet ratio 185~250 (J/psi study multiplicity) with extended mass range{{{
+Int_t multBinsArr[] = {185, 250};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {10.0, 12.0, 15.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v59: new pt binnig for jet ratio 90~300{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v60: new pt binnig for jet ratio 0~50{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
 //}}}
 
 const Int_t rap_narr = sizeof(rapBinsArr)/sizeof(double);
