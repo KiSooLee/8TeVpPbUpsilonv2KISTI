@@ -117,11 +117,11 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 
 //Define canvas and histogram{{{
 	TCanvas* c_same_fine = new TCanvas("c_same_Full_fine", "", 0, 0, 600, 600);
-	TCanvas* c_same_coarse = new TCanvas("c_same_FUll_coarse", "", 0, 0, 600, 600);
+	TCanvas* c_same_coarse = new TCanvas("c_same_Full_coarse", "", 0, 0, 600, 600);
 	TCanvas* c_mix_fine = new TCanvas("c_mix_Full_fine", "", 0, 0, 600, 600);
-	TCanvas* c_mix_coarse = new TCanvas("c_mix_FUll_coarse", "", 0, 0, 600, 600);
+	TCanvas* c_mix_coarse = new TCanvas("c_mix_Full_coarse", "", 0, 0, 600, 600);
 	TCanvas* c_ratio_fine = new TCanvas("c_ratio_Full_fine", "", 0, 0, 600, 600);
-	TCanvas* c_ratio_coarse = new TCanvas("c_ratio_FUll_coarse", "", 0, 0, 600, 600);
+	TCanvas* c_ratio_coarse = new TCanvas("c_ratio_Full_coarse", "", 0, 0, 600, 600);
 
 	TH2D *hSamePbp_fine[2];
 	TH2D *hMixPbp_fine[2];
@@ -154,8 +154,8 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 //Get files{{{
 	for(Int_t ipPb = 0; ipPb < 2; ipPb++)
 	{
-		samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Reco_%s_distribution_same_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
-		mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Reco_%s_distribution_mix_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
+		samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_same_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
+		mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_mix_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
 	}
 //}}}
 
@@ -191,7 +191,7 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 	if((int) TrkptMin == 0) lt1->DrawLatex(0.15,0.8, Form("0.3 #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMax));
 	else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 	if(isBkg) lt1->DrawLatex(0.15,0.75, Form("8.0 #leq m_{#mu+#mu-} < 9.0 GeV/c^{2}, 11 #leq m_{#mu+#mu-} < 14 combined"));
-	else lt1->DrawLatex(0.15,0.75, Form("%.1f #leq m_{#mu+#mu-} < %.1f GeV/c^{2}", massMin, massMax));^
+	else lt1->DrawLatex(0.15,0.75, Form("%.1f #leq m_{#mu+#mu-} < %.1f GeV/c^{2}", massMin, massMax));
 	c_same_fine->SaveAs(Form("CorrDist/CorrDistFullSame/%s/MupT%s/%s/plot_corr_same_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%o_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, PorB.Data()));
 //}}}
 
