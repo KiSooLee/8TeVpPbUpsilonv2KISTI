@@ -34,10 +34,10 @@ void RatioNProjection_jet(const Int_t multMin = 0, const Int_t multMax = 300, co
 	const Int_t Naway = 4;
 	TString Away[Naway] = {"2", "1p5", "1", "short"};
 	TString SysDir;
-	if( isMC || (!isMC && isAccRW && isEffRW && isTnP) ) SysDir = "Nominal";
-	else if(!isMC && !isAccRW && isEffRW && isTnP) SysDir = "SysAcc";
-	else if(!isMC && isAccRW && !isEffRW && isTnP) SysDir = "SysEff";
-	else if(!isMC && isAccRW && isEffRW && !isTnP) SysDir = "SysTnP";
+	if( isAccRW && isEffRW && isTnP ) SysDir = "Nominal";
+	else if( !isAccRW && isEffRW && isTnP) SysDir = "SysAcc";
+	else if( isAccRW && !isEffRW && isTnP) SysDir = "SysEff";
+	else if( isAccRW && isEffRW && !isTnP) SysDir = "SysTnP";
 	else
 	{
 		cout << "There is no such option" << endl;
@@ -72,7 +72,7 @@ void RatioNProjection_jet(const Int_t multMin = 0, const Int_t multMax = 300, co
 	TH1D *hMixDeltaPhi_coarse[Naway];
 //}}}
 
-	TFile* fout = new TFile(Form("CorrDist/CorrFiles/%s/MupT%s/%s/dphi_distribution_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_MupT%s_%s.root", version.Data(), MupT.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, MupT.Data(), PorB.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("CorrDist/CorrFiles/%s/MupT%s/%s/dphi_distribution_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_MupT%s_%s.root", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, MupT.Data(), PorB.Data()), "RECREATE");
 
 //Get files{{{
 	for(Int_t ipPb = 0; ipPb < 2; ipPb++)
