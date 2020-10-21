@@ -25,7 +25,7 @@
 #include "../Headers/Upsilon.h"
 //}}}
 
-void RatioNProjection_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const TString MupT = "4", const Bool_t isBkg = true)
+void RatioNProjection_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TStiring trkptversion = "v1", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const TString MupT = "4", const Bool_t isBkg = true)
 { 
 	SetStyle();
 
@@ -77,8 +77,8 @@ void RatioNProjection_jet(const Int_t multMin = 0, const Int_t multMax = 300, co
 //Get files{{{
 	for(Int_t ipPb = 0; ipPb < 2; ipPb++)
 	{
-		samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Reco_%s_distribution_same_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
-		mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Reco_%s_distribution_mix_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
+		samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_same_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
+		mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_mix_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
 	}
 //}}}
 
