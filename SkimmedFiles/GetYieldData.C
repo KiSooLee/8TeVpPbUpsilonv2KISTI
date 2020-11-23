@@ -214,10 +214,10 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	//RooRealVar Erfmean("Erfmean", "Mean of Errfunction", 6, 6, 9.5);//for 110~300, 0~2 GeV
 	//RooRealVar Erfsigma("Erfsigma", "Sigma of Errfunction", 1, 0, 3);//for 110~300, 0~2 GeV
 	RooRealVar Erfp0("Erfp0", "1st parameter of Errfunction", 1, 0, 100);
-	RooRealVar Chebp0("Chebp0", "1st parameter of Chebychev", 0.1, -100, 100);
-	RooRealVar Chebp1("Chebp1", "2st parameter of Chebychev", 0.1, -100, 100);
-	RooRealVar Chebp2("Chebp2", "3st parameter of Chebychev", 0.1, -100, 100);
-	RooRealVar Chebp3("Chebp3", "4st parameter of Chebychev", 0.1, -100, 100);
+	RooRealVar Chebp0("Chebp0", "1st parameter of Chebychev", 0.1, -1, 1);
+	RooRealVar Chebp1("Chebp1", "2st parameter of Chebychev", 0.1, -1, 1);
+	RooRealVar Chebp2("Chebp2", "3st parameter of Chebychev", 0.1, -1, 1);
+	RooRealVar Chebp3("Chebp3", "4st parameter of Chebychev", 0.1, -1, 1);
 	//RooRealVar Chebp4("Chebp4", "5st parameter of Chebychev", 0.1, -100, 100);
 
 	RooGenericPdf* bkgErf = new RooGenericPdf("bkgErf", "Error background", "TMath::Exp(-@0/@1)*(TMath::Erf((@0-@2)/(TMath::Sqrt(2)*@3))+1)*0.5", RooArgList(*(ws->var("mass")), Erfp0, Erfmean, Erfsigma));
@@ -395,12 +395,12 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	Double_t Significance = (Yield1S*IntgrSig/TIntgr1S)/TMath::Sqrt(((Yield1S*IntgrSig/TIntgr1S)+(YieldBkg*IntgrBkg/TIntgrBkg)));
 
 	TH1D* hfrac = new TH1D("hfrac", "", 6, 0, 6);
-	hfrac->SetBinContent(1, Sgnfc1S->Eval(U1S_mass));
-	hfrac->SetBinContent(2, Bkgfc->Eval(U1S_mass));
-	hfrac->SetBinContent(3, Sgnfc1S->Integral(9.3, 9.6));
-	hfrac->SetBinContent(4, Bkgfc->Integral(9.3, 9.6));
-	hfrac->SetBinContent(5, Sgnfc1S->Integral(9.1, 9.8));
-	hfrac->SetBinContent(6, Bkgfc->Integral(9.1, 9.8));
+	hfrac->SetBinContent(1, Sgnfc1S->Eval(U1S_mass)*Yield1S/Sgnfc1S->Integral(8, 14));
+	hfrac->SetBinContent(2, Bkgfc->Eval(U1S_mass)*YieldBkg/Bkgfc->Integral(8, 14));
+	hfrac->SetBinContent(3, Sgnfc1S->Integral(9.3, 9.6)*Yield1S/Sgnfc1S->Integral(8, 14));
+	hfrac->SetBinContent(4, Bkgfc->Integral(9.3, 9.6)*YieldBkg/Bkgfc->Integral(8, 14));
+	hfrac->SetBinContent(5, Sgnfc1S->Integral(9.1, 9.8)*Yield1S/Sgnfc1S->Integral(8, 14));
+	hfrac->SetBinContent(6, Bkgfc->Integral(9.1, 9.8)*YieldBkg/Bkgfc->Integral(8, 14));
 
 	TH1D* hfracdist = new TH1D("hfracdist", "", 20, 9, 10);
 	for(Int_t i = 0; i < 20; i++)
@@ -453,6 +453,7 @@ void GetYieldData(const Int_t multMin = 0, const Int_t multMax = 300, const Doub
 	Sgnfc1S->Write();
 	Sgnfc2S->Write();
 	Sgnfc3S->Write();
+	Bkgfc->Write();
 	hfrac->Write();
 	hfracdist->Write();
 }
