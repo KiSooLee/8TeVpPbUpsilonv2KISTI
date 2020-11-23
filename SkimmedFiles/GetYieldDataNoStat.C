@@ -214,10 +214,10 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	//RooRealVar Erfmean("Erfmean", "Mean of Errfunction", 6, 6, 9.5);//for 110~300, 0~2 GeV
 	//RooRealVar Erfsigma("Erfsigma", "Sigma of Errfunction", 1, 0, 3);//for 110~300, 0~2 GeV
 	RooRealVar Erfp0("Erfp0", "1st parameter of Errfunction", 1, 0, 100);
-	RooRealVar Chebp0("Chebp0", "1st parameter of Chebychev", 0.1, -100, 100);
-	RooRealVar Chebp1("Chebp1", "2st parameter of Chebychev", 0.1, -100, 100);
-	RooRealVar Chebp2("Chebp2", "3st parameter of Chebychev", 0.1, -100, 100);
-	RooRealVar Chebp3("Chebp3", "4st parameter of Chebychev", 0.1, -100, 100);
+	RooRealVar Chebp0("Chebp0", "1st parameter of Chebychev", 0.1, -1, 1);
+	RooRealVar Chebp1("Chebp1", "2st parameter of Chebychev", 0.1, -1, 1);
+	RooRealVar Chebp2("Chebp2", "3st parameter of Chebychev", 0.1, -1, 1);
+	RooRealVar Chebp3("Chebp3", "4st parameter of Chebychev", 0.1, -1, 1);
 	//RooRealVar Chebp4("Chebp4", "5st parameter of Chebychev", 0.1, -100, 100);
 
 	RooGenericPdf* bkgErf = new RooGenericPdf("bkgErf", "Error background", "TMath::Exp(-@0/@1)*(TMath::Erf((@0-@2)/(TMath::Sqrt(2)*@3))+1)*0.5", RooArgList(*(ws->var("mass")), Erfp0, Erfmean, Erfsigma));
