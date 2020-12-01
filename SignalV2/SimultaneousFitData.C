@@ -29,11 +29,11 @@
 //external function{{{
 
 //Chi2 calculation{{{
-Int_t iparmass[17] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-							16};
+Int_t iparmass[19] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+							16, 17, 18};
 //Int_t iparvn[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-Int_t iparvn[26] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-						16, 17, 18, 19, 20, 21, 22, 23, 24, 25};
+Int_t iparvn[30] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+						16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
 
 struct GlobalChi2_width
 {
@@ -1096,6 +1096,12 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 	SetStyle();
 	const Double_t RangeMin = 8.;
 	const Double_t RangeMax = 14.;
+	//high-multiplicity
+	//const Double_t histMin = -0.02;
+	//const Double_t histMax = 0.04;
+	//low-multiplicity
+	const Double_t histMin = -0.02;
+	const Double_t histMax = 0.1;
 
 //set fitting condition name{{{
 	TString bkgF;
@@ -1164,7 +1170,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 //}}}
 
 	TFile* fout;
-	fout = new TFile(Form("V2Dist/V2File/%s/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s%s.root", version.Data(), multMin, multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data(), Ffit.Data()), "RECREATE");
+	fout = new TFile(Form("V2Dist/V2File/%s/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_%s_MupT%s%s.root", version.Data(), multMin, multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, bkgF.Data(), MupT.Data(), Ffit.Data()), "RECREATE");
 	fout->cd();
 
 	TF1* fyieldtot[pt_narr-1];
@@ -1192,6 +1198,8 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 	FormTH1Marker(hist, 0, 0, 1.4);
 	hist->GetXaxis()->SetTitle("m_{#mu#mu} (GeV/c^{2})");
 	hist->GetYaxis()->SetTitle("v_{2}^{S+B}");
+	hist->SetMaximum(histMax);
+	hist->SetMinimum(histMin);
 //}}}
 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
@@ -1259,7 +1267,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 
 		Double_t bpar1, bpar2, bpar3, bpar4, bpar5;
 		ifstream in2;
-		in2.open(Form("Parameter/v2_bkg_%s_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc%o_Eff%o_TnP%o_MupT%s.txt", bkgF.Data(), multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, MupT.Data()));
+		in2.open(Form("Parameter/v2_bkg_%s_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.txt", bkgF.Data(), multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()));
 		if(in2.is_open())
 		{
 			in2 >> bpar1 >> bpar2 >> bpar3 >> bpar4 >> bpar5;
@@ -1288,11 +1296,21 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		else fyield_simul = new TF1(Form("fyield_simul_%d", ipt), TotalYield, RangeMin, RangeMax, 13);
 
 		TF1* fvn_simul;
-		if(bkgN == 0) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), TotalvnexpU123S, RangeMin, RangeMax, 20);
-		else if(bkgN == 1) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol1U123S, RangeMin, RangeMax, 18);
-		else if(bkgN == 2) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol2U123S, RangeMin, RangeMax, 19);
-		else if(bkgN == 3) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol3U123S, RangeMin, RangeMax, 20);
-		else if(bkgN == 4) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), TotalvnerfU123S, RangeMin, RangeMax, 20);
+		if(!SigSys && !BkgSys)
+		{
+			if(bkgN == 0) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), TotalvnexpU123S, RangeMin, RangeMax, 20);
+			else if(bkgN == 1) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol1U123S, RangeMin, RangeMax, 18);
+			else if(bkgN == 2) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol2U123S, RangeMin, RangeMax, 19);
+			else if(bkgN == 3) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol3U123S, RangeMin, RangeMax, 20);
+			else if(bkgN == 4) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), TotalvnerfU123S, RangeMin, RangeMax, 20);
+			else
+			{
+				cout << "Out of background function list" << endl;
+				return;
+			}
+		}
+		else if(SigSys && !BkgSys) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), TotalCBGvnpol2U123S, RangeMin, RangeMax, 19);
+		else if(!SigSys && BkgSys) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), TotalChebvnpol2U123S, RangeMin, RangeMax, 20);
 		else
 		{
 			cout << "Out of background function list" << endl;
@@ -1375,6 +1393,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 			par0[18] = bpar2;
 			par0[19] = bpar3;
 			par0[20] = bpar4;
+			par0[21] = bpar5;
 		}
 		else
 		{
@@ -1416,6 +1435,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		fitter.Config().ParSettings(10).Fix();
 		fitter.Config().ParSettings(11).Fix();
 		fitter.Config().ParSettings(12).Fix();
+		if(BkgSys) fitter.Config().ParSettings(13).Fix();
 		//fitter.Config().ParSettings(10).SetLimits(0, 20);
 		//fitter.Config().ParSettings(11).SetLimits(0, 40);
 		//fitter.Config().ParSettings(12).SetLimits(0, 100);
@@ -1507,12 +1527,6 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		}
 
 		c1[ipt]->cd(2);
-		//for high-multiplicity
-		//hist->SetMaximum(0.04);//for high-multiplicity
-		//hist->SetMinimum(-0.02);//for high-multiplicity
-		//for low-multiplicity
-		hist->SetMaximum(0.1);//for low-multiplicity
-		hist->SetMinimum(-0.02);//for low-multiplicity
 		fvn_bkg->SetLineColor(kMagenta);
 		fvn_bkg->SetLineWidth(1);
 
@@ -1524,7 +1538,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		gvn->Draw("PESAME");
 
 		FILE* ftxt;
-		ftxt = fopen(Form("Parameter/Obv2_bkg_%s_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc%o_Eff%o_TnP%o_MupT%s.txt", bkgF.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, MupT.Data()), "w");
+		ftxt = fopen(Form("Parameter/Obv2_bkg_%s_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.txt", bkgF.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()), "w");
 		if(ftxt != NULL)
 		{
 			if(BkgSys) fprintf(ftxt, "%f   %f   %f   %f \n", fvn_simul->GetParameter(17), fvn_simul->GetParameter(18), fvn_simul->GetParameter(19), fvn_simul->GetParameter(20));
@@ -1619,7 +1633,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
-		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away%s/Combined_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s%s.pdf", version.Data(), MupT.Data(), Away.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data(), Ffit.Data()));
+		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away%s/Combined_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_%s_MupT%s%s.pdf", version.Data(), MupT.Data(), Away.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, bkgF.Data(), MupT.Data(), Ffit.Data()));
 	}
 
 	TGraphErrors* v2_1splot = new TGraphErrors(pt_narr-1, pt, v2_1s, 0, v2_1sE);
