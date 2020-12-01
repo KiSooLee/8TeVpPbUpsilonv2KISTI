@@ -1633,7 +1633,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
-		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away%s/Combined_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_%s_MupT%s%s.pdf", version.Data(), MupT.Data(), Away.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, bkgF.Data(), MupT.Data(), Ffit.Data()));
+		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away%s/Combined_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s%s.pdf", version.Data(), MupT.Data(), Away.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data(), Ffit.Data()));
 	}
 
 	TGraphErrors* v2_1splot = new TGraphErrors(pt_narr-1, pt, v2_1s, 0, v2_1sE);
