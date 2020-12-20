@@ -27,9 +27,9 @@
 #root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 0, 50, 10, 30, -2.4, 2.4, 0, 3, "v55", "3p5", "v1", true)'
 
 ########## jet high-multiplicity ##########
-root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 90, 300, 11, 15, -2.4, 2.4, 0, 3, "v67", "3p5", "v1")'
-root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 90, 300, 15, 19, -2.4, 2.4, 0, 3, "v67", "3p5", "v1")'
-root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 90, 300, 19, 30, -2.4, 2.4, 0, 3, "v67", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 90, 300, 11, 15, -2.4, 2.4, 0, 3, "v67", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 90, 300, 15, 19, -2.4, 2.4, 0, 3, "v67", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 90, 300, 19, 30, -2.4, 2.4, 0, 3, "v67", "3p5", "v1")'
 
 ########## jet low-multiplicity ##########
 #root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 0, 50, 11, 15, -2.4, 2.4, 0, 3, "v68", "3p5", "v1")'
@@ -37,4 +37,20 @@ root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 90, 300, 19, 30, -2.4, 2.4, 0,
 #root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 0, 50, 19, 30, -2.4, 2.4, 0, 3, "v68", "3p5", "v1")'
 
 #root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(true, 0, 40, 0, 3, -2.4, 2.4, 0, 3, "v18", "4", 13)'
-#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 45, 55, 0, 3, -2.4, 2.4, 0, 3, "v50", "3p5", "v1", true, 0)'
+########## low-multiplicity scan ##########
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 40, 50, 0, 3, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 40, 50, 3, 6, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 40, 50, 6, 10, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 40, 50, 10, 30, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 50, 60, 0, 3, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 50, 60, 3, 6, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 50, 60, 6, 10, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 50, 60, 10, 30, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 60, 70, 0, 3, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 60, 70, 3, 6, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 60, 70, 6, 10, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+#root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 60, 70, 10, 30, -2.4, 2.4, 0, 3, "v69", "3p5", "v1")'
+root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 45, 55, 0, 3, -2.4, 2.4, 0, 3, "v70", "3p5", "v1")'
+root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 45, 55, 3, 6, -2.4, 2.4, 0, 3, "v70", "3p5", "v1")'
+root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 45, 55, 6, 10, -2.4, 2.4, 0, 3, "v70", "3p5", "v1")'
+root -l -b -q 'Correl_trk_Reco_same_Pbp.C+(false, 45, 55, 10, 30, -2.4, 2.4, 0, 3, "v70", "3p5", "v1")'
