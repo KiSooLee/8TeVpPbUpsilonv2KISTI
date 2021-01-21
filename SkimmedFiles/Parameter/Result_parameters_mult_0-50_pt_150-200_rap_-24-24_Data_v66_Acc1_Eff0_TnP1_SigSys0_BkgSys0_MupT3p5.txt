@@ -1,0 +1,6 @@
+mean  sigma1  sigma2  fraction  totsigma  totsig  totbkg sig  bkg  nsig  nbkg  significance 
+9.450   0.138   0.057   0.749   0.123   0.295   0.629   0.275   0.063   1221.295   1976.652   31.190 
+mean  U1sigma1  fraction  alpha  n  Erfmean  Erfsigma  Erfp0 
+9.450   0.138   0.749   19.857   19.662   1.312   28.003   6.003  
+1SYield  2SYield  3SYield  BkgYield  1SIntgr  2STIntgr  3STIntgr  BkgTIntgr  
+1221.295   453.072   325.361   1976.652   0.295   0.312   0.323   0.629 
