@@ -39,8 +39,8 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 
 	TFile* fMC  = new TFile(Form("Yield_count_MC_PADoubleMuon_1S_MupT%s.root", MupT.Data()), "READ");
 	TH1D* hMCtmp = (TH1D*) fMC->Get("h1");
-	TH1D* hdata = new TH1D("hdata", """;p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
-	TH1D* hMC = new TH1D("hMC", """;p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
+	TH1D* hdata = new TH1D("hdata", ";p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
+	TH1D* hMC = new TH1D("hMC", ";p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
 	TCanvas* c1 = new TCanvas("c1", "", 0, 0, 600, 600);
 	TCanvas* c2 = new TCanvas("c2", "", 0, 0, 600, 600);
 	TCanvas* c3 = new TCanvas("c3", "", 0, 0, 600, 800);
@@ -78,6 +78,7 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	pad_ratio->Draw();
 
 	pad_comp->cd();
+	hdata->SetMaximum(0.35);
 	hdata->Draw("pe");
 	hMC->Draw("pesame");
 	TLatex* lt1 = new TLatex();
@@ -102,6 +103,8 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	hratio->GetYaxis()->SetTitleOffset(0.2);
 	hratio->GetXaxis()->SetTitleSize(0.1);
 	hratio->GetXaxis()->SetTitleOffset(0.8);
+	hratio->SetMaximum(1.3);
+	hratio->SetMinimum(0.7);
 	hratio->Draw("pe");
 	TF1* fit1 = new TF1("fit1", "([0]*x*x+[1]*x+[2])/((x-[3])*(x-[3])*(x-[3]))", 0, 30);
 	fit1->SetLineColor(100);
