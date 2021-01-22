@@ -391,8 +391,8 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 	TH1D* hRef_coarse;
 	if(isTrk)
 	{
-		hRef_fine = new TH1D("hRef_fine", "", 1, 0, 30);
-		hRef_coarse = new TH1D("hRef_coarse", "", 1, 0, 30);
+		hRef_fine = new TH1D("hRef_fine", "", 8, 0, 14);
+		hRef_coarse = new TH1D("hRef_coarse", "", 8, 0, 14);
 	}
 	else
 	{
