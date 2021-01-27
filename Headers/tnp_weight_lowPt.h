@@ -62,26 +62,30 @@ double tnp_weight_trkM_ppb(double pt, double eta, int idx)
     else if (pt <= 6.5) den = 0.989967;
     else if (pt <= 8) den = 0.995977;
     else if (pt <= 14) den = 0.996413;
-    else if (pt <= 25) den = 0.997164;
+    //else if (pt <= 25) den = 0.997164;
+    else if (pt > 14) den = 0.997164;
   }
   else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
     if (pt > 1.2 && pt <= 3.3) den = 0.784932;
     else if (pt <= 6.5) den = 0.96759;
     else if (pt <= 8) den = 0.997175;
     else if (pt <= 14) den = 0.998082;
-    else if (pt <= 25) den = 0.997508;
+    //else if (pt <= 25) den = 0.997508;
+    else if (pt > 14) den = 0.997508;
   }
   else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
     if (pt > 0.8 && pt <= 3.3) den = 0.875976;
     else if (pt <= 6.5) den = 0.996701;
     else if (pt <= 10.5) den = 0.999353;
-    else if (pt <= 25) den = 0.9994;
+    //else if (pt <= 25) den = 0.9994;
+    else if (pt > 10.5) den = 0.9994;
   }
   else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
     if (pt > 0.8 && pt <= 3.3) den = 0.784331;
     else if (pt <= 6.5) den = 0.997418;
     else if (pt <= 10.5) den = 0.99895;
-    else if (pt <= 25) den = 0.998834;
+    //else if (pt <= 25) den = 0.998834;
+    else if (pt > 10.5) den = 0.998834;
   }
 
   // data
@@ -91,26 +95,30 @@ double tnp_weight_trkM_ppb(double pt, double eta, int idx)
       else if (pt <= 6.5) num = 0.984073;
       else if (pt <= 8) num = 0.983683;
       else if (pt <= 14) num = 0.995065;
-      else if (pt <= 25) num = 1;
+      //else if (pt <= 25) num = 1;
+      else if (pt > 14) num = 1;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
       if (pt > 1.2 && pt <= 3.3) num = 0.738779;
       else if (pt <= 6.5) num = 0.972902;
       else if (pt <= 8) num = 0.964183;
       else if (pt <= 14) num = 0.99998;
-      else if (pt <= 25) num = 0.962675;
+      //else if (pt <= 25) num = 0.962675;
+      else if (pt > 14) num = 0.962675;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.863469;
       else if (pt <= 6.5) num = 0.992568;
       else if (pt <= 10.5) num = 0.999296;
-      else if (pt <= 25) num = 0.999996;
+      //else if (pt <= 25) num = 0.999996;
+      else if (pt > 10.5) num = 0.999996;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.668745;
       else if (pt <= 6.5) num = 0.998159;
       else if (pt <= 10.5) num = 0.999997;
-      else if (pt <= 25) num = 0.983567;
+      //else if (pt <= 25) num = 0.983567;
+      else if (pt > 10.5) num = 0.983567;
     }
   }
   else if (idx == -11) { // stat up
@@ -119,26 +127,30 @@ double tnp_weight_trkM_ppb(double pt, double eta, int idx)
       else if (pt <= 6.5) num = 0.987713;
       else if (pt <= 8) num = 0.992502;
       else if (pt <= 14) num = 0.998501;
-      else if (pt <= 25) num = 1.00011;
+      //else if (pt <= 25) num = 1.00011;
+      else if (pt > 14) num = 1.00011;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
       if (pt > 1.2 && pt <= 3.3) num = 0.750961;
       else if (pt <= 6.5) num = 0.98076;
       else if (pt <= 8) num = 0.977418;
       else if (pt <= 14) num = 1.0007;
-      else if (pt <= 25) num = 0.981704;
+      //else if (pt <= 25) num = 0.981704;
+      else if (pt > 14) num = 0.981704;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.864507;
       else if (pt <= 6.5) num = 0.996854;
       else if (pt <= 10.5) num = 0.999869;
-      else if (pt <= 25) num = 1.00075;
+      //else if (pt <= 25) num = 1.00075;
+      else if (pt > 10.5) num = 1.00075;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.674617;
       else if (pt <= 6.5) num = 0.999223;
       else if (pt <= 10.5) num = 1.00035;
-      else if (pt <= 25) num = 0.996075;
+      //else if (pt <= 25) num = 0.996075;
+      else if (pt > 10.5) num = 0.996075;
     }
   }
   else if (idx == -12) { // stat down
@@ -147,26 +159,30 @@ double tnp_weight_trkM_ppb(double pt, double eta, int idx)
       else if (pt <= 6.5) num = 0.980108;
       else if (pt <= 8) num = 0.969642;
       else if (pt <= 14) num = 0.989608;
-      else if (pt <= 25) num = 0.981821;
+      //else if (pt <= 25) num = 0.981821;
+      else if (pt > 14) num = 0.981821;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
       if (pt > 1.2 && pt <= 3.3) num = 0.734002;
       else if (pt <= 6.5) num = 0.9653;
       else if (pt <= 8) num = 0.943677;
       else if (pt <= 14) num = 0.999247;
-      else if (pt <= 25) num = 0.905647;
+      //else if (pt <= 25) num = 0.905647;
+      else if (pt > 14) num = 0.905647;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.862443;
       else if (pt <= 6.5) num = 0.989147;
       else if (pt <= 10.5) num = 0.989864;
-      else if (pt <= 25) num = 0.999241;
+      //else if (pt <= 25) num = 0.999241;
+      else if (pt > 10.5) num = 0.999241;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.66278;
       else if (pt <= 6.5) num = 0.987237;
       else if (pt <= 10.5) num = 0.999645;
-      else if (pt <= 25) num = 0.966846;
+      //else if (pt <= 25) num = 0.966846;
+      else if (pt > 10.5) num = 0.966846;
     }
   }
   if (idx == -13) { // TnP fit syst up
@@ -175,26 +191,30 @@ double tnp_weight_trkM_ppb(double pt, double eta, int idx)
       else if (pt <= 6.5) num = 0.991169;
       else if (pt <= 8) num = 0.990779;
       else if (pt <= 14) num = 1.00039;
-      else if (pt <= 25) num = 1.00177;
+      //else if (pt <= 25) num = 1.00177;
+      else if (pt > 14) num = 1.00177;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
       if (pt > 1.2 && pt <= 3.3) num = 0.763945;
       else if (pt <= 6.5) num = 0.987012;
       else if (pt <= 8) num = 0.973985;
       else if (pt <= 14) num = 1.00687;
-      else if (pt <= 25) num = 0.967144;
+      //else if (pt <= 25) num = 0.967144;
+      else if (pt > 14) num = 0.967144;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.89529;
       else if (pt <= 6.5) num = 0.997346;
       else if (pt <= 10.5) num = 1.00366;
-      else if (pt <= 25) num = 1.00276;
+      //else if (pt <= 25) num = 1.00276;
+      else if (pt > 10.5) num = 1.00276;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.74809;
       else if (pt <= 6.5) num = 1.00562;
       else if (pt <= 10.5) num = 1.00746;
-      else if (pt <= 25) num = 0.991028;
+      //else if (pt <= 25) num = 0.991028;
+      else if (pt > 10.5) num = 0.991028;
     }
   }
   else if (idx == -14) { // TnP fit syst down
@@ -203,26 +223,30 @@ double tnp_weight_trkM_ppb(double pt, double eta, int idx)
       else if (pt <= 6.5) num = 0.976977;
       else if (pt <= 8) num = 0.976587;
       else if (pt <= 14) num = 0.989743;
-      else if (pt <= 25) num = 0.998226;
+      //else if (pt <= 25) num = 0.998226;
+      else if (pt > 14) num = 0.998226;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
       if (pt > 1.2 && pt <= 3.3) num = 0.713612;
       else if (pt <= 6.5) num = 0.958792;
       else if (pt <= 8) num = 0.954381;
       else if (pt <= 14) num = 0.99309;
-      else if (pt <= 25) num = 0.958206;
+      //else if (pt <= 25) num = 0.958206;
+      else if (pt > 14) num = 0.958206;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.831648;
       else if (pt <= 6.5) num = 0.98779;
       else if (pt <= 10.5) num = 0.99493;
-      else if (pt <= 25) num = 0.997235;
+      //else if (pt <= 25) num = 0.997235;
+      else if (pt > 10.5) num = 0.997235;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
       if (pt > 0.8 && pt <= 3.3) num = 0.589399;
       else if (pt <= 6.5) num = 0.990698;
       else if (pt <= 10.5) num = 0.992536;
-      else if (pt <= 25) num = 0.976106;
+      //else if (pt <= 25) num = 0.976106;
+      else if (pt > 10.5) num = 0.976106;
     }
   }
   return (num/den);
@@ -276,26 +300,30 @@ double tnp_weight_muid_ppb(double pt, double eta, int idx)
     else if (pt <= 6.5) den = 0.97996;
     else if (pt <= 8) den = 0.989381;
     else if (pt <= 14) den = 0.989807;
-    else if (pt <= 25) den = 0.992734;
+    //else if (pt <= 25) den = 0.992734;
+    else if (pt > 14) den = 0.992734;
   }
   else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
     if (pt > 1.2 && pt <= 3.3) den = 0.76572;
     else if (pt <= 6.5) den = 0.958087;
     else if (pt <= 8) den = 0.990633;
     else if (pt <= 14) den = 0.993665;
-    else if (pt <= 25) den = 0.991818;
+    //else if (pt <= 25) den = 0.991818;
+    else if (pt > 14) den = 0.991818;
   }
   else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
     if (pt > 0.8 && pt <= 3.3) den = 0.850281;
     else if (pt <= 6.5) den = 0.997059;
     else if (pt <= 10.5) den = 0.997393;
-    else if (pt <= 25) den = 0.99688;
+    //else if (pt <= 25) den = 0.99688;
+    else if (pt > 10.5) den = 0.99688;
   }
   else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
     if (pt > 0.8 && pt <= 3.3) den = 0.765348;
     else if (pt <= 6.5) den = 0.996991;
     else if (pt <= 10.5) den = 0.999424;
-    else if (pt <= 25) den = 0.998493;
+    //else if (pt <= 25) den = 0.998493;
+    else if (pt > 10.5) den = 0.998493;
   }
 
   // data
@@ -305,26 +333,30 @@ double tnp_weight_muid_ppb(double pt, double eta, int idx)
     else if (pt <= 6.5) num = 0.967603;
     else if (pt <= 8) num = 0.977268;
     else if (pt <= 14) num = 0.991168;
-    else if (pt <= 25) num = 0.997561;
+    //else if (pt <= 25) num = 0.997561;
+    else if (pt > 14) num = 0.997561;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
     if (pt > 1.2 && pt <= 3.3) num = 0.719255;
     else if (pt <= 6.5) num = 0.950386;
     else if (pt <= 8) num = 0.967113;
     else if (pt <= 14) num = 0.990789;
-    else if (pt <= 25) num = 0.955171;
+    //else if (pt <= 25) num = 0.955171;
+    else if (pt > 14) num = 0.955171;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.80888;
     else if (pt <= 6.5) num = 0.978908;
     else if (pt <= 10.5) num = 0.997962;
-    else if (pt <= 25) num = 0.981748;
+    //else if (pt <= 25) num = 0.981748;
+    else if (pt > 10.5) num = 0.981748;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.716081;
     else if (pt <= 6.5) num = 0.993333;
     else if (pt <= 10.5) num = 0.973856;
-    else if (pt <= 25) num = 0.988481;
+    //else if (pt <= 25) num = 0.988481;
+    else if (pt > 10.5) num = 0.988481;
     }
   }
   else if (idx == -11) { // stat up
@@ -333,26 +365,30 @@ double tnp_weight_muid_ppb(double pt, double eta, int idx)
     else if (pt <= 6.5) num = 0.972063;
     else if (pt <= 8) num = 0.983056;
     else if (pt <= 14) num = 0.994197;
-    else if (pt <= 25) num = 0.998493;
+    //else if (pt <= 25) num = 0.998493;
+    else if (pt > 14) num = 0.998493;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
     if (pt > 1.2 && pt <= 3.3) num = 0.731066;
     else if (pt <= 6.5) num = 0.957375;
     else if (pt <= 8) num = 0.975936;
     else if (pt <= 14) num = 0.991082;
-    else if (pt <= 25) num = 0.959674;
+    //else if (pt <= 25) num = 0.959674;
+    else if (pt > 14) num = 0.959674;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.822019;
     else if (pt <= 6.5) num = 0.986292;
     else if (pt <= 10.5) num = 0.998626;
-    else if (pt <= 25) num = 0.98304;
+    //else if (pt <= 25) num = 0.98304;
+    else if (pt > 10.5) num = 0.98304;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.733741;
     else if (pt <= 6.5) num = 0.994591;
     else if (pt <= 10.5) num = 0.986658;
-    else if (pt <= 25) num = 0.994845;
+    //else if (pt <= 25) num = 0.994845;
+    else if (pt > 10.5) num = 0.994845;
     }
   }
   else if (idx == -12) { // stat down
@@ -361,26 +397,30 @@ double tnp_weight_muid_ppb(double pt, double eta, int idx)
     else if (pt <= 6.5) num = 0.963157;
     else if (pt <= 8) num = 0.971026;
     else if (pt <= 14) num = 0.985514;
-    else if (pt <= 25) num = 0.989119;
+    //else if (pt <= 25) num = 0.989119;
+    else if (pt > 14) num = 0.989119;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
     if (pt > 1.2 && pt <= 3.3) num = 0.708015;
     else if (pt <= 6.5) num = 0.943544;
     else if (pt <= 8) num = 0.954372;
     else if (pt <= 14) num = 0.987202;
-    else if (pt <= 25) num = 0.937987;
+    //else if (pt <= 25) num = 0.937987;
+    else if (pt > 14) num = 0.937987;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.79668;
     else if (pt <= 6.5) num = 0.970357;
     else if (pt <= 10.5) num = 0.990297;
-    else if (pt <= 25) num = 0.972344;
+    //else if (pt <= 25) num = 0.972344;
+    else if (pt > 10.5) num = 0.972344;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.708918;
     else if (pt <= 6.5) num = 0.983331;
     else if (pt <= 10.5) num = 0.953605;
-    else if (pt <= 25) num = 0.957406;
+    //else if (pt <= 25) num = 0.957406;
+    else if (pt > 10.5) num = 0.957406;
     }
   }
   if (idx == -13) { // TnP fit syst up
@@ -389,26 +429,30 @@ double tnp_weight_muid_ppb(double pt, double eta, int idx)
     else if (pt <= 6.5) num = 0.967603;
     else if (pt <= 8) num = 0.977268;
     else if (pt <= 14) num = 0.991168;
-    else if (pt <= 25) num = 0.997561;
+    //else if (pt <= 25) num = 0.997561;
+    else if (pt > 14) num = 0.997561;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
     if (pt > 1.2 && pt <= 3.3) num = 0.719255;
     else if (pt <= 6.5) num = 0.950386;
     else if (pt <= 8) num = 0.967113;
     else if (pt <= 14) num = 0.990789;
-    else if (pt <= 25) num = 0.955171;
+    //else if (pt <= 25) num = 0.955171;
+    else if (pt > 14) num = 0.955171;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.80888;
     else if (pt <= 6.5) num = 0.978908;
     else if (pt <= 10.5) num = 0.997962;
-    else if (pt <= 25) num = 0.981748;
+    //else if (pt <= 25) num = 0.981748;
+    else if (pt > 10.5) num = 0.981748;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.716081;
     else if (pt <= 6.5) num = 0.993333;
     else if (pt <= 10.5) num = 0.973856;
-    else if (pt <= 25) num = 0.988481;
+    //else if (pt <= 25) num = 0.988481;
+    else if (pt > 10.5) num = 0.988481;
     }
   }
   else if (idx == -14) { // TnP fit syst down
@@ -417,26 +461,30 @@ double tnp_weight_muid_ppb(double pt, double eta, int idx)
     else if (pt <= 6.5) num = 0.967603;
     else if (pt <= 8) num = 0.977268;
     else if (pt <= 14) num = 0.991168;
-    else if (pt <= 25) num = 0.997561;
+    //else if (pt <= 25) num = 0.997561;
+    else if (pt > 14) num = 0.997561;
     }
     else if (fabs(eta) > 1 && fabs(eta) <= 1.5) { 
     if (pt > 1.2 && pt <= 3.3) num = 0.719255;
     else if (pt <= 6.5) num = 0.950386;
     else if (pt <= 8) num = 0.967113;
     else if (pt <= 14) num = 0.990789;
-    else if (pt <= 25) num = 0.955171;
+    //else if (pt <= 25) num = 0.955171;
+    else if (pt > 14) num = 0.955171;
     }
     else if (fabs(eta) > 1.5 && fabs(eta) <= 2) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.80888;
     else if (pt <= 6.5) num = 0.978908;
     else if (pt <= 10.5) num = 0.997962;
-    else if (pt <= 25) num = 0.981748;
+    //else if (pt <= 25) num = 0.981748;
+    else if (pt > 10.5) num = 0.981748;
     }
     else if (fabs(eta) > 2 && fabs(eta) <= 2.4) { 
     if (pt > 0.8 && pt <= 3.3) num = 0.716081;
     else if (pt <= 6.5) num = 0.993333;
     else if (pt <= 10.5) num = 0.973856;
-    else if (pt <= 25) num = 0.988481;
+    //else if (pt <= 25) num = 0.988481;
+    else if (pt > 10.5) num = 0.988481;
     }
   }
   return (num/den);
@@ -740,7 +788,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
     else if (pt <= 18) den = 0.942065;
     else if (pt <= 25) den = 0.923169;
     else if (pt <= 35) den = 0.934265;
-    else if (pt <= 50) den = 0.92179;
+    //else if (pt <= 50) den = 0.92179;
+    else if (pt > 35) den = 0.92179;
   }
   else if (fabs(eta) > 0.9 && fabs(eta) <= 1.2) { 
     if (pt > 3.3 && pt <= 4.5) den = 0.797148;
@@ -751,7 +800,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
     else if (pt <= 18) den = 0.988519;
     else if (pt <= 25) den = 0.983467;
     else if (pt <= 35) den = 0.965063;
-    else if (pt <= 50) den = 0.985891;
+    //else if (pt <= 50) den = 0.985891;
+    else if (pt > 35) den = 0.985891;
   }
   else if (fabs(eta) > 1.2 && fabs(eta) <= 1.6) { 
     if (pt > 2.2 && pt <= 3) den = 0.419801;
@@ -761,7 +811,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
     else if (pt <= 14) den = 0.965916;
     else if (pt <= 25) den = 0.959984;
     else if (pt <= 35) den = 0.944979;
-    else if (pt <= 50) den = 0.945456;
+    //else if (pt <= 50) den = 0.945456;
+    else if (pt > 35) den = 0.945456;
   }
   else if (fabs(eta) > 1.6 && fabs(eta) <= 2.1) { 
     if (pt > 1.6 && pt <= 2.2) den = 0.616688;
@@ -770,7 +821,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
     else if (pt <= 8) den = 0.920914;
     else if (pt <= 14) den = 0.900374;
     else if (pt <= 25) den = 0.854198;
-    else if (pt <= 50) den = 0.836884;
+	 //else if (pt <= 50) den = 0.836884;
+    else if (pt > 25) den = 0.836884;
   }
   else if (fabs(eta) > 2.1 && fabs(eta) <= 2.4) { 
     if (pt > 1.3 && pt <= 1.6) den = 0.470736;
@@ -779,7 +831,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
     else if (pt <= 5.5) den = 0.935357;
     else if (pt <= 12) den = 0.930796;
     else if (pt <= 25) den = 0.884993;
-    else if (pt <= 50) den = 0.855078;
+    //else if (pt <= 50) den = 0.855078;
+    else if (pt > 25) den = 0.855078;
   }
 
   // data
@@ -793,7 +846,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.913907;
       else if (pt <= 25) num = 0.893973;
       else if (pt <= 35) num = 0.882136;
-      else if (pt <= 50) num = 0.883324;
+      //else if (pt <= 50) num = 0.883324;
+      else if (pt > 35) num = 0.883324;
     }
     else if (fabs(eta) > 0.9 && fabs(eta) <= 1.2) { 
       if (pt > 3.3 && pt <= 4.5) num = 0.885708;
@@ -804,7 +858,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.987769;
       else if (pt <= 25) num = 0.974292;
       else if (pt <= 35) num = 0.934944;
-      else if (pt <= 50) num = 0.946611;
+      //else if (pt <= 50) num = 0.946611;
+      else if (pt > 35) num = 0.946611;
     }
     else if (fabs(eta) > 1.2 && fabs(eta) <= 1.6) { 
       if (pt > 2.2 && pt <= 3) num = 0.521198;
@@ -814,7 +869,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 14) num = 0.972008;
       else if (pt <= 25) num = 0.973261;
       else if (pt <= 35) num = 0.960692;
-      else if (pt <= 50) num = 0.91337;
+      //else if (pt <= 50) num = 0.91337;
+      else if (pt > 35) num = 0.91337;
     }
     else if (fabs(eta) > 1.6 && fabs(eta) <= 2.1) { 
       if (pt > 1.6 && pt <= 2.2) num = 0.684707;
@@ -823,7 +879,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 8) num = 0.906016;
       else if (pt <= 14) num = 0.885768;
       else if (pt <= 25) num = 0.861695;
-      else if (pt <= 50) num = 0.807972;
+      //else if (pt <= 50) num = 0.807972;
+      else if (pt > 25) num = 0.807972;
     }
     else if (fabs(eta) > 2.1 && fabs(eta) <= 2.4) { 
       if (pt > 1.3 && pt <= 1.6) num = 0.596021;
@@ -832,7 +889,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 5.5) num = 0.948319;
       else if (pt <= 12) num = 0.951024;
       else if (pt <= 25) num = 0.905403;
-      else if (pt <= 50) num = 0.751944;
+      //else if (pt <= 50) num = 0.751944;
+      else if (pt > 25) num = 0.751944;
     }
   }
   else if (idx == -11) { // stat up
@@ -845,7 +903,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.917832;
       else if (pt <= 25) num = 0.900844;
       else if (pt <= 35) num = 0.894419;
-      else if (pt <= 50) num = 0.904105;
+      //else if (pt <= 50) num = 0.904105;
+      else if (pt > 35) num = 0.904105;
     }
     else if (fabs(eta) > 0.9 && fabs(eta) <= 1.2) { 
       if (pt > 3.3 && pt <= 4.5) num = 0.887754;
@@ -856,7 +915,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.990382;
       else if (pt <= 25) num = 1;
       else if (pt <= 35) num = 0.95136;
-      else if (pt <= 50) num = 0.968864;
+      //else if (pt <= 50) num = 0.968864;
+      else if (pt > 35) num = 0.968864;
     }
     else if (fabs(eta) > 1.2 && fabs(eta) <= 1.6) { 
       if (pt > 2.2 && pt <= 3) num = 0.524077;
@@ -866,7 +926,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 14) num = 0.974644;
       else if (pt <= 25) num = 0.977027;
       else if (pt <= 35) num = 0.972207;
-      else if (pt <= 50) num = 0.944911;
+      //else if (pt <= 50) num = 0.944911;
+      else if (pt > 35) num = 0.944911;
     }
     else if (fabs(eta) > 1.6 && fabs(eta) <= 2.1) { 
       if (pt > 1.6 && pt <= 2.2) num = 0.688302;
@@ -875,7 +936,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 8) num = 0.90777;
       else if (pt <= 14) num = 0.88936;
       else if (pt <= 25) num = 0.870578;
-      else if (pt <= 50) num = 0.835254;
+      //else if (pt <= 50) num = 0.835254;
+      else if (pt > 25) num = 0.835254;
     }
     else if (fabs(eta) > 2.1 && fabs(eta) <= 2.4) { 
       if (pt > 1.3 && pt <= 1.6) num = 0.60151;
@@ -884,7 +946,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 5.5) num = 0.949987;
       else if (pt <= 12) num = 0.953617;
       else if (pt <= 25) num = 0.915019;
-      else if (pt <= 50) num = 0.842972;
+      //else if (pt <= 50) num = 0.842972;
+      else if (pt > 25) num = 0.842972;
     }
   }
   else if (idx == -12) { // stat down
@@ -897,7 +960,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.909881;
       else if (pt <= 25) num = 0.886855;
       else if (pt <= 35) num = 0.869172;
-      else if (pt <= 50) num = 0.86038;
+      //else if (pt <= 50) num = 0.86038;
+      else if (pt > 35) num = 0.86038;
     }
     else if (fabs(eta) > 0.9 && fabs(eta) <= 1.2) { 
       if (pt > 3.3 && pt <= 4.5) num = 0.883645;
@@ -908,7 +972,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.984773;
       else if (pt <= 25) num = 0.966908;
       else if (pt <= 35) num = 0.916603;
-      else if (pt <= 50) num = 0.916029;
+      //else if (pt <= 50) num = 0.916029;
+      else if (pt > 35) num = 0.916029;
     }
     else if (fabs(eta) > 1.2 && fabs(eta) <= 1.6) { 
       if (pt > 2.2 && pt <= 3) num = 0.518337;
@@ -918,7 +983,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 14) num = 0.969227;
       else if (pt <= 25) num = 0.969198;
       else if (pt <= 35) num = 0.9467;
-      else if (pt <= 50) num = 0.873367;
+      //else if (pt <= 50) num = 0.873367;
+      else if (pt > 35) num = 0.873367;
     }
     else if (fabs(eta) > 1.6 && fabs(eta) <= 2.1) { 
       if (pt > 1.6 && pt <= 2.2) num = 0.681104;
@@ -927,7 +993,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 8) num = 0.90425;
       else if (pt <= 14) num = 0.882127;
       else if (pt <= 25) num = 0.852572;
-      else if (pt <= 50) num = 0.779374;
+      //else if (pt <= 50) num = 0.779374;
+      else if (pt > 25) num = 0.779374;
     }
     else if (fabs(eta) > 2.1 && fabs(eta) <= 2.4) { 
       if (pt > 1.3 && pt <= 1.6) num = 0.590535;
@@ -936,7 +1003,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 5.5) num = 0.946635;
       else if (pt <= 12) num = 0.948372;
       else if (pt <= 25) num = 0.895353;
-      else if (pt <= 50) num = 0.677999;
+      //else if (pt <= 50) num = 0.677999;
+      else if (pt > 25) num = 0.677999;
     }
   }
   if (idx == -13) { // TnP fit syst up
@@ -949,7 +1017,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.914144;
       else if (pt <= 25) num = 0.89441;
       else if (pt <= 35) num = 0.882908;
-      else if (pt <= 50) num = 0.884255;
+      //else if (pt <= 50) num = 0.884255;
+      else if (pt > 35) num = 0.884255;
     }
     else if (fabs(eta) > 0.9 && fabs(eta) <= 1.2) { 
       if (pt > 3.3 && pt <= 4.5) num = 0.886374;
@@ -960,7 +1029,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.987955;
       else if (pt <= 25) num = 0.974963;
       else if (pt <= 35) num = 0.936499;
-      else if (pt <= 50) num = 0.948594;
+      //else if (pt <= 50) num = 0.948594;
+      else if (pt > 35) num = 0.948594;
     }
     else if (fabs(eta) > 1.2 && fabs(eta) <= 1.6) { 
       if (pt > 2.2 && pt <= 3) num = 0.521832;
@@ -970,7 +1040,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 14) num = 0.9723;
       else if (pt <= 25) num = 0.973913;
       else if (pt <= 35) num = 0.961954;
-      else if (pt <= 50) num = 0.91492;
+      //else if (pt <= 50) num = 0.91492;
+      else if (pt > 35) num = 0.91492;
     }
     else if (fabs(eta) > 1.6 && fabs(eta) <= 2.1) { 
       if (pt > 1.6 && pt <= 2.2) num = 0.689397;
@@ -979,7 +1050,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 8) num = 0.907799;
       else if (pt <= 14) num = 0.887653;
       else if (pt <= 25) num = 0.86381;
-      else if (pt <= 50) num = 0.810186;
+      //else if (pt <= 50) num = 0.810186;
+      else if (pt > 50) num = 0.810186;
     }
     else if (fabs(eta) > 2.1 && fabs(eta) <= 2.4) { 
       if (pt > 1.3 && pt <= 1.6) num = 0.598604;
@@ -988,7 +1060,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 5.5) num = 0.949008;
       else if (pt <= 12) num = 0.95239;
       else if (pt <= 25) num = 0.90769;
-      else if (pt <= 50) num = 0.754614;
+      //else if (pt <= 50) num = 0.754614;
+      else if (pt > 25) num = 0.754614;
     }
   }
   else if (idx == -14) { // TnP fit syst down
@@ -1001,7 +1074,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.91367;
       else if (pt <= 25) num = 0.893536;
       else if (pt <= 35) num = 0.881363;
-      else if (pt <= 50) num = 0.882393;
+      //else if (pt <= 50) num = 0.882393;
+      else if (pt > 35) num = 0.882393;
     }
     else if (fabs(eta) > 0.9 && fabs(eta) <= 1.2) { 
       if (pt > 3.3 && pt <= 4.5) num = 0.885041;
@@ -1012,7 +1086,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 18) num = 0.987582;
       else if (pt <= 25) num = 0.973621;
       else if (pt <= 35) num = 0.933389;
-      else if (pt <= 50) num = 0.944628;
+      //else if (pt <= 50) num = 0.944628;
+      else if (pt > 35) num = 0.944628;
     }
     else if (fabs(eta) > 1.2 && fabs(eta) <= 1.6) { 
       if (pt > 2.2 && pt <= 3) num = 0.520565;
@@ -1022,7 +1097,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 14) num = 0.971717;
       else if (pt <= 25) num = 0.97261;
       else if (pt <= 35) num = 0.959429;
-      else if (pt <= 50) num = 0.91182;
+      //else if (pt <= 50) num = 0.91182;
+      else if (pt > 35) num = 0.91182;
     }
     else if (fabs(eta) > 1.6 && fabs(eta) <= 2.1) { 
       if (pt > 1.6 && pt <= 2.2) num = 0.680018;
@@ -1031,7 +1107,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 8) num = 0.904234;
       else if (pt <= 14) num = 0.883883;
       else if (pt <= 25) num = 0.85958;
-      else if (pt <= 50) num = 0.805759;
+      //else if (pt <= 50) num = 0.805759;
+      else if (pt > 25) num = 0.805759;
     }
     else if (fabs(eta) > 2.1 && fabs(eta) <= 2.4) { 
       if (pt > 1.3 && pt <= 1.6) num = 0.593439;
@@ -1040,7 +1117,8 @@ double tnp_weight_trg_ppb(double pt, double eta, int idx)
       else if (pt <= 5.5) num = 0.947629;
       else if (pt <= 12) num = 0.949657;
       else if (pt <= 25) num = 0.903116;
-      else if (pt <= 50) num = 0.749274;
+      //else if (pt <= 50) num = 0.749274;
+      else if (pt > 25) num = 0.749274;
     }
   }
   return (num/den);
