@@ -37,7 +37,7 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	}
 //}}}
 
-	TFile* fMC  = new TFile(Form("Yield_count_MC_PADoubleMuon_1S_MupT%s.root", MupT.Data()), "READ");
+	TFile* fMC  = new TFile(Form("Yield_count_MC_PADoubleMuon_1S_MupT%s_official.root", MupT.Data()), "READ");
 	TH1D* hMCtmp = (TH1D*) fMC->Get("h1");
 	TH1D* hdata = new TH1D("hdata", ";p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
 	TH1D* hMC = new TH1D("hMC", ";p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
@@ -86,7 +86,7 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	lt1->SetTextSize(0.04);
 	lt1->DrawLatex(0.54,0.59, Form("%d < N^{offline}_{trk} < %d", multMin, multMax));
 	lt1->DrawLatex(0.54,0.51, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.54,0.43,"|y^{#Upsilon}| < 2.4");
+	lt1->DrawLatex(0.54,0.43,"|y^{#varUpsilon}| < 2.4");
 	TLegend* leg1 = new TLegend(0.65, 0.70, 0.9, 0.85);
 	FormLegend(leg1, 0.04);
 	leg1->AddEntry(hdata, "DATA", "pe");
