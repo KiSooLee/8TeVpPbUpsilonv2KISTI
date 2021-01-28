@@ -19,7 +19,7 @@
 
 #include "../Headers/Style_Upv2.h"
 #include "../Headers/Upsilon.h"
-#include "../Headers/tnp_weight_lowptpPb.h"
+#include "../Headers/tnp_weight_lowPt.h"
 
 using namespace std;
 using namespace RooFit;
@@ -60,8 +60,10 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 
 //Get files{{{
 	TChain* tin = new TChain("hionia/myTree");
-	TString fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_private_20200716.root", Generation);
-	TString fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_private_20200716.root", Generation);
+	//TString fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_private_20200716.root", Generation);
+	//TString fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_private_20200716.root", Generation);
+	TString fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_official_20201109.root", Generation);
+	TString fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_official_20201109.root", Generation);
 	tin->Add(fname1.Data());
 	const Int_t Nevtcut = tin->GetEntries();
 	tin->Add(fname2.Data());
@@ -306,25 +308,24 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 			Double_t mumi_muid_tnp = 1.;
 			Double_t mumi_trk_tnp = 1.;
 			Double_t mumi_trg_tnp = 1.;
-			if(isTnP)
-			{
-				mupl_muid_tnp = tnp_weight_muid_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 0);
-				mupl_trk_tnp = tnp_weight_trk_ppb(mupl_Reco_4mom->Eta(), 0);
-				mupl_trg_tnp = tnp_weight_trg_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 3, 0);
-				mumi_muid_tnp = tnp_weight_muid_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 0);
-				mumi_trk_tnp = tnp_weight_trk_ppb(mumi_Reco_4mom->Eta(), 0);
-				mumi_trg_tnp = tnp_weight_trg_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 3, 0);
-			}
+
+			mupl_muid_tnp = tnp_weight_muid_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 0);
+			mupl_trk_tnp = tnp_weight_trkM_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 0);
+			mupl_trg_tnp = tnp_weight_trg_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 0);
+			mumi_muid_tnp = tnp_weight_muid_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 0);
+			mumi_trk_tnp = tnp_weight_trkM_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 0);
+			mumi_trg_tnp = tnp_weight_trg_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 0);
+
 			Double_t mupl_tnp = mupl_muid_tnp*mupl_trk_tnp*mupl_trg_tnp;
 			Double_t mumi_tnp = mumi_muid_tnp*mumi_trk_tnp*mumi_trg_tnp;
 
-			hyNum_tot->Fill(Up_Reco_4mom->Rapidity(), reweight/(mupl_tnp*mumi_trg_tnp));
-			hptNum_tot->Fill(Up_Reco_4mom->Pt(), reweight/(mupl_tnp*mumi_trg_tnp));
+			hyNum_tot->Fill(Up_Reco_4mom->Rapidity(), reweight*mupl_tnp*mumi_trg_tnp);
+			hptNum_tot->Fill(Up_Reco_4mom->Pt(), reweight*mupl_tnp*mumi_trg_tnp);
 
 			for(Int_t iy = 0; iy < Ny-1; iy++)
 			{
 				if(fabs(Up_Reco_4mom->Rapidity()) > ybins[iy] && fabs(Up_Reco_4mom->Rapidity()) <= ybins[iy+1])
-				hNum[iy]->Fill(Up_Reco_4mom->Pt(), reweight/(mupl_tnp*mumi_trg_tnp));
+				hNum[iy]->Fill(Up_Reco_4mom->Pt(), reweight*mupl_tnp*mumi_trg_tnp);
 			}
 		}
 //}}}
