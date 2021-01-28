@@ -84,6 +84,7 @@ void DrawAccEff(const Int_t Generation = 1, const TString MupT = "3p5")
 	{
 		if(iy == 0)
 		{
+			hAE[iy]->GetYaxis()->SetTitle("Acc.#times Eff.");
 			hAE[iy]->SetMaximum(1.2);
 			hAE[iy]->SetMinimum(0.0);
 			hAE[iy]->Draw("pe");
