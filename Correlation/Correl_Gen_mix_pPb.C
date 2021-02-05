@@ -15,23 +15,23 @@
 #include <TF1.h>
 #include <TRandom3.h>
 #include <TSystem.h>
-
+/*
 #include "Style_Upv2.h"
 #include "Upsilon.h"
-/*
+*/
 #include "../Headers/Style_Upv2.h"
 #include "../Headers/Upsilon.h"
-*/
+
 using namespace std;
 //}}}
 
-void Correl_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const Int_t imass = 0)
+void Correl_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString MupT = "4", const TString trkptversion = "v1")
 {
 	SetStyle();
 
 //make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString saveDIR = mainDIR + Form("/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data());
+	TString saveDIR = mainDIR + Form("/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data());
 	void * dirp = gSystem->OpenDirectory(saveDIR.Data());
 	if(dirp) gSystem->FreeDirectory(dirp);
 	else gSystem->mkdir(saveDIR.Data(), kTRUE);
@@ -41,13 +41,10 @@ void Correl_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	TString fname1, fname2;
 	TChain* tin1_tmp = new TChain("UpsilonTree");
 	TChain* tin2_tmp = new TChain("UpsilonTree");
-	for(Int_t ibin = massBinsArr[imass]; ibin < massBinsArr[imass+1]; ibin++)
-	{
-		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s/Sort_OniaTree_Gen_pPb1_PADoubleMuon_MC_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), ibin);
-		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s/Sort_OniaTree_Gen_pPb2_PADoubleMuon_MC_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), ibin);
-		tin1_tmp->Add(fname1.Data());
-		tin2_tmp->Add(fname2.Data());
-	}
+	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb1_PADoubleMuon_MC_29.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
+	fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb2_PADoubleMuon_MC_29.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
+	tin1_tmp->Add(fname1.Data());
+	tin2_tmp->Add(fname2.Data());
 	TTree* tin1 = tin1_tmp->CloneTree();
 	TTree* tin2 = tin2_tmp->CloneTree();
 	tin1_tmp->Reset();
@@ -299,29 +296,39 @@ void Correl_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, cons
 
 //draw{{{
 	cGen1_1->cd();
+	hGen1_1->Scale(1./(Nevt1+Nevt2));
 	hGen1_1->Draw("Surf1");
 	cGen1_2->cd();
+	hGen1_2->Scale(1./(Nevt1+Nevt2));
 	hGen1_2->Draw("Surf1");
 	cGen2_1->cd();
+	hGen2_1->Scale(1./(Nevt1+Nevt2));
 	hGen2_1->Draw("Surf1");
 	cGen2_2->cd();
+	hGen2_2->Scale(1./(Nevt1+Nevt2));
 	hGen2_2->Draw("Surf1");
 	cGen3_1->cd();
+	hGen3_1->Scale(1./(Nevt1+Nevt2));
 	hGen3_1->Draw("Surf1");
 	cGen3_2->cd();
+	hGen3_2->Scale(1./(Nevt1+Nevt2));
 	hGen3_2->Draw("Surf1");
 	cGen4_1->cd();
+	hGen4_1->Scale(1./(Nevt1+Nevt2));
 	hGen4_1->Draw("Surf1");
 	cGen4_2->cd();
+	hGen4_2->Scale(1./(Nevt1+Nevt2));
 	hGen4_2->Draw("Surf1");
 	cGen5_1->cd();
+	hGen5_1->Scale(1./(Nevt1+Nevt2));
 	hGen5_1->Draw("Surf1");
 	cGen5_2->cd();
+	hGen5_2->Scale(1./(Nevt1+Nevt2));
 	hGen5_2->Draw("Surf1");
 //}}}
 
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s/deta-dphi_Gen_pPb_distribution_mix_MC_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), imass), "RECREATE");
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Gen_pPb_distribution_mix_MC.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data()), "RECREATE");
 	fout->cd();
 	hGen1_1->Write();
 	hGen1_2->Write();
