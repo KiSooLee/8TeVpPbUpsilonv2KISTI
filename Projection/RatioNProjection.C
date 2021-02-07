@@ -81,7 +81,7 @@ void RatioNProjection(const Bool_t isMC = false, const Bool_t isGen = false, con
 	for(Int_t imass = 0; imass < mass_narr-1; imass++)
 	{
 		TFile* fout;
-		if(isTrk)
+		if(isTrk || isGen)
 		{
 			if(imass == 0) fout = new TFile(Form("CorrDist/CorrFiles/%s/MupT%s/%s/%sdphi_distribution_%s_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_MupT%s.root", version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), RorG.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, MorD.Data(), version.Data(), MupT.Data()), "RECREATE");
 			else continue;
@@ -91,7 +91,7 @@ void RatioNProjection(const Bool_t isMC = false, const Bool_t isGen = false, con
 //Get files{{{
 		for(Int_t ipPb = 0; ipPb < 2; ipPb++)
 		{
-			if(isTrk)
+			if(isTrk || isGen)
 			{
 				samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_%s_%s_distribution_same_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data()), "READ");
 				mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_%s_%s_distribution_mix_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), RorG.Data(), Direction[ipPb].Data(), MorD.Data()), "READ");
