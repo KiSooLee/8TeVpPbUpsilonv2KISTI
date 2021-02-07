@@ -66,6 +66,8 @@ void Correl_trk_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, 
 	TCanvas* cGen3_2 = new TCanvas("cGen3_2", "", 0, 0, 600, 600);
 	TCanvas* cGen4_1 = new TCanvas("cGen4_1", "", 0, 0, 600, 600);
 	TCanvas* cGen4_2 = new TCanvas("cGen4_2", "", 0, 0, 600, 600);
+	TCanvas* cGen5_1 = new TCanvas("cGen5_1", "", 0, 0, 600, 600);
+	TCanvas* cGen5_2 = new TCanvas("cGen5_2", "", 0, 0, 600, 600);
 
 	TH2D* hGen1_1 = new TH2D("hMixPbpGen1_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1, -4.95, 4.95, Nphibin1, -(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());
 	TH2D* hGen1_2 = new TH2D("hMixPbpGen1_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
@@ -75,6 +77,8 @@ void Correl_trk_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, 
 	TH2D* hGen3_2 = new TH2D("hMixPbpGen3_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
 	TH2D* hGen4_1 = new TH2D("hMixPbpGen4_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1, -4.95, 4.95, Nphibin1, -(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());
 	TH2D* hGen4_2 = new TH2D("hMixPbpGen4_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
+	TH2D* hGen5_1 = new TH2D("hMixPbpGen5_1", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin1, -4.95, 4.95, Nphibin1, -(0.5-1.0/((double)(Nphibin1+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin1+1)))*TMath::Pi());
+	TH2D* hGen5_2 = new TH2D("hMixPbpGen5_2", ";#Delta#eta;#Delta#phi;B(#Delta#eta,#Delta#phi)", Netabin2, -4.95, 4.95, Nphibin2, -(0.5-1.0/((double)(Nphibin2+1)))*TMath::Pi(), (1.5-1.0/((double)(Nphibin2+1)))*TMath::Pi());
 
 	FormTH2(hGen1_1);
 	FormTH2(hGen1_2);
@@ -84,6 +88,8 @@ void Correl_trk_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, 
 	FormTH2(hGen3_2);
 	FormTH2(hGen4_1);
 	FormTH2(hGen4_2);
+	FormTH2(hGen5_1);
+	FormTH2(hGen5_2);
 //}}}
 
 //get variables{{{
@@ -187,6 +193,11 @@ void Correl_trk_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, 
 							hGen4_1->Fill(deta, dphi, 1/(double)(10*Nass_Gen1));
 							hGen4_2->Fill(deta, dphi, 1/(double)(10*Nass_Gen1));
 						}
+						if(fabs(deta) < 1.0)
+						{
+							hGen5_1->Fill(deta, dphi, 1/(double)(10*Nass_Gen1));
+							hGen5_2->Fill(deta, dphi, 1/(double)(10*Nass_Gen1));
+						}
 //}}}
 					}
 				}
@@ -251,6 +262,11 @@ void Correl_trk_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, 
 							hGen4_1->Fill(deta, dphi, 1/(double)(10*Nass_Gen2));
 							hGen4_2->Fill(deta, dphi, 1/(double)(10*Nass_Gen2));
 						}
+						if(fabs(deta) < 1.0)
+						{
+							hGen5_1->Fill(deta, dphi, 1/(double)(10*Nass_Gen2));
+							hGen5_2->Fill(deta, dphi, 1/(double)(10*Nass_Gen2));
+						}
 //}}}
 					}
 				}
@@ -284,6 +300,12 @@ void Correl_trk_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, 
 	cGen4_2->cd();
 	hGen4_2->Scale(1./(Nevt1+Nevt2));
 	hGen4_2->Draw("Surf1");
+	cGen5_1->cd();
+	hGen5_1->Scale(1./(Nevt1+Nevt2));
+	hGen5_1->Draw("Surf1");
+	cGen5_2->cd();
+	hGen5_2->Scale(1./(Nevt1+Nevt2));
+	hGen5_2->Draw("Surf1");
 //}}}
 
 //store{{{
@@ -297,6 +319,8 @@ void Correl_trk_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, 
 	hGen3_2->Write();
 	hGen4_1->Write();
 	hGen4_2->Write();
+	hGen5_1->Write();
+	hGen5_2->Write();
 	fout->Close();
 //}}}
 }
