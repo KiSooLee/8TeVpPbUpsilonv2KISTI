@@ -384,8 +384,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 //}}}
 		}
 		massCentArr[imass] = 8 + massBinsArr[imass]*0.05 + (massBinsArr[imass+1]-massBinsArr[imass])*0.05/2.;
-		if(isMC) massValsArr[imass+1] = 8.5 + massBinsArr[imass+1]*0.05;
-		else massValsArr[imass+1] = 8 + massBinsArr[imass+1]*0.05;
+		massValsArr[imass+1] = 8 + massBinsArr[imass+1]*0.05;
 	}
 
 //define reference hist{{{
@@ -417,10 +416,20 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 	}
 	if(isTrk)
 	{
-		hRef_fine->SetMinimum(-0.01);
-		hRef_fine->SetMaximum(0.01);
-		hRef_coarse->SetMinimum(-0.01);
-		hRef_coarse->SetMaximum(0.01);
+		if(isMC)
+		{
+			hRef_fine->SetMinimum(-0.01);
+			hRef_fine->SetMaximum(0.05);
+			hRef_coarse->SetMinimum(-0.01);
+			hRef_coarse->SetMaximum(0.05);
+		}
+		else
+		{
+			hRef_fine->SetMinimum(-0.01);
+			hRef_fine->SetMaximum(0.01);
+			hRef_coarse->SetMinimum(-0.01);
+			hRef_coarse->SetMaximum(0.01);
+		}
 	}
 	else
 	{
@@ -490,7 +499,7 @@ void extV23(const Bool_t isMC = false, const Bool_t isGen = false, const Bool_t 
 		gv2_coarse[iaway]->SetMarkerStyle(20);
 		gv2_coarse[iaway]->SetMarkerSize(1.2);
 		//gv2_coarse->SetMarkerSize(0);
-		if(!isTrk) gv2_coarse[iaway]->Draw("pesame");
+		if(!isTrk && !isGen) gv2_coarse[iaway]->Draw("pesame");
 		lt2->DrawLatex(0.17,0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
 		lt2->DrawLatex(0.50,0.40, Form("p_{T}^{#mu} #geq %.1f GeV/c", MupTCut));
 		lt2->DrawLatex(0.50,0.35, Form("%d #leq p_{T}^{trig} < %d GeV/c", (int) ptMin, (int) ptMax));
