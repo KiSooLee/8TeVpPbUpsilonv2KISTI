@@ -19,7 +19,7 @@
 #include "../Headers/Style_Upv2.h"
 //}}}
 
-void Subtract_Trk(const Int_t multMinhi = 0, const Int_t multMaxhi = 300, const Int_t multMinlow = 0, const Int_t multMaxlow = 50, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Int_t maxF = 2, const Int_t bkgN = 0, const Bool_t isfine = true, const TString versionhi = "v56", const TString versionlow = "v55", const TString Jversionhi = "v47", const TString Jversionlow = "v41", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const Bool_t SigSys = true, const Bool_t BkgSys = true, const TString MupT = "4")
+void Subtract_Trk_Par(const Int_t multMinhi = 0, const Int_t multMaxhi = 300, const Int_t multMinlow = 0, const Int_t multMaxlow = 50, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Int_t maxF = 2, const Bool_t isfine = true, const TString versionhi = "v56", const TString versionlow = "v55", const TString Jversionhi = "v47", const TString Jversionlow = "v41", const TString MupT = "4", const Int_t FreeParN = 0)
 {
 	SetStyle();
 
@@ -27,17 +27,6 @@ void Subtract_Trk(const Int_t multMinhi = 0, const Int_t multMaxhi = 300, const 
 	TString Fine;
 	if(isfine) Fine = "fine";
 	else Fine = "coarse";
-	TString bkgF;
-	if(bkgN == 0) bkgF = "exp";
-	else if(bkgN == 1) bkgF = "pol1";
-	else if(bkgN == 2) bkgF = "pol2";
-	else if(bkgN == 3) bkgF = "pol3";
-	else if(bkgN == 4) bkgF = "erf";
-	else
-	{
-		cout << "out of background list" << endl;
-		return;
-	}
 	TString Ffit;
 	if(maxF == 2) Ffit = "_quad";
 	else if(maxF == 3) Ffit = "_tra";
@@ -71,12 +60,12 @@ void Subtract_Trk(const Int_t multMinhi = 0, const Int_t multMaxhi = 300, const 
 	hist->SetMaximum(0.15);
 //}}}
 
-	TFile* fout = new TFile(Form("V2File/MupT%s/Final_v2_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_%s_MupT%s.root", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, bkgF.Data(), MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("V2File/MupT%s/Final_v2_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_pol2_MupT%s_tra_FreePar%d.root", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data(), FreeParN), "RECREATE");
 
 //Get vn file{{{
 	TFile* fsigtrk;
 	TFile* ftrktrk;
-	fsigtrk = new TFile(Form("../LMsub/File/Subv2_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_jet_%s_by_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_%s_MupT%s.root", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, bkgF.Data(), MupT.Data()), "READ");
+	fsigtrk = new TFile(Form("../LMsub/File/Subv2_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_pol2_MupT%s_tra_FreePar%d.root", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data(), FreeParN), "READ");
 	ftrktrk = new TFile(Form("../LMsub/File/trk_Subv2_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_jet_%s_by_%s_MupT%s.root", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data()), "READ");
 //}}}
 
@@ -121,7 +110,7 @@ void Subtract_Trk(const Int_t multMinhi = 0, const Int_t multMaxhi = 300, const 
 	c1->cd();
 	hist->Draw();
 	gv2->Draw("samepe");
-	c1->SaveAs(Form("V2Plot/MupT%s/Final_v2_dist_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_%s_MupT%s.pdf", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, bkgF.Data(), MupT.Data()));
+	c1->SaveAs(Form("V2Plot/MupT%s/Final_v2_dist_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_pol2_MupT%s_tra_FreePar%d.pdf", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data(), FreeParN));
 	fout->cd();
 	gv2->Write();
 	fout->Close();
