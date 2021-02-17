@@ -532,7 +532,7 @@ void SimultaneousFitMC(const Int_t multMin = 0, const Int_t multMax = 40, const 
 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
-		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away%s/Combine_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_pol2_%s_%s_MC_%s_MupT%s%s.pdf", version.Data(), MupT.Data(), Away.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Away.Data(), Fine.Data(), version.Data(), MupT.Data(), Ffit.Data()));
+		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away%s/Combined_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_pol2_%s_%s_MC_%s_MupT%s%s.pdf", version.Data(), MupT.Data(), Away.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Away.Data(), Fine.Data(), version.Data(), MupT.Data(), Ffit.Data()));
 	}
 
 	TGraphErrors* v2plot = new TGraphErrors(pt_narr-1, pt, v2, 0, v2e);
