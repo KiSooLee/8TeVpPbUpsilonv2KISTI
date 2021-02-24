@@ -64,8 +64,9 @@ void SortPbp1(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 	if(isMC)
 	{
 		
-		//fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1_MC_1S_private_20200716.root";
-		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1_MC_1S_official_20201109.root";
+		//fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1_MC_1S_private_20200716.root";//private embedded
+		//fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1_MC_1S_official_20201109.root";//official embedded
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1_MC_1S.root";//official non-embedded
 	}
 	else
 	{
