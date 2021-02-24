@@ -66,10 +66,10 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	//fname2 = "oniaTree_Pbp_20170504.root";//KUNPL
 	if(isMC)
 	{
-		//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_private_20200716.root", Generation);//KISTI
-		//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_private_20200716.root", Generation);//KISTI
-		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_official_20201109.root", Generation);//KISTI
-		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_official_20201109.root", Generation);//KISTI
+		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_20190613.root", Generation);//official non-embedded
+		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_20190613.root", Generation);//official non-embedded
+		//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_official_20201109.root", Generation);//official embedded
+		//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_official_20201109.root", Generation);//official embedded
 	}
 	else
 	{
@@ -90,7 +90,7 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	TH1F* hEff1618 = 0;
 	TH1F* hEff1821 = 0;
 	TH1F* hEff2124 = 0;
-	if(!isMC)
+	if(Weight)
 	{
 		facc = new TFile(Form("AccEff/Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isAccRW, MupT.Data()),"READ");
 		feff = new TFile(Form("AccEff/Plots/EffPlots_Upsilon_%dS_RW%o_TnP%o_MupT%s.root", Generation, isEffRW, isTnP, MupT.Data()),"READ");
@@ -109,7 +109,8 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	if(isMC)
 	{
 		//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
-		fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s_official.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
+		//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s_official.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
+		fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s_official_non-embedded.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
 	}
 	else if(!Weight) fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_noWeight_MupT%s.root", MorD.Data(), MupT.Data()), "RECREATE");
 	else fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_Acc%o_Eff%o_TnP%o_MupT%s.root", MorD.Data(), isAccRW, isEffRW, isTnP, MupT.Data()), "RECREATE");
