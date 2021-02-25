@@ -176,16 +176,13 @@ void Correl_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, cons
 
 			Double_t upacc = 1.;
 			Double_t upeff = 1.;
-			if(!isMC)
+			for(Int_t iy = 0; iy < Ny; iy++)
 			{
-				for(Int_t iy = 0; iy < Ny; iy++)
+				if(fabs(trg_y) > ybin[iy] && fabs(trg_y) <= ybin[iy+1])
 				{
-					if(fabs(trg_y) > ybin[iy] && fabs(trg_y) <= ybin[iy+1])
-					{
-						upacc = hacc[iy]->GetBinContent(hacc[iy]->FindBin(trg_pt));
-						upeff = heff[iy]->GetBinContent(heff[iy]->FindBin(trg_pt));
-						break;
-					}
+					upacc = hacc[iy]->GetBinContent(hacc[iy]->FindBin(trg_pt));
+					upeff = heff[iy]->GetBinContent(heff[iy]->FindBin(trg_pt));
+					break;
 				}
 			}
 
@@ -208,7 +205,7 @@ void Correl_Reco_same_pPb(const bool isMC = false, const Int_t multMin = 0, cons
 
 //fill hist{{{
 				Double_t trkeff = 1.;
-				if(!isMC) trkeff = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+				trkeff = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
 
 				hReco1_1->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
 				hReco1_2->Fill(deta, dphi, 1/( (double)Ntrg_Reco*upacc*upeff*trkeff ));
