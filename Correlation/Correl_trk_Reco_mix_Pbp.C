@@ -50,8 +50,10 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 	{
 		for(Int_t ibin = 10; ibin < 40; ibin++)
 		{
-			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
-			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
 			tin1_tmp->Add(fname1.Data());
 			tin2_tmp->Add(fname2.Data());
 		}
@@ -175,7 +177,7 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 				Double_t trg_pt = vec_trk_Reco1->Pt();
 
 				Double_t trkeff_trg = 1.;
-				if(!isMC) trkeff_trg = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(trg_eta), htrk->GetYaxis()->FindBin(trg_pt)));
+				trkeff_trg = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(trg_eta), htrk->GetYaxis()->FindBin(trg_pt)));
 
 //correlation{{{
 				for(Int_t irand = 0; irand < 10; irand++)
@@ -206,7 +208,7 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 
 //fill hist{{{
 						Double_t trkeff_ass = 1.;
-						if(!isMC) trkeff_ass = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+						trkeff_ass = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
 
 						hReco1_1->Fill(deta, dphi, 1/( (double)(10*Nass_Reco1*trkeff_trg*trkeff_ass) ));
 						hReco1_2->Fill(deta, dphi, 1/( (double)(10*Nass_Reco1*trkeff_trg*trkeff_ass) ));
@@ -252,7 +254,7 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 				Double_t trg_pt = vec_trk_Reco2->Pt();
 
 				Double_t trkeff_trg = 1.;
-				if(!isMC) trkeff_trg = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(trg_eta), htrk->GetYaxis()->FindBin(trg_pt)));
+				trkeff_trg = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(trg_eta), htrk->GetYaxis()->FindBin(trg_pt)));
 
 //correlation{{{
 				for(Int_t irand = 0; irand < 10; irand++)
@@ -283,7 +285,7 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 
 //fill hist{{{
 						Double_t trkeff_ass = 1.;
-						if(!isMC) trkeff_ass = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
+						trkeff_ass = htrk->GetBinContent(htrk->GetBin(htrk->GetXaxis()->FindBin(ass_eta), htrk->GetYaxis()->FindBin(ass_pt)));
 
 						hReco1_1->Fill(deta, dphi, 1/( (double)(10*Nass_Reco2*trkeff_trg*trkeff_ass) ));
 						hReco1_2->Fill(deta, dphi, 1/( (double)(10*Nass_Reco2*trkeff_trg*trkeff_ass) ));
