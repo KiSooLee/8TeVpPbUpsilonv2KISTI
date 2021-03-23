@@ -58,7 +58,8 @@ void Correl_trk_Reco_same_Pbp(const bool isMC = false, const Int_t multMin = 0, 
 	}
 	else
 	{
-		for(Int_t ibin = 0; ibin < 120; ibin++)
+		for(Int_t ibin = 0; ibin < 120; ibin++)//for analysis
+		//for(Int_t ibin = 20; ibin < 40; ibin++)//for multiplicity scan
 		{
 			fname1 = Form("root://cms-xrdr.private.lo:2094//xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
 			fname2 = Form("root://cms-xrdr.private.lo:2094//xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
