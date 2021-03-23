@@ -110,6 +110,9 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	fit1->SetLineColor(100);
 	hratio->Fit(fit1, "rqm");
 	SetLine(2, 0, 1, 30, 1, 0, 3);
+	lt1->SetTextSize(0.2);
+	lt1->DrawLatex(0.55,0.75, Form("#chi^{2}/n.d.f=%.1f/3", hratio->Chisquare(fit1)));
+	;
 	c3->SaveAs(Form("Kinematic_dist_comp_1S_%s_MupT%s.pdf", version.Data(), MupT.Data()));
 
 	TFile* fout = new TFile(Form("Kinematic_dist_comp_1S_%s_MupT%s.root", version.Data(), MupT.Data()), "RECREATE");
