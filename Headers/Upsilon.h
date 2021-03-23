@@ -437,14 +437,14 @@ Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
 */
-
+/*
 //v57: pt bin for MC reweight{{{
 Int_t multBinsArr[] = {0, 300};
 Double_t rapBinsArr[] = {-2.4, 2.4};
 Double_t ptBinsArr[] = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 15.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
-
+*/
 /*
 //v58: pt binnig for jet ratio 185~250 (J/psi study multiplicity) with extended mass range{{{
 Int_t multBinsArr[] = {185, 250};
@@ -469,6 +469,118 @@ Double_t ptBinsArr[] = {12.0, 15.0, 20.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
 */
+/*
+//v61: new pt binnig for jet ratio 90~300{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {13.0, 16.0, 22.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v62: new pt binnig for jet ratio 0~50{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {13.0, 16.0, 22.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v63: new pt binnig for jet ratio 90~300{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {10.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v64: new pt binnig for jet ratio 0~50{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {10.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v65: new pt binnig for jet ratio 90~300{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 11.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v66: new pt binnig for jet ratio 0~50{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 11.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v67: new pt binnig for jet ratio 90~300{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {11.0, 15.0, 19.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v68: new pt binnig for jet ratio 0~50{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {11.0, 15.0, 19.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v69: low-multiplicity scan for 9~10 mass range, new pT bin, track pt 0.3{{{
+Int_t multBinsArr[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {20, 41};
+//}}}
+*/
+/*
+//70: additional multiplicity for low-multiplicity scan for 9~10 mass range, new pT bin, track pt 0.3{{{
+Int_t multBinsArr[] = {45, 55};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {20, 41};
+//}}}
+*/
+/*
+//v71: full pt binnig for jet ratio 90~300{{{
+Int_t multBinsArr[] = {90, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 2.0, 4.0, 7.0, 10.0, 15.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v72: full pt binnig for jet ratio 0~50{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 2.0, 4.0, 7.0, 10.0, 15.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v73: binning for MC closure test{{{
+Int_t multBinsArr[] = {0, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 38, 40};
+//}}}
+*/
+
+//v74: multiplcity 70 ~ 300{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+
 //}}}
 
 const Int_t rap_narr = sizeof(rapBinsArr)/sizeof(double);
