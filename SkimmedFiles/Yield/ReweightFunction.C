@@ -30,6 +30,7 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	else if(MupT == "3") MupTCut = 3.0;
 	else if(MupT == "3p5") MupTCut = 3.5;
 	else if(MupT == "4") MupTCut = 4.0;
+	else if(MupT == "10") MupTCut = 10.0;
 	else
 	{
 		cout << "There is no such muon pT cut value" << endl;
@@ -37,7 +38,7 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	}
 //}}}
 
-	TFile* fMC  = new TFile(Form("Yield_count_MC_PADoubleMuon_1S_MupT%s_official.root", MupT.Data()), "READ");
+	TFile* fMC  = new TFile(Form("Yield_count_MC_PADoubleMuon_1S_MupT%s_official_%s.root", MupT.Data(), version.Data()), "READ");
 	TH1D* hMCtmp = (TH1D*) fMC->Get("h1");
 	TH1D* hdata = new TH1D("hdata", ";p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
 	TH1D* hMC = new TH1D("hMC", ";p_{T} (GeV/c);dN/dp_{T}", pt_narr-1, ptBinsArr);
@@ -103,8 +104,10 @@ void ReweightFunction(const Int_t multMin = 0, const Int_t multMax = 300, const 
 	hratio->GetYaxis()->SetTitleOffset(0.2);
 	hratio->GetXaxis()->SetTitleSize(0.1);
 	hratio->GetXaxis()->SetTitleOffset(0.8);
-	hratio->SetMaximum(1.3);
-	hratio->SetMinimum(0.7);
+	//hratio->SetMaximum(1.3);
+	//hratio->SetMinimum(0.7);
+	hratio->SetMaximum(1.5);
+	hratio->SetMinimum(0.5);
 	hratio->Draw("pe");
 	TF1* fit1 = new TF1("fit1", "([0]*x*x+[1]*x+[2])/((x-[3])*(x-[3])*(x-[3]))", 0, 30);
 	fit1->SetLineColor(100);
