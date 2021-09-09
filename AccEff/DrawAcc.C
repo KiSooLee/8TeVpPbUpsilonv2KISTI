@@ -58,7 +58,7 @@ void DrawAcc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_
 	const Double_t ybin[Ny+1] = {0.0, 1.6, 1.8, 2.1, 2.4};
 	const TString yabin[Ny+1] = {"00", "16", "18", "21", "24"};
 
-	TFile* fAcc = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s_tmp.root", Generation, isRW, MupT.Data()), "READ");
+	TFile* fAcc = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_v78_MupT%s_tmp.root", Generation, isRW, MupT.Data()), "READ");
 	TH1D* hGenPt = (TH1D*) fAcc->Get("hGenPt");
 	TH1D* hAccGenPt = (TH1D*) fAcc->Get("hAccGenPt");
 	TH1D* hGeny = (TH1D*) fAcc->Get("hGeny");
@@ -151,7 +151,7 @@ void DrawAcc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_
 	lt2->DrawLatex(0.65, 0.75, Form("|#eta^{#mu}| < 2.4"));
 	c1->SaveAs(Form("Plots/Acc_comp_Upsilon_%dS_RW%o_MupT%s.pdf", Generation, isRW, MupT.Data()));
 
-	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isRW, MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_v78_MupT%s.root", Generation, isRW, MupT.Data()), "RECREATE");
 	fout->cd();
 	hAccPt->Write();
 	hAccy->Write();
