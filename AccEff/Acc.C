@@ -60,7 +60,8 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	TFile* fin = TFile::Open(Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/MB/Pbp_Up1S_GENonly_multiplicity_v1_20200704/Upsilon1S_pPb-Bst_8p16-Pythia8/Pbp_Up1S_GENonly_multiplicity_v1_20200704/200703_152703/0000/mcStudy_Up1S_816TeV_%d.root", ifile), "READ");
 	TTree* tin = (TTree*) fin->Get("Ana");
 
-	TFile* freweight = new TFile(Form("../SkimmedFiles/Yield/Kinematic_dist_comp_%dS_v57_MupT%s.root", Generation, MupT.Data()), "READ");
+	//TFile* freweight = new TFile(Form("../SkimmedFiles/Yield/Kinematic_dist_comp_%dS_v57_MupT%s.root", Generation, MupT.Data()), "READ");
+	TFile* freweight = new TFile(Form("../SkimmedFiles/Yield/Kinematic_dist_comp_%dS_v78_MupT%s.root", Generation, MupT.Data()), "READ");
 	TF1* funcrw = (TF1*) freweight->Get("fit1");
 
 //Define histogram{{{
@@ -168,7 +169,8 @@ void Acc(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	}
 
 //save{{{
-	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s_%d.root", Generation, isRW, MupT.Data(), ifile), "RECREATE");
+	//TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s_%d.root", Generation, isRW, MupT.Data(), ifile), "RECREATE");
+	TFile* fout = new TFile(Form("Plots/AccPlots_Upsilon_%dS_RW%o_v78_MupT%s_%d.root", Generation, isRW, MupT.Data(), ifile), "RECREATE");
 	fout->cd();
 	hGenPt->Write();
 	hGeny->Write();
