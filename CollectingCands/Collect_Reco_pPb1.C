@@ -25,7 +25,7 @@
 using namespace std;
 //}}}
 
-void Collect_Reco_pPb1(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString MupT = "4", const TString trkptversion = "v1", const Int_t imass = 0)
+void Collect_Reco_pPb1(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString MupT = "4", const TString trkptversion = "v1", const Bool_t isSS = false, const Int_t imass = 0)
 {
 //make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -38,10 +38,14 @@ void Collect_Reco_pPb1(const bool isMC = false, const Int_t multMin = 0, const I
 	TString MorD;
 	if(isMC) MorD = "MC";
 	else MorD = "Data";
+	TString SS;
+	if(isSS) SS = "SS";//same sign
+	else SS = "OS";//opposite sign
 
 //Get files{{{
 	TString fname1;
-	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/total_MupT%s/Sort_OniaTree_pPb1_PADoubleMuon_%s_%d.root", MupT.Data(), MorD.Data(), imass);
+	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/total_MupT%s/Sort_OniaTree_pPb1_PADoubleMuon_%s_%s_%d.root", MupT.Data(), MorD.Data(), SS.Data(), imass);//same sign
+	//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/total_MupT%s/Sort_OniaTree_pPb1_PADoubleMuon_%s_%d_nonemb.root", MupT.Data(), MorD.Data(), imass);//non-embedded MC sample
 	//fname1 = Form("0-1500_0-30_-24-24_0-10_pPb1/Sort_OniaTree_pPb1_PADoubleMuon_%s_%d.root", MorD.Data(), imass);
 	TChain* tin1_tmp = new TChain("UpsilonTree");
 	tin1_tmp->Add(fname1.Data());
@@ -152,7 +156,7 @@ void Collect_Reco_pPb1(const bool isMC = false, const Int_t multMin = 0, const I
 		}
 	}
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_pPb1_MupT%s_trk%s/Sort_OniaTree_Reco_pPb1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), imass), "RECREATE");
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_pPb1_MupT%s_trk%s/Sort_OniaTree_Reco_pPb1_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), imass), "RECREATE");//same sign
 	fout->cd();
 	tout->Write();
 	fout->Close();
