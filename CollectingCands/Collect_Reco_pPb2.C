@@ -15,17 +15,17 @@
 #include <TF1.h>
 #include <TRandom3.h>
 #include <TSystem.h>
-
+/*
 #include "Style_Upv2.h"
 #include "Upsilon.h"
-/*
+*/
 #include "../Headers/Style_Upv2.h"
 #include "../Headers/Upsilon.h"
-*/
+
 using namespace std;
 //}}}
 
-void Collect_Reco_pPb2(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString MupT = "4", const TString trkptversion = "v1", const isSS = false, const Int_t imass = 0)
+void Collect_Reco_pPb2(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString MupT = "4", const TString trkptversion = "v1", const Bool_t isSS = false, const Int_t imass = 0)
 {
 //make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -44,8 +44,7 @@ void Collect_Reco_pPb2(const bool isMC = false, const Int_t multMin = 0, const I
 
 //Get files{{{
 	TString fname1;
-	//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/total_MupT%s/Sort_OniaTree_pPb2_PADoubleMuon_%s_%d.root", MupT.Data(), MorD.Data(), imass);
-	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/total_MupT%s/Sort_OniaTree_pPb2_PADoubleMuon_%s_SS_%d.root", MupT.Data(), MorD.Data(), imass);//same sign
+	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/total_MupT%s/Sort_OniaTree_pPb2_PADoubleMuon_%s_%s_%d.root", MupT.Data(), MorD.Data(), SS.Data(), imass);
 	//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/total_MupT%s/Sort_OniaTree_pPb2_PADoubleMuon_%s_%d_nonemb.root", MupT.Data(), MorD.Data(), imass);//non-embedded MC sample
 	//fname1 = Form("0-1500_0-30_-24-24_0-10_pPb2/Sort_OniaTree_pPb2_PADoubleMuon_%s_%d.root", MorD.Data(), imass);
 	TChain* tin1_tmp = new TChain("UpsilonTree");
@@ -157,7 +156,7 @@ void Collect_Reco_pPb2(const bool isMC = false, const Int_t multMin = 0, const I
 		}
 	}
 //store{{{
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_pPb2_MupT%s_trk%s/Sort_OniaTree_Reco_pPb2_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), imass), "RECREATE");//same sign
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_pPb2_MupT%s_trk%s/Sort_OniaTree_Reco_pPb2_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), imass), "RECREATE");
 	fout->cd();
 	tout->Write();
 	fout->Close();
