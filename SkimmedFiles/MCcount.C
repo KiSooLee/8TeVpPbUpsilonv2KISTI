@@ -46,7 +46,7 @@ void MCcount(const Int_t Generation = 1, const TString MupT = "3p5")
 //}}}
 
 	//TFile* fout = new TFile(Form("Yield/Yield_count_MC_PADoubleMuon_%dS_MupT%s.root", Generation, MupT.Data()), "RECREATE");
-	TFile* fout = new TFile(Form("Yield/Yield_count_MC_PADoubleMuon_%dS_MupT%s_official.root", Generation, MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Yield/Yield_count_MC_PADoubleMuon_%dS_MupT%s_official_v78.root", Generation, MupT.Data()), "RECREATE");
 
 	//TFile* fin = new TFile(Form("Skim_OniaTree_MC_PADoubleMuon_%dS_MupT%s.root", Generation, MupT.Data()), "READ");
 	TFile* fin = new TFile(Form("Skim_OniaTree_MC_PADoubleMuon_%dS_MupT%s_official.root", Generation, MupT.Data()), "READ");
@@ -78,10 +78,10 @@ void MCcount(const Int_t Generation = 1, const TString MupT = "3p5")
 		Double_t mumi_muid_tnp = 1.;
 		Double_t mumi_trk_tnp = 1.;
 		Double_t mumi_trg_tnp = 1.;
-		mupl_muid_tnp = tnp_weight_muid_ppb(mupl_pt, mupl_eta, 0);
+		mupl_muid_tnp = tnp_weight_muid_tm_ppb(mupl_pt, mupl_eta, 0);
 		mupl_trk_tnp = tnp_weight_trkM_ppb(mupl_pt, mupl_eta, 0);
 		mupl_trg_tnp = tnp_weight_trg_ppb(mupl_pt, mupl_eta, 0);
-		mumi_muid_tnp = tnp_weight_muid_ppb(mumi_pt, mumi_eta, 0);
+		mumi_muid_tnp = tnp_weight_muid_tm_ppb(mumi_pt, mumi_eta, 0);
 		mumi_trk_tnp = tnp_weight_trkM_ppb(mumi_pt, mumi_eta, 0);
 		mumi_trg_tnp = tnp_weight_trg_ppb(mumi_pt, mumi_eta, 0);
 		Double_t mupl_tnp = mupl_muid_tnp*mupl_trk_tnp*mupl_trg_tnp;
