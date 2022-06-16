@@ -25,20 +25,50 @@
 #include "../Headers/Upsilon.h"
 //}}}
 
-void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString trkptversion = "v1", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const TString MupT = "4", const Bool_t isBkg = true)
+void DrawCorrel_jet(const Bool_t isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString trkptversion = "v1", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Int_t isTnP = 0, const TString MupT = "4", const Bool_t isBkg = true)
 { 
 	SetStyle();
 
 //set name{{{
+	TString MorD;
+	if(isMC) MorD = "MC";
+	else MorD = "Data";
 	TString Direction[2] = {"Pbp", "pPb"};
 	TString PorB;
 	if(isBkg) PorB = "bkg";
 	else PorB = "peak";
+	Double_t MupTCut;
+	if(MupT == "0") MupTCut = 0;
+	else if(MupT == "0p5") MupTCut = 0.5;
+	else if(MupT == "1") MupTCut = 1.0;
+	else if(MupT == "1p5") MupTCut = 1.5;
+	else if(MupT == "2") MupTCut = 2.0;
+	else if(MupT == "2p5") MupTCut = 2.5;
+	else if(MupT == "3") MupTCut = 3.0;
+	else if(MupT == "3p5") MupTCut = 3.5;
+	else if(MupT == "4") MupTCut = 4.0;
+	else
+	{
+		cout << "There is no such muon pT cut value" << endl;
+		return;
+	}
+	TString TnPs;
+	if(isTnP == 0) TnPs = "w";
+	else if(isTnP == 1) TnPs = "statup";
+	else if(isTnP == 2) TnPs = "statdw";
+	else if(isTnP == 3) TnPs = "systup";
+	else if(isTnP == 4) TnPs = "systdw";
+	else if(isTnP == 5) TnPs = "wo";
+	else
+	{
+		cout << "There is no such TnP index" << endl;
+		return;
+	}
 	TString SysDir;
-	if( isAccRW && isEffRW && isTnP ) SysDir = "Nominal";
-	else if( !isAccRW && isEffRW && isTnP ) SysDir = "SysAcc";
-	else if( isAccRW && !isEffRW && isTnP ) SysDir = "SysEff";
-	else if( isAccRW && isEffRW && !isTnP ) SysDir = "SysTnP";
+	if( isAccRW && isEffRW && (isTnP == 0) ) SysDir = "Nominal";
+	else if( !isAccRW && isEffRW && (isTnP == 0) ) SysDir = "SysAcc";
+	else if( isAccRW && !isEffRW && (isTnP == 0) ) SysDir = "SysEff";
+	else if( isAccRW && isEffRW && (isTnP != 0) ) SysDir = "SysTnP";
 	else
 	{
 		cout << "There is no such option" << endl;
@@ -129,24 +159,6 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 	TH2D *hMixPbp_coarse[2];
 //}}}
 
-//define muon pt value{{{
-	Double_t MupTCut;
-	if(MupT == "0") MupTCut = 0;
-	else if(MupT == "0p5") MupTCut = 0.5;
-	else if(MupT == "1") MupTCut = 1.0;
-	else if(MupT == "1p5") MupTCut = 1.5;
-	else if(MupT == "2") MupTCut = 2.0;
-	else if(MupT == "2p5") MupTCut = 2.5;
-	else if(MupT == "3") MupTCut = 3.0;
-	else if(MupT == "3p5") MupTCut = 3.5;
-	else if(MupT == "4") MupTCut = 4.0;
-	else
-	{
-		cout << "There is no such muon pT cut value" << endl;
-		return;
-	}
-//}}}
-
 	TLatex* lt1 = new TLatex();
 	FormLatex(lt1, 12, 0.04);
 	lt1->SetNDC();
@@ -154,8 +166,8 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 //Get files{{{
 	for(Int_t ipPb = 0; ipPb < 2; ipPb++)
 	{
-		samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_same_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
-		mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_mix_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
+		samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_same_%s_Acc%o_Eff%o_TnP%s_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Direction[ipPb].Data(), MorD.Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()), "READ");
+		mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_mix_%s_Acc%o_Eff%o_TnP%s_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Direction[ipPb].Data(), MorD.Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()), "READ");
 	}
 //}}}
 
@@ -192,7 +204,7 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 	else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 	if(isBkg) lt1->DrawLatex(0.15,0.75, Form("8.0 #leq m_{#mu+#mu-} < 9.0 GeV/c^{2}, 11 #leq m_{#mu+#mu-} < 14 combined"));
 	else lt1->DrawLatex(0.15,0.75, Form("%.1f #leq m_{#mu+#mu-} < %.1f GeV/c^{2}", massMin, massMax));
-	c_same_fine->SaveAs(Form("CorrDist/CorrDistFullSame/%s/MupT%s/%s/plot_corr_same_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%o_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, PorB.Data()));
+	c_same_fine->SaveAs(Form("CorrDist/CorrDistFullSame/%s/MupT%s/%s/plot_corr_same_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%s_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()));
 //}}}
 
 //mix fine{{{
@@ -205,7 +217,7 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 	else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 	if(isBkg) lt1->DrawLatex(0.15,0.75, Form("8.0 #leq m_{#mu+#mu-} < 9.0 GeV/c^{2}, 11 #leq m_{#mu+#mu-} < 14 combined"));
 	else lt1->DrawLatex(0.15,0.75, Form("%.1f #leq m_{#mu+#mu-} < %.1f GeV/c^{2}", massMin, massMax));
-	c_mix_fine->SaveAs(Form("CorrDist/CorrDistFullMix/%s/MupT%s/%s/plot_corr_mix_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%o_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, PorB.Data()));
+	c_mix_fine->SaveAs(Form("CorrDist/CorrDistFullMix/%s/MupT%s/%s/plot_corr_mix_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%s_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()));
 //}}}
 
 //ratio fine{{{
@@ -220,7 +232,7 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 	else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 	if(isBkg) lt1->DrawLatex(0.15,0.75, Form("8.0 #leq m_{#mu+#mu-} < 9.0 GeV/c^{2}, 11 #leq m_{#mu+#mu-} < 14 combined"));
 	else lt1->DrawLatex(0.15,0.75, Form("%.1f #leq m_{#mu+#mu-} < %.1f GeV/c^{2}", massMin, massMax));
-	c_ratio_fine->SaveAs(Form("CorrDist/CorrDistFullRatio/%s/MupT%s/%s/plot_corr_ratio_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%o_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, PorB.Data()));
+	c_ratio_fine->SaveAs(Form("CorrDist/CorrDistFullRatio/%s/MupT%s/%s/plot_corr_ratio_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%s_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin1, Nphibin1, version.Data(), MupT.Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()));
 //}}}
 
 //same coarse{{{
@@ -233,7 +245,7 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 	else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 	if(isBkg) lt1->DrawLatex(0.15,0.75, Form("8.0 #leq m_{#mu+#mu-} < 9.0 GeV/c^{2}, 11 #leq m_{#mu+#mu-} < 14 combined"));
 	else lt1->DrawLatex(0.15,0.75, Form("%.1f #leq m_{#mu+#mu-} < %.1f GeV/c^{2}", massMin, massMax));
-	c_same_coarse->SaveAs(Form("CorrDist/CorrDistFullSame/%s/MupT%s/%s/plot_corr_same_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%o_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, PorB.Data()));
+	c_same_coarse->SaveAs(Form("CorrDist/CorrDistFullSame/%s/MupT%s/%s/plot_corr_same_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%s_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()));
 //}}}
 
 //mix coarse{{{
@@ -246,7 +258,7 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 	else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 	if(isBkg) lt1->DrawLatex(0.15,0.75, Form("8.0 #leq m_{#mu+#mu-} < 9.0 GeV/c^{2}, 11 #leq m_{#mu+#mu-} < 14 combined"));
 	else lt1->DrawLatex(0.15,0.75, Form("%.1f #leq m_{#mu+#mu-} < %.1f GeV/c^{2}", massMin, massMax));
-	c_mix_coarse->SaveAs(Form("CorrDist/CorrDistFullMix/%s/MupT%s/%s/plot_corr_mix_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%o_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, PorB.Data()));
+	c_mix_coarse->SaveAs(Form("CorrDist/CorrDistFullMix/%s/MupT%s/%s/plot_corr_mix_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%s_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()));
 //}}}
 
 //ratio coarse{{{
@@ -261,7 +273,7 @@ void DrawCorrel_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Do
 	else lt1->DrawLatex(0.15,0.8, Form("%d #leq p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
 	if(isBkg) lt1->DrawLatex(0.15,0.75, Form("8.0 #leq m_{#mu+#mu-} < 9.0 GeV/c^{2}, 11 #leq m_{#mu+#mu-} < 14 combined"));
 	else lt1->DrawLatex(0.15,0.75, Form("%.1f #leq m_{#mu+#mu-} < %.1f GeV/c^{2}", massMin, massMax));
-	c_ratio_coarse->SaveAs(Form("CorrDist/CorrDistFullRatio/%s/MupT%s/%s/plot_corr_ratio_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%o_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), isAccRW, isEffRW, isTnP, PorB.Data()));
+	c_ratio_coarse->SaveAs(Form("CorrDist/CorrDistFullRatio/%s/MupT%s/%s/plot_corr_ratio_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_neta_%d_nphi_%d_Data_%s_MupT%s_Acc%o_Eff%o_TnP%s_%s.pdf", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Netabin2, Nphibin2, version.Data(), MupT.Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()));
 //}}}
 
 //}}}
