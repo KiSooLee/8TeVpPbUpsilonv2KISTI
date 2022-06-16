@@ -26,11 +26,11 @@ using namespace std;
 
 bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString MupT = "4", const Bool_t isSS = false, const Int_t imass = 0)
+void SortPbp1_Reco(const bool isMC = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString MupT = "4", const Bool_t isSS = false, const Int_t imass = 0)
 {
 //make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString saveDIR = mainDIR + Form("/%d-%d_%d-%d_%d-%d_%d-%d_Pbp2_MupT%s", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data());
+	TString saveDIR = mainDIR + Form("/%d-%d_%d-%d_%d-%d_%d-%d_Pbp1_MupT%s", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data());
 	void * dirp = gSystem->OpenDirectory(saveDIR.Data());
 	if(dirp) gSystem->FreeDirectory(dirp);
 	else gSystem->mkdir(saveDIR.Data(), kTRUE);
@@ -67,13 +67,13 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 	if(isMC)
 	{
 		
-		//fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp2_MC_1S_private_20200716.root";//private embedded
-		//fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp2_MC_1S_official_20201109.root";//official embedded
-		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp2_MC_1S_non-embed.root";//official non-embedded
+		//fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1_MC_1S_private_20200716.root";//private embedded
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1_MC_1S_official_20201109.root";//official embedded
+		//fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1_MC_1S_non-embed.root";//official non-embedded
 	}
 	else
 	{
-		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp2.root";
+		fname1 = "root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp1.root";
 	}
 	tin->Add(fname1.Data());
 //}}}
@@ -207,16 +207,6 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 	tin->SetBranchAddress("Reco_isgoodTrk", Reco_isgoodTrk, &b_Reco_isgoodTrk);
 	tin->SetBranchAddress("Reco_isMuTrk", Reco_isMuTrk, &b_Reco_isMuTrk);
 	tin->SetBranchAddress("Reco_trk_4mom", &Reco_trk_4mom, &b_Reco_trk_4mom);
-	if(isMC)
-	{
-		tin->SetBranchAddress("Gen_QQ_size", &Gen_QQ_size, &b_Gen_QQ_size);
-		tin->SetBranchAddress("Gen_QQ_type", &Gen_QQ_type, &b_Gen_QQ_type);
-		tin->SetBranchAddress("Gen_QQ_4mom", &Gen_QQ_4mom, &b_Gen_QQ_4mom);
-		tin->SetBranchAddress("Gen_QQ_mupl_4mom", &Gen_QQ_mupl_4mom, &b_Gen_QQ_mupl_4mom);
-		tin->SetBranchAddress("Gen_QQ_mumi_4mom", &Gen_QQ_mumi_4mom, &b_Gen_QQ_mumi_4mom);
-		tin->SetBranchAddress("Gen_trk_size", &Gen_trk_size, &b_Gen_trk_size);
-		tin->SetBranchAddress("Gen_trk_4mom", &Gen_trk_4mom, &b_Gen_trk_4mom);
-	}
 //}}}
 
 //Define LorentzVector{{{
@@ -249,8 +239,9 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 	const Int_t Nevt = tin->GetEntries();
 	Float_t vz = -99.;
 
-	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_Pbp2_MupT%s/Sort_OniaTree_Pbp2_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), SS.Data(), imass), "RECREATE");
-	//TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_Pbp2_MupT%s/Sort_OniaTree_Pbp2_PADoubleMuon_%s_nonemb_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), imass), "RECREATE");//non-embedded MC sample
+	TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_Pbp1_MupT%s/Sort_OniaTree_Pbp1_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), SS.Data(), imass), "RECREATE");
+	//TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_Pbp1_MupT%s/Sort_OniaTree_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), imass), "RECREATE");
+	//TFile* fout = new TFile(Form("%d-%d_%d-%d_%d-%d_%d-%d_Pbp1_MupT%s/Sort_OniaTree_Pbp1_PADoubleMuon_%s_%d_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), MorD.Data(), imass), "RECREATE");//non-embedded MC sample
 
 	for(Int_t ievt = 0; ievt < Nevt; ievt++)
 	//for(Int_t ievt = 0; ievt < 100000; ievt++)
@@ -272,44 +263,7 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 
 		if(Ntracks >= multMin && Ntracks < multMax)
 		{
-			if(isMC)
-			{
-//Get trigger vector{{{
-				for(Int_t iqq = 0; iqq < Gen_QQ_size; iqq++)
-				{
-					Up_Gen_4mom = (TLorentzVector*) Gen_QQ_4mom->At(iqq);
-					mupl_Gen_4mom = (TLorentzVector*) Gen_QQ_mupl_4mom->At(iqq);
-					mumi_Gen_4mom = (TLorentzVector*) Gen_QQ_mumi_4mom->At(iqq);
-
-					if( Up_Gen_4mom->M() > 8+(0.05*imass) && Up_Gen_4mom->M() <= 8+(0.05*(imass+1)) && Up_Gen_4mom->Rapidity() >= -2.4 && Up_Gen_4mom->Rapidity() <= 2.4 && Up_Gen_4mom->Pt() >= ptMin && Up_Gen_4mom->Pt() < ptMax)
-					{
-						if( !InAcc(mupl_Gen_4mom->Pt(), mupl_Gen_4mom->Eta(), MupTCut) ) continue;
-						if( !InAcc(mumi_Gen_4mom->Pt(), mumi_Gen_4mom->Eta(), MupTCut) ) continue;
-
-						new( (*DMset.Vec_trg_Gen)[NtrgGen] )TLorentzVector(*Up_Gen_4mom);
-						NtrgGen++;
-						is_inMassGen = true;
-					}
-				}
-//}}}
-
-//Get associator vector{{{
-				if(is_inMassGen)
-				{
-					for(Int_t itrk = 0; itrk < Gen_trk_size; itrk++)
-					{
-						Trk_Gen_4mom = (TLorentzVector*) Gen_trk_4mom->At(itrk);
-						TVector3 Trk_vector;
-
-						if(Trk_Gen_4mom->Eta() <= 2.4 && Trk_Gen_4mom->Eta() >= -2.4 && Trk_Gen_4mom->Pt() >= TrkptMin && Trk_Gen_4mom->Pt() < TrkptMax && Trk_Gen_4mom->Pt() >= 0.3)
-						{
-							new( (*DMset.Vec_ass_Gen)[NassGen] )TLorentzVector(*Trk_Gen_4mom);
-							NassGen++;
-						}
-					}
-				}
-//}}}
-			}
+			vz = zVtx;
 
 			if( (HLTriggers&1)!=1 ) continue;
 
@@ -364,26 +318,14 @@ void SortPbp2(const bool isMC = false, const Int_t multMin = 0, const Int_t mult
 						NassReco++;
 					}
 				}
-				vz = zVtx;
 			}
 //}}}
 		}
-		if(isMC)
-		{
-			if( is_inMassGen && (NassGen != 0) ) 
-			{
-				DMset.Ntrg_Gen = NtrgGen;
-				DMset.Nass_Gen = NassGen;
-			}
-		}
 		if( is_inMassReco && (NassReco != 0) )
 		{
-			DMset.zVtx = vz;
 			DMset.Ntrg_Reco = NtrgReco;
 			DMset.Nass_Reco = NassReco;
-		}
-		if( (is_inMassGen && (NassGen != 0)) || (is_inMassReco && (NassReco != 0)) )
-		{
+			DMset.zVtx = vz;
 			DMset.mult = Ntracks;
 			tout->Fill();
 		}
