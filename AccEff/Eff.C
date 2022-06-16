@@ -27,7 +27,7 @@ using namespace RooFit;
 
 bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t isRW = true, const Bool_t isTnP = true)
+void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t isRW = true, const Int_t isTnP = 0)
 {
 	SetStyle();
 
@@ -42,9 +42,47 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	else if(MupT == "3") MupTCut = 3.0;
 	else if(MupT == "3p5") MupTCut = 3.5;
 	else if(MupT == "4") MupTCut = 4.0;
+	else if(MupT == "10") MupTCut = 10.0;
 	else
 	{
 		cout << "There is no such muon pT cut value" << endl;
+		return;
+	}
+	Int_t TnPidx = 0;
+	TString TnPs;
+	if(isTnP == 0)
+	{
+		TnPidx = 0;
+		TnPs = "w";
+	}
+	else if(isTnP == 1)
+	{
+		TnPidx = -11;
+		TnPs = TnPs = "statup";
+	}
+	else if(isTnP == 2)
+	{
+		TnPidx = -12;
+		TnPs = "statdw";
+	}
+	else if(isTnP == 3)
+	{
+		TnPidx = -13;
+		TnPs = "systup";
+	}
+	else if(isTnP == 4)
+	{
+		TnPidx = -14;
+		TnPs = "systdw";
+	}
+	else if(isTnP == 5)
+	{
+		TnPidx = 0;
+		TnPs = "wo";
+	}
+	else
+	{
+		cout << "There is no such TnP index" << endl;
 		return;
 	}
 //}}}
@@ -309,23 +347,24 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 			Double_t mumi_trk_tnp = 1.;
 			Double_t mumi_trg_tnp = 1.;
 
-			mupl_muid_tnp = tnp_weight_muid_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 0);
-			mupl_trk_tnp = tnp_weight_trkM_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 0);
-			mupl_trg_tnp = tnp_weight_trg_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), 0);
-			mumi_muid_tnp = tnp_weight_muid_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 0);
-			mumi_trk_tnp = tnp_weight_trkM_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 0);
-			mumi_trg_tnp = tnp_weight_trg_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), 0);
+			mupl_muid_tnp = tnp_weight_muid_tm_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), TnPidx);
+			mupl_trk_tnp = tnp_weight_trkM_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), TnPidx);
+			mupl_trg_tnp = tnp_weight_trg_ppb(mupl_Reco_4mom->Pt(), mupl_Reco_4mom->Eta(), TnPidx);
+			mumi_muid_tnp = tnp_weight_muid_tm_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), TnPidx);
+			mumi_trk_tnp = tnp_weight_trkM_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), TnPidx);
+			mumi_trg_tnp = tnp_weight_trg_ppb(mumi_Reco_4mom->Pt(), mumi_Reco_4mom->Eta(), TnPidx);
 
 			Double_t mupl_tnp = mupl_muid_tnp*mupl_trk_tnp*mupl_trg_tnp;
 			Double_t mumi_tnp = mumi_muid_tnp*mumi_trk_tnp*mumi_trg_tnp;
 
-			hyNum_tot->Fill(Up_Reco_4mom->Rapidity(), reweight*mupl_tnp*mumi_trg_tnp);
-			hptNum_tot->Fill(Up_Reco_4mom->Pt(), reweight*mupl_tnp*mumi_trg_tnp);
+			if(ievt < Nevtcut) hyNum_tot->Fill(Up_Reco_4mom->Rapidity(), reweight*mupl_tnp*mumi_tnp);
+			else hyNum_tot->Fill(-1*Up_Reco_4mom->Rapidity(), reweight*mupl_tnp*mumi_tnp);
+			hptNum_tot->Fill(Up_Reco_4mom->Pt(), reweight*mupl_tnp*mumi_tnp);
 
 			for(Int_t iy = 0; iy < Ny-1; iy++)
 			{
 				if(fabs(Up_Reco_4mom->Rapidity()) > ybins[iy] && fabs(Up_Reco_4mom->Rapidity()) <= ybins[iy+1])
-				hNum[iy]->Fill(Up_Reco_4mom->Pt(), reweight*mupl_tnp*mumi_trg_tnp);
+				hNum[iy]->Fill(Up_Reco_4mom->Pt(), reweight*mupl_tnp*mumi_tnp);
 			}
 		}
 //}}}
@@ -338,22 +377,22 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	cyDen_tot->cd();
 	hyDen_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cyDen_tot->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_yintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
+	cyDen_tot->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_yintgr_RW%o_TnP%s_MupT%s.pdf", Generation, isRW, TnPs.Data(), MupT.Data()));
 
 	cptDen_tot->cd();
 	hptDen_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cptDen_tot->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_ptintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
+	cptDen_tot->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_ptintgr_RW%o_TnP%s_MupT%s.pdf", Generation, isRW, TnPs.Data(), MupT.Data()));
 
 	cyNum_tot->cd();
 	hyNum_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cyNum_tot->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_yintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
+	cyNum_tot->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_yintgr_RW%o_TnP%s_MupT%s.pdf", Generation, isRW, TnPs.Data(), MupT.Data()));
 
 	cptNum_tot->cd();
 	hptNum_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cptNum_tot->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_ptintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
+	cptNum_tot->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_ptintgr_RW%o_TnP%s_MupT%s.pdf", Generation, isRW, TnPs.Data(), MupT.Data()));
 
 	cyEff_tot->cd();
 	hyEff_tot = (TH1D*) hyNum_tot->Clone(Form("hyEff_tot"));
@@ -363,7 +402,7 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	hyEff_tot->SetMinimum(0.0);
 	hyEff_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cyEff_tot->SaveAs(Form("Plots/Eff_Up%dS_yintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
+	cyEff_tot->SaveAs(Form("Plots/Eff_Up%dS_yintgr_RW%o_TnP%s_MupT%s.pdf", Generation, isRW, TnPs.Data(), MupT.Data()));
 
 	cptEff_tot->cd();
 	hptEff_tot = (TH1D*) hptNum_tot->Clone(Form("hptEff_tot"));
@@ -373,7 +412,7 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 	hptEff_tot->SetMinimum(0.0);
 	hptEff_tot->Draw("pe");
 	lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	cptEff_tot->SaveAs(Form("Plots/Eff_Up%dS_ptintgr_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
+	cptEff_tot->SaveAs(Form("Plots/Eff_Up%dS_ptintgr_RW%o_TnP%s_MupT%s.pdf", Generation, isRW, TnPs.Data(), MupT.Data()));
 
 	for(Int_t iy = 0; iy < Ny-1; iy++)
 	{
@@ -381,12 +420,12 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 		hDen[iy]->Draw("pe");
 		lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.6, 0.77, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
-		cDen[iy]->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP, MupT.Data()));
+		cDen[iy]->SaveAs(Form("Plots/Denominator_for_eff_Up%dS_etabin%d_RW%o_TnP%s_MupT%s.pdf", Generation, iy, isRW, TnPs.Data(), MupT.Data()));
 		cNum[iy]->cd();
 		hNum[iy]->Draw("pe");
 		lt1->DrawLatex(0.6, 0.84, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.6, 0.77, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
-		cNum[iy]->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP, MupT.Data()));
+		cNum[iy]->SaveAs(Form("Plots/Numerator_for_eff_Up%dS_etabin%d_RW%o_TnP%s_MupT%s.pdf", Generation, iy, isRW, TnPs.Data(), MupT.Data()));
 		cEff[iy]->cd();
 		hEff[iy] = (TH1D*) hNum[iy]->Clone(Form("hEff_%d", iy));
 		hEff[iy]->GetYaxis()->SetTitle("Efficiency");
@@ -396,10 +435,10 @@ void Eff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_t is
 		hEff[iy]->Draw("pe");
 		lt1->DrawLatex(0.6, 0.44, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
 		lt1->DrawLatex(0.6, 0.37, Form("%.1f < #eta #leq %.1f", ybins[iy], ybins[iy+1]));
-		cEff[iy]->SaveAs(Form("Plots/eff_Up%dS_etabin%d_RW%o_TnP%o_MupT%s.pdf", Generation, iy, isRW, isTnP, MupT.Data()));
+		cEff[iy]->SaveAs(Form("Plots/eff_Up%dS_etabin%d_RW%o_TnP%s_MupT%s.pdf", Generation, iy, isRW, TnPs.Data(), MupT.Data()));
 	}
 
-	TFile* fout = new TFile(Form("Plots/EffPlots_Upsilon_%dS_RW%o_TnP%o_MupT%s.root", Generation, isRW, isTnP, MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("Plots/EffPlots_Upsilon_%dS_RW%o_TnP%s_MupT%s.root", Generation, isRW, TnPs.Data(), MupT.Data()), "RECREATE");
 	fout->cd();
 	hyDen_tot->Write();
 	hyNum_tot->Write();
