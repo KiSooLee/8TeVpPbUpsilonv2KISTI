@@ -25,7 +25,7 @@ using namespace RooFit;
 
 bool InAcc(Double_t muPt, Double_t muEta, Double_t MupTCut);
 
-void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_t Weight = true, const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const TString MupT = "3p5")
+void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_t Weight = true, const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Int_t isTnP = 0, const Bool_t isSS = false, const TString MupT = "3p5")
 {
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -35,11 +35,13 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	else gSystem->mkdir(saveDIR.Data(), kTRUE);
 //}}}
 
+//define muon pt value{{{
 	TString MorD;
 	if(isMC) MorD = "MC";
 	else MorD = "Data";
-
-//define muon pt value{{{
+	TString SS;
+	if(isSS) SS = "SS";//same sign
+	else SS = "OS";//opposite sign
 	Double_t MupTCut;
 	if(MupT == "0") MupTCut = 0;
 	else if(MupT == "0p5") MupTCut = 0.5;
@@ -52,9 +54,22 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	else if(MupT == "3p4") MupTCut = 3.4;
 	else if(MupT == "3p5") MupTCut = 3.5;
 	else if(MupT == "4") MupTCut = 4.0;
+	else if(MupT == "10") MupTCut = 10.0;
 	else
 	{
 		cout << "There is no such muon pT cut value" << endl;
+		return;
+	}
+	TString TnPs;
+	if(isTnP == 0) TnPs = "w";
+	else if (isTnP == 1) TnPs = "statup";
+	else if (isTnP == 2) TnPs = "statdw";
+	else if (isTnP == 3) TnPs = "systup";
+	else if (isTnP == 4) TnPs = "systdw";
+	else if (isTnP == 5) TnPs = "wo";
+	else
+	{
+		cout << "There is no such TnP index" << endl;
 		return;
 	}
 //}}}
@@ -66,10 +81,14 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	//fname2 = "oniaTree_Pbp_20170504.root";//KUNPL
 	if(isMC)
 	{
-		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_20190613.root", Generation);//official non-embedded
-		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_20190613.root", Generation);//official non-embedded
-		//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_official_20201109.root", Generation);//official embedded
-		//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_official_20201109.root", Generation);//official embedded
+		//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_20190613.root", Generation);//official non-embedded
+		//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_20190613.root", Generation);//official non-embedded
+		//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_official_20201109.root", Generation);//official 1S embedded
+		//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_official_20201109.root", Generation);//official 1S embedded
+		//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_official_20210815.root", Generation);//official 2S embedded
+		//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_official_20210815.root", Generation);//official 2S embedded
+		fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_pPb_MC_%dS_official_20210818.root", Generation);//official 3S embedded
+		fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/oniaTree_Pbp_MC_%dS_official_20210818.root", Generation);//official 3S embedded
 	}
 	else
 	{
@@ -93,7 +112,7 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	if(Weight)
 	{
 		facc = new TFile(Form("AccEff/Plots/AccPlots_Upsilon_%dS_RW%o_MupT%s.root", Generation, isAccRW, MupT.Data()),"READ");
-		feff = new TFile(Form("AccEff/Plots/EffPlots_Upsilon_%dS_RW%o_TnP%o_MupT%s.root", Generation, isEffRW, isTnP, MupT.Data()),"READ");
+		feff = new TFile(Form("AccEff/Plots/EffPlots_Upsilon_%dS_RW%o_TnP%s_MupT%s.root", Generation, isEffRW, TnPs.Data(), MupT.Data()),"READ");
 		hAcc0016 = (TH1F*) facc->Get("hAcc0016");
 		hAcc1618 = (TH1F*) facc->Get("hAcc1618");
 		hAcc1821 = (TH1F*) facc->Get("hAcc1821");
@@ -109,11 +128,11 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	if(isMC)
 	{
 		//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
-		//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s_official.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
-		fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s_official_non-embedded.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
+		fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s_official.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
+		//fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_%dS_MupT%s_official_non-embedded.root", MorD.Data(), Generation, MupT.Data()), "RECREATE");
 	}
-	else if(!Weight) fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_noWeight_MupT%s.root", MorD.Data(), MupT.Data()), "RECREATE");
-	else fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_Acc%o_Eff%o_TnP%o_MupT%s.root", MorD.Data(), isAccRW, isEffRW, isTnP, MupT.Data()), "RECREATE");
+	else if(!Weight) fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_noWeight_%s_MupT%s.root", MorD.Data(), SS.Data(), MupT.Data()), "RECREATE");
+	else fout = new TFile(Form("SkimmedFiles/Skim_OniaTree_%s_PADoubleMuon_Acc%o_Eff%o_TnP%s_%s_MupT%s.root", MorD.Data(), isAccRW, isEffRW, TnPs.Data(), SS.Data(), MupT.Data()), "RECREATE");
 
 	const Int_t MaxQQ = 250;
 	const Int_t MaxTrk = 1500;
@@ -220,9 +239,10 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 	RooRealVar* Roomass = new RooRealVar("mass", "dimuon mass", 0, 100, "GeV/c^{2}");
 	RooRealVar* Roopt = new RooRealVar("pt", "p_{T} of dimuon", 0, 100, "GeV/c");
 	RooRealVar* Rooy = new RooRealVar("y", "rapidity of dimuon", -3., 3, "");
+	RooRealVar* Roophi = new RooRealVar("phi", "phi of dimuon", -3.15, 3.15, "");
 	RooRealVar* Roomult = new RooRealVar("mult", "track multiplicity of event", 0, 300, "");
 	RooRealVar* Rooweight = new RooRealVar("weight", "p_{T} weight", 0, 10000, "");
-	RooArgSet* argset = new RooArgSet(*Roomass, *Roopt, *Rooy, *Roomult, *Rooweight);
+	RooArgSet* argset = new RooArgSet(*Roomass, *Roopt, *Rooy, *Roophi, *Roomult, *Rooweight);
 	RooDataSet* dataset = new RooDataSet("dataset", "dataset", *argset);
 //}}}
 
@@ -308,14 +328,14 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 			if( Reco_QQ_VtxProb[iqq] < 0.01 ) continue;
 			hEvent->GetXaxis()->SetBinLabel(7,"Di-muons Vtx prob.");
 			hEvent->Fill(7);
-
-			if( Reco_QQ_sign[iqq] != 0) continue;
+			if( (!isSS && (Reco_QQ_sign[iqq] != 0)) || (isSS && (Reco_QQ_sign[iqq] == 0)) ) continue;
 			hEvent->GetXaxis()->SetBinLabel(8,"Di-muoons charge sign");
 			hEvent->Fill(8);
 //}}}
 
 			DMset.mass = Up_Reco_4mom->M();
 			DMset.pt = Up_Reco_4mom->Pt();
+			DMset.phi = Up_Reco_4mom->Phi();
 			DMset.mupl_pt = mupl_Reco_4mom->Pt();
 			DMset.mumi_pt = mumi_Reco_4mom->Pt();
 			DMset.mupl_eta = mupl_Reco_4mom->Eta();
@@ -356,6 +376,7 @@ void dataskim(const Bool_t isMC = false, const Int_t Generation = 1, const Bool_
 			Roomass->setVal( (double)DMset.mass );
 			Roopt->setVal( (double)DMset.pt );
 			Rooy->setVal( (double)DMset.y );
+			Roophi->setVal( (double)DMset.phi );
 			Roomult->setVal( (double)DMset.mult );
 			Rooweight->setVal( (double)DMset.weight );
 			dataset->add(*argset);
