@@ -65,6 +65,6 @@ void DrawEff(const Int_t Generation = 1, const TString MupT = "3p5", const Bool_
 	}
 	leg1->Draw();
 	lt1->DrawLatex(0.16, 0.28, Form("p_{T}^{#mu} > %.1f GeV/c", MupTCut));
-	lt1->DrawLatex(0.16, 0.20, Form("|#eta^{#mu}| > 2.4 GeV/c"));
+	lt1->DrawLatex(0.16, 0.20, Form("|#eta^{#mu}| < 2.4 GeV/c"));
 	c1->SaveAs(Form("Plots/Eff_comp_Upsilon_%dS_RW%o_TnP%o_MupT%s.pdf", Generation, isRW, isTnP, MupT.Data()));
 }
