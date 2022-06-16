@@ -34,7 +34,7 @@ using namespace std;
 using namespace RooFit;
 //}}}
 
-void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const TString version = "v1", const bool Weight = true, const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const bool SigSys = false, const bool BkgSys = false, const TString MupT = "4")
+void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const TString version = "v1", const bool Weight = true, const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Int_t isTnP = 0, const bool SigSys = false, const bool BkgSys = false, const TString MupT = "4")
 {
 //Make directory{{{
 	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
@@ -48,15 +48,6 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	if(dirpY) gSystem->FreeDirectory(dirpY);
 	else gSystem->mkdir(yieldDIR.Data(), kTRUE);
 //}}}
-
-	SetStyle();
-
-	const Double_t RangeLow = 8;
-	const Double_t RangeHigh = 14;
-	const Int_t Nmassbins = 120;
-	TFile* fout;
-	if(Weight) fout = new TFile(Form("Yield/Plot_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()), "RECREATE");
-	else fout = new TFile(Form("Yield/Plot_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_noWeight_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
 
 //define muon pt value{{{
 	Double_t MupTCut;
@@ -74,7 +65,28 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 		cout << "There is no such muon pT cut value" << endl;
 		return;
 	}
+	TString TnPs;
+	if (isTnP == 0) TnPs = "w";
+	else if (isTnP == 1) TnPs = "statup";
+	else if (isTnP == 2) TnPs = "statdw";
+	else if (isTnP == 3) TnPs = "systup";
+	else if (isTnP == 4) TnPs = "systdw";
+	else if (isTnP == 5) TnPs = "wo";
+	else
+	{
+		cout << "There is no such TnP index" << endl;
+		return;
+	}
 //}}}
+
+	SetStyle();
+
+	const Double_t RangeLow = 8;
+	const Double_t RangeHigh = 14;
+	const Int_t Nmassbins = 120;
+	TFile* fout;
+	if(Weight) fout = new TFile(Form("Yield/Plot_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()), "RECREATE");
+	else fout = new TFile(Form("Yield/Plot_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_noWeight_OS_MupT%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()), "RECREATE");
 
 //Define parameters{{{
 	Double_t sig11;
@@ -85,8 +97,8 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 
 //Get parameter{{{
 	ifstream in;
-	if(Weight) in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()));
-	else in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_noWeight_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()));
+	if(Weight) in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()));
+	else in.open(Form("Parameter/Parameters_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_noWeight_OS_MupT%s.txt", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), MupT.Data()));
 	if(in.is_open())
 	{
 		while(!in.eof())
@@ -109,8 +121,8 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 
 //Get data{{{
 	TFile* fin;
-	if(Weight) fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_Acc%o_Eff%o_TnP%o_MupT%s.root", isAccRW, isEffRW, isTnP, MupT.Data()), "READ");
-	else fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_noWeight_MupT%s.root", MupT.Data()), "READ");
+	if(Weight) fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_Acc%o_Eff%o_TnP%s_OS_MupT%s.root", isAccRW, isEffRW, TnPs.Data(), MupT.Data()), "READ");
+	else fin = new TFile(Form("Skim_OniaTree_Data_PADoubleMuon_noWeight_OS_MupT%s.root", MupT.Data()), "READ");
 	RooDataSet* dataset = (RooDataSet*) fin->Get("dataset");
 	RooWorkspace* ws = new RooWorkspace(Form("workspace"));
 	ws->import(*dataset);
@@ -367,8 +379,8 @@ void GetYieldDataNoStat(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	WriteMessage("Writing result is Done !!!");
 //}}}
 
-	if(Weight) c1->SaveAs(Form("MassDist/NoStatMassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()));
-	else c1->SaveAs(Form("MassDist/NoStatMassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_noWeight_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, MupT.Data()));
+	if(Weight) c1->SaveAs(Form("MassDist/NoStatMassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()));
+	else c1->SaveAs(Form("MassDist/NoStatMassDistribution_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_%dbin_noWeight_OS_MupT%s.pdf", multMin, multMax, (int)(ptMin*10), (int)(ptMax*10), (int)(rapMin*10), (int)(rapMax*10), version.Data(), Nmassbins, MupT.Data()));
 	
 	fout->cd();
 	massPlot->Write();
