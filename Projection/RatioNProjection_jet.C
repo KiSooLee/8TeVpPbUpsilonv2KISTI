@@ -25,7 +25,7 @@
 #include "../Headers/Upsilon.h"
 //}}}
 
-void RatioNProjection_jet(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString trkptversion = "v1", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const TString MupT = "4", const Bool_t isBkg = true)
+void RatioNProjection_jet(const Bool_t isTrk = false, const Int_t multMin = 0, const Int_t multMax = 300, const Double_t ptMin = 0, const Double_t ptMax = 30, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString version = "v1", const TString trkptversion = "v1", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Int_t isTnP = 0, const TString MupT = "4", const Bool_t isBkg = true)
 { 
 	SetStyle();
 
@@ -33,11 +33,37 @@ void RatioNProjection_jet(const Int_t multMin = 0, const Int_t multMax = 300, co
 	TString Direction[2] = {"Pbp", "pPb"};
 	const Int_t Naway = 4;
 	TString Away[Naway] = {"2", "1p5", "1", "short"};
+	TString Trk;
+	if(isTrk) Trk = "trk_";
+	else Trk = "";
+	TString TnPs;
+	if(isTnP == 0) TnPs = "w";
+	else if(isTnP == 1) TnPs = "statup";
+	else if(isTnP == 2) TnPs = "statdw";
+	else if(isTnP == 3) TnPs = "systup";
+	else if(isTnP == 4) TnPs = "systdw";
+	else if(isTnP == 5) TnPs = "wo";
+	else
+	{
+		cout << "There is no such TnP index" << endl;
+		return;
+	}
+	if(isTnP == 0) TnPs = "w";
+	else if(isTnP == 1) TnPs = "statup";
+	else if(isTnP == 2) TnPs = "statdw";
+	else if(isTnP == 3) TnPs = "systup";
+	else if(isTnP == 4) TnPs = "systdw";
+	else if(isTnP == 5) TnPs = "wo";
+	else
+	{
+		cout << "There is no such TnP index" << endl;
+		return;
+	}
 	TString SysDir;
-	if( isAccRW && isEffRW && isTnP ) SysDir = "Nominal";
-	else if( !isAccRW && isEffRW && isTnP) SysDir = "SysAcc";
-	else if( isAccRW && !isEffRW && isTnP) SysDir = "SysEff";
-	else if( isAccRW && isEffRW && !isTnP) SysDir = "SysTnP";
+	if( isAccRW && isEffRW && (isTnP == 0) ) SysDir = "Nominal";
+	else if( !isAccRW && isEffRW && (isTnP == 0) ) SysDir = "SysAcc";
+	else if( isAccRW && !isEffRW && (isTnP == 0) ) SysDir = "SysEff";
+	else if( isAccRW && isEffRW && (isTnP != 0) ) SysDir = "SysTnP";
 	else
 	{
 		cout << "There is no such option" << endl;
@@ -72,13 +98,23 @@ void RatioNProjection_jet(const Int_t multMin = 0, const Int_t multMax = 300, co
 	TH1D *hMixDeltaPhi_coarse[Naway];
 //}}}
 
-	TFile* fout = new TFile(Form("CorrDist/CorrFiles/%s/MupT%s/%s/dphi_distribution_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_MupT%s_%s.root", version.Data(), MupT.Data(), SysDir.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, MupT.Data(), PorB.Data()), "RECREATE");
+	TFile* fout;
+	if(isTrk) fout = new TFile(Form("CorrDist/CorrFiles/%s/MupT%s/%s/%sdphi_distribution_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_MupT%s.root", version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data()), "RECREATE");
+	else fout = new TFile(Form("CorrDist/CorrFiles/%s/MupT%s/%s/%sdphi_distribution_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_Acc%o_Eff%o_TnP%s_MupT%s_%s.root", version.Data(), MupT.Data(), SysDir.Data(), Trk.Data(), multMin, multMax, (int)ptMin, (int)ptMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, TnPs.Data(), MupT.Data(), PorB.Data()), "RECREATE");
 
 //Get files{{{
 	for(Int_t ipPb = 0; ipPb < 2; ipPb++)
 	{
-		samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_same_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
-		mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/deta-dphi_Reco_%s_distribution_mix_Data_Acc%o_Eff%o_TnP%o_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, isTnP, PorB.Data()), "READ");
+		if(isTrk)
+		{
+			samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_Reco_%s_distribution_same_Data.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), Direction[ipPb].Data()), "READ");
+			mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_Reco_%s_distribution_mix_Data.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), Direction[ipPb].Data()), "READ");
+		}
+		else
+		{
+			samePbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_Reco_%s_distribution_same_Data_Acc%o_Eff%o_TnP%s_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()), "READ");
+			mixPbp[ipPb] = new TFile(Form("../Correlation/%d-%d_%d-%d_%d-%d_%d-%d_%s_MupT%s_trk%s/%sdeta-dphi_Reco_%s_distribution_mix_Data_Acc%o_Eff%o_TnP%s_%s.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), trkptversion.Data(), Trk.Data(), Direction[ipPb].Data(), isAccRW, isEffRW, TnPs.Data(), PorB.Data()), "READ");
+		}
 	}
 //}}}
 
