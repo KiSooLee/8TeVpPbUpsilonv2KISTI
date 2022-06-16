@@ -41,10 +41,10 @@ void Correl_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, cons
 	TString fname1, fname2;
 	TChain* tin1_tmp = new TChain("UpsilonTree");
 	TChain* tin2_tmp = new TChain("UpsilonTree");
-	//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb1_PADoubleMuon_MC_29.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
-	//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb2_PADoubleMuon_MC_29.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
-	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb1_PADoubleMuon_MC_29_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
-	fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb2_PADoubleMuon_MC_29_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
+	fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb1_PADoubleMuon_MC.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
+	fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb2_PADoubleMuon_MC.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
+	//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb1_PADoubleMuon_MC_29_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
+	//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Gen_pPb2_PADoubleMuon_MC_29_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data());
 	tin1_tmp->Add(fname1.Data());
 	tin2_tmp->Add(fname2.Data());
 	TTree* tin1 = tin1_tmp->CloneTree();
@@ -162,7 +162,8 @@ void Correl_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, cons
 			if(ievt%100 == 0) cout << "1st Events: " << ievt << " / " << Nevt1 << " [" << Form("%.1f", ((double)ievt/(double)Nevt1)*100) << " %]" << endl;
 			tin1->GetEntry(ievt);
 
-			if(Ntrg_Gen1 <= 0 || zVtx1 == -99) continue;
+			//if(Ntrg_Gen1 <= 0 || zVtx1 == -99) continue;
+			if(Ntrg_Gen1 <= 0) continue;
 			for(Int_t itrg = 0; itrg < Ntrg_Gen1; itrg++)
 			{
 				vec_trg_Gen1 = (TLorentzVector*) Vec_trg_Gen1->At(itrg);
@@ -176,10 +177,75 @@ void Correl_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, cons
 					Int_t rNum = gRandom->Integer(Nevt2);
 					tin2->GetEntry(rNum);
 					if(zVtx2 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Gen2 <= 0)
+					//if(Nass_Gen2 <= 0)
 					{
 						irand--;
 						continue;
 					}
+
+//multiplicity restrict for high{{{
+					if(mult1 >= 70 && mult1 < 80)
+					{
+						if (mult2 < 70 || mult2 >= 80)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult1 >= 80 && mult1 < 90)
+					{
+						if (mult2 < 80 || mult2 >= 90)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult1 >= 90 && mult1 < 110)
+					{
+						if (mult2 < 90 || mult2 >= 110)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult1 >= 110 && mult1 < 150)
+					{
+						if (mult2 < 110 || mult2 >= 150)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult1 >= 150 && mult1 < 300)
+					{
+						if (mult2 < 150 || mult2 >= 300)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+
+/*
+//multiplicity restrict for low{{{
+					if(mult1 >= 0 && mult1 < 35)
+					{
+						if (mult2 < 0 || mult2 >= 35)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult1 >= 35 && mult1 < 50)
+					{
+						if (mult2 < 35 || mult2 >= 50)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+*/
 					for(Int_t itrk = 0; itrk < Nass_Gen2; itrk++)
 					{
 						vec_ass_Gen2 = (TLorentzVector*) Vec_ass_Gen2->At(itrk);
@@ -231,7 +297,8 @@ void Correl_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, cons
 			if(ievt%100 == 0) cout << "2nd Events: " << ievt << " / " << Nevt2 << " [" << Form("%.1f", ((double)ievt/(double)Nevt2)*100) << " %]" << endl;
 			tin2->GetEntry(ievt);
 
-			if(Ntrg_Gen2 <= 0 || zVtx2 == -99) continue;
+			//if(Ntrg_Gen2 <= 0 || zVtx2 == -99) continue;
+			if(Ntrg_Gen2 <= 0) continue;
 			for(Int_t itrg = 0; itrg < Ntrg_Gen2; itrg++)
 			{
 				vec_trg_Gen2 = (TLorentzVector*) Vec_trg_Gen2->At(itrg);
@@ -245,10 +312,75 @@ void Correl_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, cons
 					Int_t rNum = gRandom->Integer(Nevt1);
 					tin1->GetEntry(rNum);
 					if(zVtx1 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Gen1 <= 0)
+					//if(Nass_Gen1 <= 0)
 					{
 						irand--;
 						continue;
 					}
+
+//multiplicity restrict for high{{{
+					if(mult2 >= 70 && mult2 < 80)
+					{
+						if (mult1 < 70 || mult1 >= 80)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult2 >= 80 && mult2 < 90)
+					{
+						if (mult1 < 80 || mult1 >= 90)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult2 >= 90 && mult2 < 110)
+					{
+						if (mult1 < 90 || mult1 >= 110)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult2 >= 110 && mult2 < 150)
+					{
+						if (mult1 < 110 || mult1 >= 150)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult2 >= 150 && mult2 < 300)
+					{
+						if (mult1 < 150 || mult1 >= 300)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+
+/*
+//multiplicity restrict for low{{{
+					if(mult2 >= 0 && mult2 < 35)
+					{
+						if (mult1 < 0 || mult1 >= 35)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult2 >= 35 && mult2 < 50)
+					{
+						if (mult1 < 35 || mult1 >= 50)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+*/
 					for(Int_t itrk = 0; itrk < Nass_Gen1; itrk++)
 					{
 						vec_ass_Gen1 = (TLorentzVector*) Vec_ass_Gen1->At(itrk);

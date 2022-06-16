@@ -50,10 +50,10 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 	{
 		for(Int_t ibin = 10; ibin < 40; ibin++)
 		{
-			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
-			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
-			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
-			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d_nonemb.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
 			tin1_tmp->Add(fname1.Data());
 			tin2_tmp->Add(fname2.Data());
 		}
@@ -63,8 +63,10 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 		for(Int_t ibin = 0; ibin < 120; ibin++)//for analysis
 		//for(Int_t ibin = 20; ibin < 40; ibin++)//for multiplicity scan
 		{
-			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
-			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);
+			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
+			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
+			fname1 = Form("/cms/scratch/kilee/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
+			fname2 = Form("/cms/scratch/kilee/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
 			tin1_tmp->Add(fname1.Data());
 			tin2_tmp->Add(fname2.Data());
 		}
@@ -122,8 +124,8 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 //get variables{{{
 	Int_t mult1;
 	Int_t mult2;
-	Float_t zVtx1;
-	Float_t zVtx2;
+	//Float_t zVtx1;
+	//Float_t zVtx2;
 	Int_t Nass_Reco1;
 	Int_t Nass_Reco2;
 	TClonesArray* Vec_ass_Reco1;
@@ -133,20 +135,20 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 
 	TBranch* b_mult1;
 	TBranch* b_mult2;
-	TBranch* b_zVtx1;
-	TBranch* b_zVtx2;
+	//TBranch* b_zVtx1;
+	//TBranch* b_zVtx2;
 	TBranch* b_Nass_Reco1;
 	TBranch* b_Nass_Reco2;
 	TBranch* b_Vec_ass_Reco1;
 	TBranch* b_Vec_ass_Reco2;
 
 	tin1->SetBranchAddress("mult", &mult1, &b_mult1);
-	tin1->SetBranchAddress("zVtx", &zVtx1, &b_zVtx1);
+	//tin1->SetBranchAddress("zVtx", &zVtx1, &b_zVtx1);
 	tin1->SetBranchAddress("Nass_Reco", &Nass_Reco1, &b_Nass_Reco1);
 	tin1->SetBranchAddress("Vec_ass_Reco", &Vec_ass_Reco1, &b_Vec_ass_Reco1);
 
 	tin2->SetBranchAddress("mult", &mult2, &b_mult2);
-	tin2->SetBranchAddress("zVtx", &zVtx2, &b_zVtx2);
+	//tin2->SetBranchAddress("zVtx", &zVtx2, &b_zVtx2);
 	tin2->SetBranchAddress("Nass_Reco", &Nass_Reco2, &b_Nass_Reco2);
 	tin2->SetBranchAddress("Vec_ass_Reco", &Vec_ass_Reco2, &b_Vec_ass_Reco2);
 //}}}
@@ -168,7 +170,8 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 			if(ievt%100 == 0) cout << "1st Events: " << ievt << " / " << Nevt1 << " [" << Form("%.1f", ((double)ievt/(double)Nevt1)*100) << " %]" << endl;
 			tin1->GetEntry(ievt);
 
-			if(Nass_Reco1 <= 0 || zVtx1 == -99) continue;
+			//if(Nass_Reco1 <= 0 || zVtx1 == -99) continue;
+			if(Nass_Reco1 <= 0) continue;
 			for(Int_t itrk1 = 0; itrk1 < Nass_Reco1; itrk1++)
 			{
 				vec_trk_Reco1 = (TLorentzVector*) Vec_ass_Reco1->At(itrk1);
@@ -185,11 +188,80 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 				{
 					Int_t rNum = gRandom->Integer(Nevt2);
 					tin2->GetEntry(rNum);
-					if(zVtx2 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Reco2 <= 0)
+					//if(zVtx2 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Reco2 <= 0)
+					if(Nass_Reco2 <= 0)
 					{
 						irand--;
 						continue;
 					}
+/*
+//multiplicity restrict for high{{{
+					if(mult1 >= 70 && mult1 < 80)
+					{
+						if (mult2 < 70 || mult2 >= 80)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult1 >= 80 && mult1 < 90)
+					{
+						if (mult2 < 80 || mult2 >= 90)
+						{
+							irand--;
+							continue;
+						}
+					}
+					//else if(mult1 >= 90 && mult1 < 110)
+					else if(mult1 >= 90 && mult1 < 120)
+					{
+						//if (mult2 < 90 || mult2 >= 110)
+						if (mult2 < 90 || mult2 >= 120)
+						{
+							irand--;
+							continue;
+						}
+					}
+					//else if(mult1 >= 110 && mult1 < 150)
+					else if(mult1 >= 120 && mult1 < 150)
+					{
+						//if (mult2 < 110 || mult2 >= 150)
+						if (mult2 < 120 || mult2 >= 150)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult1 >= 150 && mult1 < 300)
+					{
+						if (mult2 < 150 || mult2 >= 300)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+*/
+
+//multiplicity restrict for low{{{
+					if(mult1 >= 0 && mult1 < 35)
+					{
+						if (mult2 < 0 || mult2 >= 35)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult1 >= 35 && mult1 < 50)
+					{
+						if (mult2 < 35 || mult2 >= 50)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+
 					for(Int_t itrk2 = 0; itrk2 < Nass_Reco2; itrk2++)
 					{
 						vec_trk_Reco2 = (TLorentzVector*) Vec_ass_Reco2->At(itrk2);
@@ -245,7 +317,8 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 			if(ievt%100 == 0) cout << "2nd Events: " << ievt << " / " << Nevt2 << " [" << Form("%.1f", ((double)ievt/(double)Nevt2)*100) << " %]" << endl;
 			tin2->GetEntry(ievt);
 
-			if(Nass_Reco2 <= 0 || zVtx2 == -99) continue;
+			//if(Nass_Reco2 <= 0 || zVtx2 == -99) continue;
+			if(Nass_Reco2 <= 0) continue;
 			for(Int_t itrk1 = 0; itrk1 < Nass_Reco2; itrk1++)
 			{
 				vec_trk_Reco2 = (TLorentzVector*) Vec_ass_Reco2->At(itrk1);
@@ -262,11 +335,81 @@ void Correl_trk_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, c
 				{
 					Int_t rNum = gRandom->Integer(Nevt1);
 					tin1->GetEntry(rNum);
-					if(zVtx1 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Reco1 <= 0)
+					//if(zVtx1 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Reco1 <= 0)
+					if(Nass_Reco1 <= 0)
 					{
 						irand--;
 						continue;
 					}
+
+/*
+//multiplicity restrict for high{{{
+					if(mult2 >= 70 && mult2 < 80)
+					{
+						if (mult1 < 70 || mult1 >= 80)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult2 >= 80 && mult2 < 90)
+					{
+						if (mult1 < 80 || mult1 >= 90)
+						{
+							irand--;
+							continue;
+						}
+					}
+					//else if(mult2 >= 90 && mult2 < 110)
+					else if(mult2 >= 90 && mult2 < 120)
+					{
+						//if (mult1 < 90 || mult1 >= 110)
+						if (mult1 < 90 || mult1 >= 120)
+						{
+							irand--;
+							continue;
+						}
+					}
+					//else if(mult2 >= 110 && mult2 < 150)
+					else if(mult2 >= 120 && mult2 < 150)
+					{
+						//if (mult1 < 110 || mult1 >= 150)
+						if (mult1 < 120 || mult1 >= 150)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult2 >= 150 && mult2 < 300)
+					{
+						if (mult1 < 150 || mult1 >= 300)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+*/
+
+//multiplicity restrict for low{{{
+					if(mult2 >= 0 && mult2 < 35)
+					{
+						if (mult1 < 0 || mult1 >= 35)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(mult2 >= 35 && mult2 < 50)
+					{
+						if (mult1 < 35 || mult1 >= 50)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+
 					for(Int_t itrk2 = 0; itrk2 < Nass_Reco1; itrk2++)
 					{
 						vec_trk_Reco1 = (TLorentzVector*) Vec_ass_Reco1->At(itrk2);
