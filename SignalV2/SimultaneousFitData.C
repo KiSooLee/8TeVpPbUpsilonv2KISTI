@@ -29,11 +29,12 @@
 //external function{{{
 
 //Chi2 calculation{{{
-Int_t iparmass[19] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-							16, 17, 18};
+Int_t iparmass[23] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+							16, 17, 18, 19, 20, 21, 22};
 //Int_t iparvn[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-Int_t iparvn[30] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-						16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
+Int_t iparvn[33] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+						16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+						30, 31, 32};
 
 struct GlobalChi2_width
 {
@@ -43,10 +44,10 @@ struct GlobalChi2_width
 
 	Double_t operator() (const double *par) const
 	{
-		Double_t p1[17];
-		for(Int_t i = 0; i < 17; i++) p1[i] = par[iparmass[i]];
-		Double_t p2[26];
-		for(Int_t i = 0; i < 26; i++) p2[i] = par[iparvn[i]];
+		Double_t p1[23];
+		for(Int_t i = 0; i < 22; i++) p1[i] = par[iparmass[i]];
+		Double_t p2[33];
+		for(Int_t i = 0; i < 32; i++) p2[i] = par[iparvn[i]];
 		return (*fChi2_1)(p1) + (*fChi2_2)(p2);
 	}
 	const ROOT::Math::IMultiGenFunction * fChi2_1;
@@ -553,6 +554,108 @@ Double_t expbkg(Double_t* x, Double_t* par)
 }
 //}}}
 
+//totalvn pol4 bkg Upsilon 123S{{{
+Double_t Totalvnpol4U123S(Double_t* x, Double_t* par)
+{
+//define basic variables{{{
+	Double_t N1 = par[0];
+	Double_t N2 = par[1];
+	Double_t N3 = par[2];
+	Double_t N4 = par[3];
+	Double_t mean = par[4];
+	Double_t sigma = par[5];
+	Double_t alpha = par[6];
+	Double_t n = par[7];
+	Double_t ratio = par[8];
+	Double_t frac = par[9];
+	Double_t Bkgmean = par[10];
+	Double_t Bkgsigma = par[11];
+	Double_t Bkgp0 = par[12];
+	Double_t c1s = par[13];
+	Double_t c2s = par[14];
+	Double_t c3s = par[15];
+	Double_t c1 = par[16];
+	Double_t c2 = par[17];
+	Double_t c3 = par[18];
+	Double_t c4 = par[19];
+	Double_t c5 = par[20];
+	Double_t mean2 = mean*U2S_mass/U1S_mass;
+	Double_t mean3 = mean*U3S_mass/U1S_mass;
+	Double_t sigma1S_2 = sigma*ratio;
+	Double_t sigma2S_1 = sigma*U2S_mass/U1S_mass;
+	Double_t sigma2S_2 = sigma*ratio*U2S_mass/U1S_mass;
+	Double_t sigma3S_1 = sigma*U3S_mass/U1S_mass;
+	Double_t sigma3S_2 = sigma*ratio*U3S_mass/U1S_mass;
+//}}}
+
+	//t2 > t1
+	Double_t U1S_t1 = (x[0]-mean)/sigma;
+	Double_t U1S_t2 = (x[0]-mean)/sigma1S_2;
+	Double_t U2S_t1 = (x[0]-mean2)/sigma2S_1;
+	Double_t U2S_t2 = (x[0]-mean2)/sigma2S_2;
+	Double_t U3S_t1 = (x[0]-mean3)/sigma3S_1;
+	Double_t U3S_t2 = (x[0]-mean3)/sigma3S_2;
+	if (alpha < 0)
+	{
+		U1S_t1 = -U1S_t1;
+		U1S_t2 = -U1S_t2;
+		U2S_t1 = -U2S_t1;
+		U2S_t2 = -U2S_t2;
+		U3S_t1 = -U3S_t1;
+		U3S_t2 = -U3S_t2;
+	}
+
+	Double_t absAlpha = fabs((Double_t)alpha);
+	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+	Double_t b = n/absAlpha - absAlpha;
+	Double_t NC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2.);
+	Double_t ND = TMath::Sqrt(TMath::Pi()/2.)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+	Double_t N1s_1 = 1./(sigma*(NC+ND));
+	Double_t N1s_2 = 1./(sigma1S_2*(NC+ND));
+	Double_t N2s_1 = 1./(sigma2S_1*(NC+ND));
+	Double_t N2s_2 = 1./(sigma2S_2*(NC+ND));
+	Double_t N3s_1 = 1./(sigma3S_1*(NC+ND));
+	Double_t N3s_2 = 1./(sigma3S_2*(NC+ND));
+
+//set value for cases{{{
+	Double_t U1S_t1_val;
+	Double_t U1S_t2_val;
+	Double_t U2S_t1_val;
+	Double_t U2S_t2_val;
+	Double_t U3S_t1_val;
+	Double_t U3S_t2_val;
+
+	if(U1S_t1 >= -absAlpha) U1S_t1_val = exp(-U1S_t1*U1S_t1/2.);
+	else U1S_t1_val = a/TMath::Power(b - U1S_t1, n);
+	if(U1S_t2 >= -absAlpha) U1S_t2_val = exp(-U1S_t2*U1S_t2/2.);
+	else U1S_t2_val = a/TMath::Power(b - U1S_t2, n);
+	if(U2S_t1 >= -absAlpha) U2S_t1_val = exp(-U2S_t1*U2S_t1/2.);
+	else U2S_t1_val = a/TMath::Power(b - U2S_t1, n);
+	if(U2S_t2 >= -absAlpha) U2S_t2_val = exp(-U2S_t2*U2S_t2/2.);
+	else U2S_t2_val = a/TMath::Power(b - U2S_t2, n);
+	if(U3S_t1 >= -absAlpha) U3S_t1_val = exp(-U3S_t1*U3S_t1/2.);
+	else U3S_t1_val = a/TMath::Power(b - U3S_t1, n);
+	if(U3S_t2 >= -absAlpha) U3S_t2_val = exp(-U3S_t2*U3S_t2/2.);
+	else U3S_t2_val = a/TMath::Power(b - U3S_t2, n);
+//}}}
+
+//final upsilon value{{{
+	Double_t Sigtot = N1*( frac*N1s_1*U1S_t1_val + (1-frac)*N1s_2*U1S_t2_val )
+						+ N2*( frac*N2s_1*U2S_t1_val + (1-frac)*N2s_2*U2S_t2_val )
+						+ N3*( frac*N3s_1*U3S_t1_val + (1-frac)*N3s_2*U3S_t2_val );
+	Double_t Sig1S = N1*( frac*N1s_1*U1S_t1_val + (1-frac)*N1s_2*U1S_t2_val );
+	Double_t Sig2S = N2*( frac*N2s_1*U2S_t1_val + (1-frac)*N2s_2*U2S_t2_val );
+	Double_t Sig3S = N3*( frac*N3s_1*U3S_t1_val + (1-frac)*N3s_2*U3S_t2_val );
+	Double_t Bkgtot = N4*( TMath::Exp(-x[0]/Bkgp0)*(TMath::Erf((x[0]-Bkgmean)/(TMath::Sqrt(2)*Bkgsigma))+1)/2. );
+//}}}
+
+//return value{{{
+	return c1s*( Sig1S/(Sigtot+Bkgtot) ) + c2s*( Sig2S/(Sigtot+Bkgtot) ) + c3s*( Sig3S/(Sigtot+Bkgtot) )
+			+ ( c1*x[0]*x[0]*x[0]*x[0]+c2*x[0]*x[0]*x[0]+c3*x[0]*x[0]+c4*x[0]+c5 )*(1-Sigtot/(Sigtot+Bkgtot));
+//}}}
+}
+//}}}
+
 //totalvn pol3 bkg Upsilon 123S{{{
 Double_t Totalvnpol3U123S(Double_t* x, Double_t* par)
 {
@@ -654,18 +757,6 @@ Double_t Totalvnpol3U123S(Double_t* x, Double_t* par)
 }
 //}}}
 
-//pol3 bkg{{{
-Double_t pol3bkg(Double_t* x, Double_t* par)
-{
-	Double_t c1 = par[0];
-	Double_t c2 = par[1];
-	Double_t c3 = par[2];
-	Double_t c4 = par[3];
-
-	return c1*x[0]*x[0]*x[0]+c2*x[0]*x[0]+c3*x[0]+c4;
-}
-//}}}
-
 //totalvn pol2 bkg Upsilon 123S{{{
 Double_t Totalvnpol2U123S(Double_t* x, Double_t* par)
 {
@@ -764,6 +855,105 @@ Double_t Totalvnpol2U123S(Double_t* x, Double_t* par)
 			+ ( c1*x[0]*x[0]+c2*x[0]+c3 )*( 1-Sigtot/(Sigtot+Bkgtot) );
 //}}}
 
+}
+//}}}
+
+//totalvn pol1 bkg Upsilon 123S{{{
+Double_t Totalvnpol1U123S(Double_t* x, Double_t* par)
+{
+//define basic variables{{{
+	Double_t N1 = par[0];
+	Double_t N2 = par[1];
+	Double_t N3 = par[2];
+	Double_t N4 = par[3];
+	Double_t mean = par[4];
+	Double_t sigma = par[5];
+	Double_t alpha = par[6];
+	Double_t n = par[7];
+	Double_t ratio = par[8];
+	Double_t frac = par[9];
+	Double_t Bkgmean = par[10];
+	Double_t Bkgsigma = par[11];
+	Double_t Bkgp0 = par[12];
+	Double_t c1s = par[13];
+	Double_t c2s = par[14];
+	Double_t c3s = par[15];
+	Double_t c1 = par[16];
+	Double_t c2 = par[17];
+	Double_t mean2 = mean*U2S_mass/U1S_mass;
+	Double_t mean3 = mean*U3S_mass/U1S_mass;
+	Double_t sigma1S_2 = sigma*ratio;
+	Double_t sigma2S_1 = sigma*U2S_mass/U1S_mass;
+	Double_t sigma2S_2 = sigma*ratio*U2S_mass/U1S_mass;
+	Double_t sigma3S_1 = sigma*U3S_mass/U1S_mass;
+	Double_t sigma3S_2 = sigma*ratio*U3S_mass/U1S_mass;
+//}}}
+
+	//t2 > t1
+	Double_t U1S_t1 = (x[0]-mean)/sigma;
+	Double_t U1S_t2 = (x[0]-mean)/sigma1S_2;
+	Double_t U2S_t1 = (x[0]-mean2)/sigma2S_1;
+	Double_t U2S_t2 = (x[0]-mean2)/sigma2S_2;
+	Double_t U3S_t1 = (x[0]-mean3)/sigma3S_1;
+	Double_t U3S_t2 = (x[0]-mean3)/sigma3S_2;
+	if (alpha < 0)
+	{
+		U1S_t1 = -U1S_t1;
+		U1S_t2 = -U1S_t2;
+		U2S_t1 = -U2S_t1;
+		U2S_t2 = -U2S_t2;
+		U3S_t1 = -U3S_t1;
+		U3S_t2 = -U3S_t2;
+	}
+
+	Double_t absAlpha = fabs((Double_t)alpha);
+	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
+	Double_t b = n/absAlpha - absAlpha;
+	Double_t NC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2.);
+	Double_t ND = TMath::Sqrt(TMath::Pi()/2.)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
+	Double_t N1s_1 = 1./(sigma*(NC+ND));
+	Double_t N1s_2 = 1./(sigma1S_2*(NC+ND));
+	Double_t N2s_1 = 1./(sigma2S_1*(NC+ND));
+	Double_t N2s_2 = 1./(sigma2S_2*(NC+ND));
+	Double_t N3s_1 = 1./(sigma3S_1*(NC+ND));
+	Double_t N3s_2 = 1./(sigma3S_2*(NC+ND));
+
+//set value for cases{{{
+	Double_t U1S_t1_val;
+	Double_t U1S_t2_val;
+	Double_t U2S_t1_val;
+	Double_t U2S_t2_val;
+	Double_t U3S_t1_val;
+	Double_t U3S_t2_val;
+
+	if(U1S_t1 >= -absAlpha) U1S_t1_val = exp(-U1S_t1*U1S_t1/2.);
+	else U1S_t1_val = a/TMath::Power(b - U1S_t1, n);
+	if(U1S_t2 >= -absAlpha) U1S_t2_val = exp(-U1S_t2*U1S_t2/2.);
+	else U1S_t2_val = a/TMath::Power(b - U1S_t2, n);
+	if(U2S_t1 >= -absAlpha) U2S_t1_val = exp(-U2S_t1*U2S_t1/2.);
+	else U2S_t1_val = a/TMath::Power(b - U2S_t1, n);
+	if(U2S_t2 >= -absAlpha) U2S_t2_val = exp(-U2S_t2*U2S_t2/2.);
+	else U2S_t2_val = a/TMath::Power(b - U2S_t2, n);
+	if(U3S_t1 >= -absAlpha) U3S_t1_val = exp(-U3S_t1*U3S_t1/2.);
+	else U3S_t1_val = a/TMath::Power(b - U3S_t1, n);
+	if(U3S_t2 >= -absAlpha) U3S_t2_val = exp(-U3S_t2*U3S_t2/2.);
+	else U3S_t2_val = a/TMath::Power(b - U3S_t2, n);
+//}}}
+
+//final upsilon value{{{
+	Double_t Sigtot = N1*( frac*N1s_1*U1S_t1_val + (1-frac)*N1s_2*U1S_t2_val )
+						+ N2*( frac*N2s_1*U2S_t1_val + (1-frac)*N2s_2*U2S_t2_val )
+						+ N3*( frac*N3s_1*U3S_t1_val + (1-frac)*N3s_2*U3S_t2_val );
+	Double_t Sig1S = N1*( frac*N1s_1*U1S_t1_val + (1-frac)*N1s_2*U1S_t2_val );
+	Double_t Sig2S = N2*( frac*N2s_1*U2S_t1_val + (1-frac)*N2s_2*U2S_t2_val );
+	Double_t Sig3S = N3*( frac*N3s_1*U3S_t1_val + (1-frac)*N3s_2*U3S_t2_val );
+	Double_t Bkgtot = N4*( TMath::Exp(-x[0]/Bkgp0)*(TMath::Erf((x[0]-Bkgmean)/(TMath::Sqrt(2)*Bkgsigma))+1)/2. );
+//}}}
+
+//return value{{{
+	return c1s*( Sig1S/(Sigtot+Bkgtot) ) + c2s*( Sig2S/(Sigtot+Bkgtot) ) + c3s*( Sig3S/(Sigtot+Bkgtot) )
+			+ ( c1*x[0]+c2 )*(1-Sigtot/(Sigtot+Bkgtot));
+//}}}
 }
 //}}}
 
@@ -969,6 +1159,31 @@ Double_t TotalChebvnpol2U123S(Double_t* x, Double_t* par)
 }
 //}}}
 
+//pol4 bkg{{{
+Double_t pol4bkg(Double_t* x, Double_t* par)
+{
+	Double_t c1 = par[0];
+	Double_t c2 = par[1];
+	Double_t c3 = par[2];
+	Double_t c4 = par[3];
+	Double_t c5 = par[4];
+
+	return c1*x[0]*x[0]*x[0]*x[0]+c2*x[0]*x[0]*x[0]+c3*x[0]*x[0]+c4*x[0]+c5;
+}
+//}}}
+
+//pol3 bkg{{{
+Double_t pol3bkg(Double_t* x, Double_t* par)
+{
+	Double_t c1 = par[0];
+	Double_t c2 = par[1];
+	Double_t c3 = par[2];
+	Double_t c4 = par[3];
+
+	return c1*x[0]*x[0]*x[0]+c2*x[0]*x[0]+c3*x[0]+c4;
+}
+//}}}
+
 //pol2 bkg{{{
 Double_t pol2bkg(Double_t* x, Double_t* par)
 {
@@ -977,105 +1192,6 @@ Double_t pol2bkg(Double_t* x, Double_t* par)
 	Double_t c3 = par[2];
 
 	return c1*x[0]*x[0]+c2*x[0]+c3;
-}
-//}}}
-
-//totalvn pol1 bkg Upsilon 123S{{{
-Double_t Totalvnpol1U123S(Double_t* x, Double_t* par)
-{
-//define basic variables{{{
-	Double_t N1 = par[0];
-	Double_t N2 = par[1];
-	Double_t N3 = par[2];
-	Double_t N4 = par[3];
-	Double_t mean = par[4];
-	Double_t sigma = par[5];
-	Double_t alpha = par[6];
-	Double_t n = par[7];
-	Double_t ratio = par[8];
-	Double_t frac = par[9];
-	Double_t Bkgmean = par[10];
-	Double_t Bkgsigma = par[11];
-	Double_t Bkgp0 = par[12];
-	Double_t c1s = par[13];
-	Double_t c2s = par[14];
-	Double_t c3s = par[15];
-	Double_t c1 = par[16];
-	Double_t c2 = par[17];
-	Double_t mean2 = mean*U2S_mass/U1S_mass;
-	Double_t mean3 = mean*U3S_mass/U1S_mass;
-	Double_t sigma1S_2 = sigma*ratio;
-	Double_t sigma2S_1 = sigma*U2S_mass/U1S_mass;
-	Double_t sigma2S_2 = sigma*ratio*U2S_mass/U1S_mass;
-	Double_t sigma3S_1 = sigma*U3S_mass/U1S_mass;
-	Double_t sigma3S_2 = sigma*ratio*U3S_mass/U1S_mass;
-//}}}
-
-	//t2 > t1
-	Double_t U1S_t1 = (x[0]-mean)/sigma;
-	Double_t U1S_t2 = (x[0]-mean)/sigma1S_2;
-	Double_t U2S_t1 = (x[0]-mean2)/sigma2S_1;
-	Double_t U2S_t2 = (x[0]-mean2)/sigma2S_2;
-	Double_t U3S_t1 = (x[0]-mean3)/sigma3S_1;
-	Double_t U3S_t2 = (x[0]-mean3)/sigma3S_2;
-	if (alpha < 0)
-	{
-		U1S_t1 = -U1S_t1;
-		U1S_t2 = -U1S_t2;
-		U2S_t1 = -U2S_t1;
-		U2S_t2 = -U2S_t2;
-		U3S_t1 = -U3S_t1;
-		U3S_t2 = -U3S_t2;
-	}
-
-	Double_t absAlpha = fabs((Double_t)alpha);
-	Double_t a = TMath::Power(n/absAlpha,n)*exp(-absAlpha*absAlpha/2.);
-	Double_t b = n/absAlpha - absAlpha;
-	Double_t NC = n/absAlpha*1/(n-1)*exp(-absAlpha*absAlpha/2.);
-	Double_t ND = TMath::Sqrt(TMath::Pi()/2.)*(1+TMath::Erf(absAlpha/TMath::Sqrt(2)));
-	Double_t N1s_1 = 1./(sigma*(NC+ND));
-	Double_t N1s_2 = 1./(sigma1S_2*(NC+ND));
-	Double_t N2s_1 = 1./(sigma2S_1*(NC+ND));
-	Double_t N2s_2 = 1./(sigma2S_2*(NC+ND));
-	Double_t N3s_1 = 1./(sigma3S_1*(NC+ND));
-	Double_t N3s_2 = 1./(sigma3S_2*(NC+ND));
-
-//set value for cases{{{
-	Double_t U1S_t1_val;
-	Double_t U1S_t2_val;
-	Double_t U2S_t1_val;
-	Double_t U2S_t2_val;
-	Double_t U3S_t1_val;
-	Double_t U3S_t2_val;
-
-	if(U1S_t1 >= -absAlpha) U1S_t1_val = exp(-U1S_t1*U1S_t1/2.);
-	else U1S_t1_val = a/TMath::Power(b - U1S_t1, n);
-	if(U1S_t2 >= -absAlpha) U1S_t2_val = exp(-U1S_t2*U1S_t2/2.);
-	else U1S_t2_val = a/TMath::Power(b - U1S_t2, n);
-	if(U2S_t1 >= -absAlpha) U2S_t1_val = exp(-U2S_t1*U2S_t1/2.);
-	else U2S_t1_val = a/TMath::Power(b - U2S_t1, n);
-	if(U2S_t2 >= -absAlpha) U2S_t2_val = exp(-U2S_t2*U2S_t2/2.);
-	else U2S_t2_val = a/TMath::Power(b - U2S_t2, n);
-	if(U3S_t1 >= -absAlpha) U3S_t1_val = exp(-U3S_t1*U3S_t1/2.);
-	else U3S_t1_val = a/TMath::Power(b - U3S_t1, n);
-	if(U3S_t2 >= -absAlpha) U3S_t2_val = exp(-U3S_t2*U3S_t2/2.);
-	else U3S_t2_val = a/TMath::Power(b - U3S_t2, n);
-//}}}
-
-//final upsilon value{{{
-	Double_t Sigtot = N1*( frac*N1s_1*U1S_t1_val + (1-frac)*N1s_2*U1S_t2_val )
-						+ N2*( frac*N2s_1*U2S_t1_val + (1-frac)*N2s_2*U2S_t2_val )
-						+ N3*( frac*N3s_1*U3S_t1_val + (1-frac)*N3s_2*U3S_t2_val );
-	Double_t Sig1S = N1*( frac*N1s_1*U1S_t1_val + (1-frac)*N1s_2*U1S_t2_val );
-	Double_t Sig2S = N2*( frac*N2s_1*U2S_t1_val + (1-frac)*N2s_2*U2S_t2_val );
-	Double_t Sig3S = N3*( frac*N3s_1*U3S_t1_val + (1-frac)*N3s_2*U3S_t2_val );
-	Double_t Bkgtot = N4*( TMath::Exp(-x[0]/Bkgp0)*(TMath::Erf((x[0]-Bkgmean)/(TMath::Sqrt(2)*Bkgsigma))+1)/2. );
-//}}}
-
-//return value{{{
-	return c1s*( Sig1S/(Sigtot+Bkgtot) ) + c2s*( Sig2S/(Sigtot+Bkgtot) ) + c3s*( Sig3S/(Sigtot+Bkgtot) )
-			+ ( c1*x[0]+c2 )*(1-Sigtot/(Sigtot+Bkgtot));
-//}}}
 }
 //}}}
 
@@ -1091,7 +1207,7 @@ Double_t pol1bkg(Double_t* x, Double_t* par)
 
 //}}}
 
-void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Int_t maxF = 2, const Int_t bkgN = 0, const Int_t AwayN = 1, const Bool_t isfine = true, const TString version = "v13", const TString MupT = "4", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Bool_t isTnP = true, const Bool_t SigSys = false, const Bool_t BkgSys = false)
+void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Int_t maxF = 2, const Int_t bkgN = 0, const Int_t AwayN = 1, const Bool_t isfine = true, const TString version = "v13", const TString MupT = "4", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Int_t isTnP = true, const Bool_t SigSys = false, const Bool_t BkgSys = false)
 {
 	SetStyle();
 	const Double_t RangeMin = 8.;
@@ -1099,17 +1215,36 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 	//high-multiplicity
 	//const Double_t histMin = -0.02;
 	//const Double_t histMax = 0.04;
+	const Double_t histMin = -0.0149;
+	const Double_t histMax = 0.0149;
 	//low-multiplicity
-	const Double_t histMin = -0.02;
-	const Double_t histMax = 0.1;
+	//const Double_t histMin = -0.02;
+	//const Double_t histMax = 0.1;
+	unsigned int nfpxl = 1500;
 
 //set fitting condition name{{{
+	Double_t MupTCut;
+	if(MupT == "0") MupTCut = 0;
+	else if(MupT == "0p5") MupTCut = 0.5;
+	else if(MupT == "1") MupTCut = 1.0;
+	else if(MupT == "1p5") MupTCut = 1.5;
+	else if(MupT == "2") MupTCut = 2.0;
+	else if(MupT == "2p5") MupTCut = 2.5;
+	else if(MupT == "3") MupTCut = 3.0;
+	else if(MupT == "3p5") MupTCut = 3.5;
+	else if(MupT == "4") MupTCut = 4.0;
+	else
+	{
+		cout << "There is no such muon pT cut value" << endl;
+		return;
+	}
 	TString bkgF;
 	if(bkgN == 0) bkgF = "exp";
 	else if(bkgN == 1) bkgF = "pol1";
 	else if(bkgN == 2) bkgF = "pol2";
 	else if(bkgN == 3) bkgF = "pol3";
-	else if(bkgN == 4) bkgF = "erf";
+	else if(bkgN == 4) bkgF = "pol4";
+	else if(bkgN == 5) bkgF = "erf";
 	else
 	{
 		cout << "out of background list" << endl;
@@ -1135,6 +1270,18 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		cout << "there is no such Furier function" << endl;
 		return;
 	}
+	TString TnPs;
+	if(isTnP == 0) TnPs = "w";
+	else if(isTnP == 1) TnPs = "statup";
+	else if(isTnP == 2) TnPs = "statdw";
+	else if(isTnP == 3) TnPs = "systup";
+	else if(isTnP == 4) TnPs = "systdw";
+	else if(isTnP == 5) TnPs = "wo";
+	else
+	{
+		cout << "There is no such TnP index" << endl;
+		return;
+	}
 //}}}
 
 //Make directory{{{
@@ -1151,26 +1298,8 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 	else gSystem->mkdir(sDIR.Data(), kTRUE);
 //}}}
 
-//define muon pt value{{{
-	Double_t MupTCut;
-	if(MupT == "0") MupTCut = 0;
-	else if(MupT == "0p5") MupTCut = 0.5;
-	else if(MupT == "1") MupTCut = 1.0;
-	else if(MupT == "1p5") MupTCut = 1.5;
-	else if(MupT == "2") MupTCut = 2.0;
-	else if(MupT == "2p5") MupTCut = 2.5;
-	else if(MupT == "3") MupTCut = 3.0;
-	else if(MupT == "3p5") MupTCut = 3.5;
-	else if(MupT == "4") MupTCut = 4.0;
-	else
-	{
-		cout << "There is no such muon pT cut value" << endl;
-		return;
-	}
-//}}}
-
 	TFile* fout;
-	fout = new TFile(Form("V2Dist/V2File/%s/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_%s_MupT%s%s.root", version.Data(), multMin, multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, bkgF.Data(), MupT.Data(), Ffit.Data()), "RECREATE");
+	fout = new TFile(Form("V2Dist/V2File/%s/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s%s.root", version.Data(), multMin, multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data(), Ffit.Data()), "RECREATE");
 	fout->cd();
 
 	TF1* fyieldtot[pt_narr-1];
@@ -1188,16 +1317,25 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 
 //Define canvas for yield and vn dist{{{
 	TCanvas* c1[pt_narr-1];
+	TPad* pad_mass[pt_narr-1];
+	TPad* pad_v2[pt_narr-1];
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
-		c1[ipt] = new TCanvas(Form("c1_%d", ipt), "", 0, 0, 1200, 600);
-		c1[ipt]->Divide(2, 1);
+		c1[ipt] = new TCanvas(Form("c1_%d", ipt), "", 0, 0, 600, 1000);
 		pt[ipt] = ptBinsArr[ipt] + (ptBinsArr[ipt+1]-ptBinsArr[ipt])/2;
+		pad_mass[ipt] = new TPad(Form("pad_mass_%d", ipt), Form("pad_mass_%d", ipt), 0, 0.5, 1, 1);
+		pad_mass[ipt]->SetRightMargin(0.03);
+		pad_mass[ipt]->SetLeftMargin(0.16);
+		pad_mass[ipt]->SetBottomMargin(0);
+		pad_v2[ipt] = new TPad(Form("pad_v2_%d", ipt), Form("pad_v2_%d", ipt), 0, 0, 1, 0.5);
+		pad_v2[ipt]->SetRightMargin(0.03);
+		pad_v2[ipt]->SetLeftMargin(0.16);
+		pad_v2[ipt]->SetTopMargin(0);
 	}
 	TH1D* hist = new TH1D("hist", "", 20, RangeMin, RangeMax);
 	FormTH1Marker(hist, 0, 0, 1.4);
-	hist->GetXaxis()->SetTitle("m_{#mu#mu} (GeV/c^{2})");
-	hist->GetYaxis()->SetTitle("v_{2}^{S+B}");
+	hist->GetXaxis()->SetTitle("m_{#mu+#mu-} (GeV/c^{2})");
+	hist->GetYaxis()->SetTitle("v_{2}^{Sig+Bkg}");
 	hist->SetMaximum(histMax);
 	hist->SetMinimum(histMin);
 //}}}
@@ -1205,13 +1343,21 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
 //Get yield distribution{{{
-		TFile* fyield = new TFile(Form("../SkimmedFiles/Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.root", multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()), "READ");
+		TFile* fyield = new TFile(Form("../SkimmedFiles/Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s.root", multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()), "READ");
 		TH1D* hyield = (TH1D*) fyield->Get(Form("hmass"));
-		hyield->GetXaxis()->SetTitle("m_{#mu#mu} (GeV/c^{2})");
+		hyield->GetXaxis()->SetTitle("m_{#mu+#mu-} (GeV/c^{2})");
 		hyield->GetYaxis()->SetTitle("Entries");
 		FormTH1Marker(hyield, 0, 0, 1.4);
 
-		c1[ipt]->cd(1);
+		c1[ipt]->cd();
+		pad_mass[ipt]->Draw();
+		pad_v2[ipt]->Draw();
+		pad_mass[ipt]->cd();
+		//hyield->GetYaxis()->SetLabelSize(0.050);
+		hyield->GetYaxis()->SetTitleOffset(1.29);
+		hyield->GetXaxis()->SetTitleSize(0.06);
+		hyield->GetYaxis()->SetTitleSize(0.065);
+		hyield->SetMinimum(0.1);
 		hyield->Draw();
 		cout << "mass hist: " << hyield << endl;
 //}}}
@@ -1227,7 +1373,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		Double_t var26, var27, var28, var29;
 
 		ifstream in1;
-		in1.open(Form("../SkimmedFiles/Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.txt", multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()));
+		in1.open(Form("../SkimmedFiles/Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s.txt", multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()));
 		if(in1.is_open())
 		{
 			if(BkgSys)
@@ -1267,7 +1413,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 
 		Double_t bpar1, bpar2, bpar3, bpar4, bpar5;
 		ifstream in2;
-		in2.open(Form("Parameter/v2_bkg_%s_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.txt", bkgF.Data(), multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()));
+		in2.open(Form("Parameter/v2_bkg_%s_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s.txt", bkgF.Data(), multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()));
 		if(in2.is_open())
 		{
 			in2 >> bpar1 >> bpar2 >> bpar3 >> bpar4 >> bpar5;
@@ -1279,12 +1425,12 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 
 //Get vn distribution{{{
 		TFile* fvn;
-		fvn = new TFile(Form("../ExtractV2/ProjDist/DistFiles/%s/MupT%s/v2_dist_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_Acc%o_Eff%o_TnP%o_MupT%s%s.root", version.Data(), MupT.Data(), multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, MupT.Data(), Ffit.Data()), "READ");
+		fvn = new TFile(Form("../ExtractV2/ProjDist/DistFiles/%s/MupT%s/v2_dist_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_Acc%o_Eff%o_TnP%s_OS_MupT%s%s.root", version.Data(), MupT.Data(), multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, TnPs.Data(), MupT.Data(), Ffit.Data()), "READ");
 
 		TGraphErrors* gvn;
 		if(isfine == true) gvn = (TGraphErrors*) fvn->Get(Form("gv2_Away%s_fine", Away.Data()));
 		else gvn = (TGraphErrors*) fvn->Get(Form("gv2_Away%s_coarse", Away.Data()));
-		c1[ipt]->cd(2);
+		//pad_v2[ipt]->cd();
 		cout << "v2 hist: " << gvn << endl;
 //		gvn->Draw();
 //}}}
@@ -1302,7 +1448,8 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 			else if(bkgN == 1) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol1U123S, RangeMin, RangeMax, 18);
 			else if(bkgN == 2) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol2U123S, RangeMin, RangeMax, 19);
 			else if(bkgN == 3) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol3U123S, RangeMin, RangeMax, 20);
-			else if(bkgN == 4) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), TotalvnerfU123S, RangeMin, RangeMax, 20);
+			else if(bkgN == 4) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), Totalvnpol4U123S, RangeMin, RangeMax, 21);
+			else if(bkgN == 5) fvn_simul = new TF1(Form("fvn_simul_%d", ipt), TotalvnerfU123S, RangeMin, RangeMax, 20);
 			else
 			{
 				cout << "Out of background function list" << endl;
@@ -1320,10 +1467,12 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 
 //combine functions{{{
 		fyield_simul->SetLineColor(2);
-		fyield_simul->SetLineWidth(1);
+		fyield_simul->SetLineWidth(2);
+		fyield_simul->SetNpx(nfpxl);
 
 		fvn_simul->SetLineColor(2);
-		fvn_simul->SetLineWidth(1);
+		fvn_simul->SetLineWidth(2);
+		fvn_simul->SetNpx(nfpxl);
 
 		ROOT::Math::WrappedMultiTF1 wmass(*fyield_simul, 1);
 		ROOT::Math::WrappedMultiTF1 wvn(*fvn_simul, 1);
@@ -1368,7 +1517,7 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		//par0[15] = 3s signal v2 component
 		//par0[16~] = background v2 components
 
-		const Int_t Npar = 23;
+		const Int_t Npar = 24;
 		Double_t par0[Npar];
 		if(BkgSys)
 		{
@@ -1417,15 +1566,26 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 			par0[17] = bpar2;
 			par0[18] = bpar3;
 			par0[19] = bpar4;
+			par0[20] = bpar5;
 		}
 //}}}
 
 //fit{{{
 
 //combined function condition{{{
-		c1[ipt]->cd(2);
+		pad_v2[ipt]->cd();
+		//hist->GetYaxis()->SetLabelSize(0.050);
+		hist->GetYaxis()->SetLabelOffset(0.004);
+		hist->GetXaxis()->SetLabelOffset(0.004);
+		hist->GetXaxis()->SetTitleOffset(0.85);
+		hist->GetYaxis()->SetTitleOffset(1.20);
+		hist->GetXaxis()->SetTitleSize(0.06);
+		hist->GetYaxis()->SetTitleSize(0.065);
 		hist->Draw();
 		fitter.Config().SetParamsSettings(Npar, par0);
+		fitter.Config().ParSettings(0).SetLimits(0, 100000000);
+		fitter.Config().ParSettings(1).SetLimits(0, 100000000);
+		fitter.Config().ParSettings(2).SetLimits(0, 100000000);
 		fitter.Config().ParSettings(4).Fix();
 		fitter.Config().ParSettings(5).Fix();
 		fitter.Config().ParSettings(6).Fix();
@@ -1463,7 +1623,9 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		if(BkgSys) fyield_bkg->FixParameter(4, fyield_simul->GetParameter(13));
 
 		fyield_bkg->SetLineColor(kBlue);
-		fyield_bkg->SetLineWidth(1);
+		fyield_bkg->SetLineWidth(2);
+		fyield_bkg->SetLineStyle(2);
+		fyield_bkg->SetNpx(nfpxl);
 		hyield->GetListOfFunctions()->Add(fyield_bkg);
 //}}}
 
@@ -1514,6 +1676,15 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 		}
 		else if(bkgN == 4)
 		{
+			fvn_bkg = new TF1(Form("fvn_bkg_%d", ipt), pol4bkg, RangeMin, RangeMax, 5);
+			fvn_bkg->FixParameter(0, fvn_simul->GetParameter(16));
+			fvn_bkg->FixParameter(1, fvn_simul->GetParameter(17));
+			fvn_bkg->FixParameter(2, fvn_simul->GetParameter(18));
+			fvn_bkg->FixParameter(3, fvn_simul->GetParameter(19));
+			fvn_bkg->FixParameter(4, fvn_simul->GetParameter(20));
+		}
+		else if(bkgN == 5)
+		{
 			fvn_bkg = new TF1(Form("fvn_bkg_%d", ipt), erfbkg, RangeMin, RangeMax, 4);
 			fvn_bkg->FixParameter(0, fvn_simul->GetParameter(16));
 			fvn_bkg->FixParameter(1, fvn_simul->GetParameter(17));
@@ -1526,23 +1697,26 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 			return;
 		}
 
-		c1[ipt]->cd(2);
-		fvn_bkg->SetLineColor(kMagenta);
-		fvn_bkg->SetLineWidth(1);
+		pad_v2[ipt]->cd();
+		//fvn_bkg->SetLineColor(kMagenta);
+		fvn_bkg->SetLineColor(kBlue);
+		fvn_bkg->SetLineWidth(2);
+		fvn_bkg->SetLineStyle(2);
+		fvn_bkg->SetNpx(nfpxl);
 
 		gvn->GetListOfFunctions()->Add(fvn_simul);
 		gvn->GetListOfFunctions()->Add(fvn_bkg);
 		gvn->SetTitle("");
 		gvn->SetMarkerSize(0.8);
-		gvn->SetLineWidth(1);
+		gvn->SetLineWidth(2);
 		gvn->Draw("PESAME");
 
 		FILE* ftxt;
-		ftxt = fopen(Form("Parameter/Obv2_bkg_%s_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s.txt", bkgF.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data()), "w");
+		ftxt = fopen(Form("Parameter/Obv2_bkg_%s_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s.txt", bkgF.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()), "w");
 		if(ftxt != NULL)
 		{
-			if(BkgSys) fprintf(ftxt, "%f   %f   %f   %f \n", fvn_simul->GetParameter(17), fvn_simul->GetParameter(18), fvn_simul->GetParameter(19), fvn_simul->GetParameter(20));
-			else fprintf(ftxt, "%f   %f   %f   %f \n", fvn_simul->GetParameter(16), fvn_simul->GetParameter(17), fvn_simul->GetParameter(18), fvn_simul->GetParameter(19));
+			if(BkgSys) fprintf(ftxt, "%f   %f   %f   %f	%f \n", fvn_simul->GetParameter(17), fvn_simul->GetParameter(18), fvn_simul->GetParameter(19), fvn_simul->GetParameter(20), fvn_simul->GetParameter(21));
+			else fprintf(ftxt, "%f   %f   %f   %f	%f \n", fvn_simul->GetParameter(16), fvn_simul->GetParameter(17), fvn_simul->GetParameter(18), fvn_simul->GetParameter(19), fvn_simul->GetParameter(20));
 		}
 //}}}
 
@@ -1597,17 +1771,26 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 				Chi2Yield += pullmass[ibin]*pullmass[ibin];
 			}
 		}
-		c1[ipt]->cd(1);
+		pad_mass[ipt]->cd();
+		//CMSP(0.17, 0.92);
+		CMS(0.17, 0.92);
+		lumiText(0.65, 0.92);
 		TLatex* lt1 = new TLatex();
-		FormLatex(lt1, 12, 0.04);
+		FormLatex(lt1, 12, 0.05);
 		lt1->SetNDC();
-		lt1->DrawLatex(0.17, 0.93, Form("pPb #sqrt{s} = 8.16 TeV, %d #leq N^{offline}_{trk} < %d", multMin, multMax));
-		lt1->DrawLatex(0.52, 0.83, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
-		lt1->DrawLatex(0.52, 0.77, Form("%d #leq p_{T}^{#varUpsilon} < %d GeV/c", (int)ptBinsArr[ipt], (int)ptBinsArr[ipt+1]));
-		if((int) TrkptMin == 0) lt1->DrawLatex(0.52,0.70, Form("0.3 #leq p_{T}^{trk} < %d GeV/c", (int) TrkptMax));
-		else lt1->DrawLatex(0.52,0.70, Form("%d < p_{T}^{assoc} < %d GeV/c", (int) TrkptMin, (int) TrkptMax));
-		lt1->DrawLatex(0.52, 0.64, "|#Delta#eta^{trk}| > 1.0");
-		lt1->DrawLatex(0.52, 0.58, Form("Chi2/ndf = %.f/%d", Chi2Yield, NdfYield));
+		//lt1->DrawLatex(0.52, 0.55, Form("#chi^{2}/dof = %.f/%d", Chi2Yield, NdfYield));
+		lt1->DrawLatex(0.57, 0.83, Form("%d #leq N^{offline}_{trk} < %d", multMin, multMax));
+		lt1->DrawLatex(0.57, 0.76, Form("p_{T}^{#mu} < %.1f GeV/c", MupTCut));
+		lt1->DrawLatex(0.57, 0.69, Form("%d #leq p_{T}^{#mu+#mu-} < %d GeV/c", (int)ptBinsArr[ipt], (int)ptBinsArr[ipt+1]));
+		if( (int)TrkptMin == 0 ) lt1->DrawLatex(0.57,0.62, Form("0.3 #leq p_{T}^{trk} < %d GeV/c", (int)TrkptMax));
+		else lt1->DrawLatex(0.57,0.62, Form("%d < p_{T}^{assoc} < %d GeV/c", (int)TrkptMin, (int)TrkptMax));
+		lt1->DrawLatex(0.57, 0.55, "|#Delta#eta^{trk}| > 1.0");
+
+		TLegend* leg_mass = new TLegend(0.57, 0.30, 0.90, 0.50);
+		FormLegend(leg_mass, 0.05);
+		leg_mass->AddEntry(fyield_simul, "Total fit", "l");
+		leg_mass->AddEntry(fyield_bkg, "Background", "l");
+		leg_mass->Draw();
 
 		Double_t xv2[200];
 		Double_t pullv2[200];
@@ -1625,15 +1808,22 @@ void SimultaneousFitData(const Int_t multMin = 0, const Int_t multMax = 300, con
 				Chi2v2 += pullv2[ibin]*pullv2[ibin];
 			}
 		}
-		c1[ipt]->cd(2);
-		lt1->DrawLatex(0.5, 0.48, Form("Chi2/ndf = %.f/%d", Chi2v2, Ndfv2));
+		pad_v2[ipt]->cd();
+		fvn_simul->Draw("same");
+		TLegend* leg_v2 = new TLegend(0.57, 0.65, 0.90, 0.85);
+		FormLegend(leg_v2, 0.05);
+		leg_v2->AddEntry(fvn_simul, "V_{2}^{Sig+Bkg}", "l");
+		leg_v2->AddEntry(fvn_bkg, "V_{2}^{Bkg}", "l");
+		leg_v2->Draw();
+
+		//lt1->DrawLatex(0.52, 0.48, Form("#chi^{2}/dof = %.f/%d", Chi2v2, Ndfv2));
 //}}}
 
 	}
 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
-		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away%s/Combined_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%o_SigSys%o_BkgSys%o_MupT%s%s.pdf", version.Data(), MupT.Data(), Away.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, isTnP, SigSys, BkgSys, MupT.Data(), Ffit.Data()));
+		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away%s/Combined_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s%s.pdf", version.Data(), MupT.Data(), Away.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), version.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data(), Ffit.Data()));
 	}
 
 	TGraphErrors* v2_1splot = new TGraphErrors(pt_narr-1, pt, v2_1s, 0, v2_1sE);

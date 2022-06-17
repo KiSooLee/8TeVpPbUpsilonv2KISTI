@@ -29,10 +29,11 @@
 //external function{{{
 
 //Chi2 calculation{{{
-Int_t iparmass[19] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-							16, 17, 18};
-Int_t iparvn[30] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-						16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
+Int_t iparmass[23] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+							16, 17, 18, 19, 20, 21, 22};
+Int_t iparvn[33] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+						16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+						30, 31, 32};
 
 struct GlobalChi2_width
 {
@@ -42,10 +43,10 @@ struct GlobalChi2_width
 
 	Double_t operator() (const double *par) const
 	{
-		Double_t p1[17];
-		for(Int_t i = 0; i < 17; i++) p1[i] = par[iparmass[i]];
-		Double_t p2[26];
-		for(Int_t i = 0; i < 26; i++) p2[i] = par[iparvn[i]];
+		Double_t p1[23];
+		for(Int_t i = 0; i < 22; i++) p1[i] = par[iparmass[i]];
+		Double_t p2[33];
+		for(Int_t i = 0; i < 32; i++) p2[i] = par[iparvn[i]];
 		return (*fChi2_1)(p1) + (*fChi2_2)(p2);
 	}
 	const ROOT::Math::IMultiGenFunction * fChi2_1;
@@ -188,8 +189,12 @@ void SimultaneousFitMC(const Int_t multMin = 0, const Int_t multMax = 40, const 
 	SetStyle();
 	const Double_t RangeMin = 8.5;
 	const Double_t RangeMax = 10;
-	const Double_t histMin = -0.02;
-	const Double_t histMax = 0.05;
+	//for high-multiplicity
+	//Double_t histMin = -0.06;
+	//Double_t histMax = 0.05;
+	//for low-multiplicity
+	Double_t histMin = -0.05;
+	Double_t histMax = 0.07;
 
 //set fitting condition name{{{
 	TString Away;
@@ -278,7 +283,7 @@ void SimultaneousFitMC(const Int_t multMin = 0, const Int_t multMax = 40, const 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
 //Get yield distribution{{{
-		TFile* fyield = new TFile(Form("../SkimmedFiles/Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_MC_%s_MupT%s.root", multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), MupT.Data()), "READ");
+		TFile* fyield = new TFile(Form("../SkimmedFiles/Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_MC_1S_%s_MupT%s.root", multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), MupT.Data()), "READ");
 		TH1D* hyield = (TH1D*) fyield->Get(Form("hmass"));
 		hyield->GetXaxis()->SetTitle("m_{#mu#mu} (GeV/c^{2})");
 		hyield->GetYaxis()->SetTitle("Entries");
@@ -286,33 +291,34 @@ void SimultaneousFitMC(const Int_t multMin = 0, const Int_t multMax = 40, const 
 
 		c1[ipt]->cd(1);
 		hyield->Draw();
+cout << "mass hist: " << hyield << endl;
 //}}}
 
 //Get fitting parameter{{{
 		string char1, char2, char3, char4, char5, char6, char7, char8;
 		string char9, char10, char11, char12, char13, char14, char15; 
 		string char16, char17, char18, char19, char20, char21, char22; 
-		string char23;
 		Double_t var1, var2, var3, var4, var5, var6, var7, var8, var9;
 		Double_t var10, var11, var12, var13, var14, var15, var16, var17;
-		Double_t var18, var19, var20, var21, var22, var23;
+		Double_t var18, var19, var20, var21, var22;
 
 		ifstream in1;
-		in1.open(Form("../SkimmedFiles/Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_MC_%s_MupT%s.txt", multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), MupT.Data()));
+		in1.open(Form("../SkimmedFiles/Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_MC_1S_%s_MupT%s.txt", multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), MupT.Data()));
 		if(in1.is_open())
 		{
 			in1 >> char1 >> char2 >> char3 >> char4 >> char5 >> char6 >> 
-					char7 >> char8 >> char9 >> char10 >> char11 >> char12; 
+					char7 >> char8 >> char9 >> char10 >> char11; 
 			in1 >> var1 >> var2 >> var3 >> var4 >> var5 >> var6 >> 
-					var7 >> var8 >> var9 >> var10 >> var11 >> var12;
-			in1 >> char13 >> char14 >> char15 >> char16 >> char17 >> 
-					char18 >> char19;
-			in1 >> var13 >> var14 >> var15 >> var16 >> var17 >> var18 >> 
-					var19;
-			in1 >> char20 >> char21 >> char22 >> char23;
-			in1 >> var20 >> var21 >> var22 >> var23;
+					var7 >> var8 >> var9 >> var10 >> var11;
+			in1 >> char12 >> char13 >> char14 >> char15 >> char16 >> 
+					char17 >> char18;
+			in1 >> var12 >> var13 >> var14 >> var15 >> var16 >> var17 >> 
+					var18;
+			in1 >> char19 >> char20 >> char21 >> char22;
+			in1 >> var19 >> var20 >> var21 >> var22;
 		}
 		in1.close();
+cout << "input mass fit value: " << var9 << endl;
 
 		Double_t bpar1, bpar2, bpar3, bpar4, bpar5;
 		ifstream in2;
@@ -322,6 +328,7 @@ void SimultaneousFitMC(const Int_t multMin = 0, const Int_t multMax = 40, const 
 			in2 >> bpar1 >> bpar2 >> bpar3 >> bpar4 >> bpar5;
 		}
 		in2.close();
+cout << "input v2 fit value: " << bpar1 << endl;
 //}}}
 
 //Get vn distribution{{{
@@ -333,6 +340,9 @@ void SimultaneousFitMC(const Int_t multMin = 0, const Int_t multMax = 40, const 
 		else gvn = (TGraphErrors*) fvn->Get(Form("gv2_Away%s_coarse", Away.Data()));
 
 		c1[ipt]->cd(2);
+		//hist->Draw();
+		//gvn->Draw("same");
+cout << "v2 hist: " << gvn << endl;
 //}}}
 
 //define function for simultaneous fitting{{{
@@ -385,22 +395,23 @@ void SimultaneousFitMC(const Int_t multMin = 0, const Int_t multMax = 40, const 
 		//par0[10] = signal v2 component
 		//par0[11~] = background v2 components
 
-		const Int_t Npar = 15;
+		const Int_t Npar = 14;
 		Double_t par0[Npar];
-		par0[0] = var20/10.;
-		par0[1] = var21/10.;
-		par0[2] = var13;
-		par0[3] = var14;
-		par0[4] = var16;
-		par0[5] = var17;
+		par0[0] = var19/100.;
+		par0[1] = var20/100.;
+		par0[2] = var12;
+		par0[3] = var13;
+		par0[4] = var15;
+		par0[5] = var16;
 		par0[6] = var3/var2;
-		par0[7] = var15;
-		par0[8] = var18;
-		par0[9] = var19;
+		par0[7] = var14;
+		par0[8] = var17;
+		par0[9] = var18;
 		par0[10] = 0.01;
 		par0[11] = bpar1;
 		par0[12] = bpar2;
 		par0[13] = bpar3;
+cout << "vars: " << var20 << ", " << var21 << ", " << var13 << endl;
 //}}}
 
 //fit{{{
