@@ -60,7 +60,7 @@ void ParSum(const Int_t multMinhi = 0, const Int_t multMaxhi = 300, const Int_t 
 	hist->SetMaximum(0.01);
 //}}}
 
-	TFile* fout = new TFile(Form("SystFile/MupT%s/v2_diff_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_pol2_MupT%s_ParSum.root", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("SystFile/MupT%s/v2_diff_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_pol2_MupT%s_ParSum.root", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data()), "RECREATE");
 
 //Get vn file{{{
 	TFile* fpar[9];
@@ -74,7 +74,7 @@ void ParSum(const Int_t multMinhi = 0, const Int_t multMaxhi = 300, const Int_t 
 
 	for(Int_t ipar = 0; ipar < 9; ipar++)
 	{
-		fpar[ipar] = new TFile(Form("SystFile/MupT%s/v2_diff_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_pol2_MupT%s_FreePar%d.root", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data(), ipar), "READ");
+		fpar[ipar] = new TFile(Form("SystFile/MupT%s/v2_diff_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_pol2_MupT%s_FreePar%d.root", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data(), ipar), "READ");
 		gpar[ipar] = (TGraphErrors*) fpar[ipar]->Get(Form("gv2"));
 		gpar[ipar]->SetName(Form("gv2_par%d", ipar));
 
@@ -89,7 +89,7 @@ void ParSum(const Int_t multMinhi = 0, const Int_t multMaxhi = 300, const Int_t 
 		{
 			v2ysum[ibin] += v2ypar[ipar][ibin]*v2ypar[ipar][ibin];
 		}
-		v2ysum[ibin] = TMath::Sqrt(v2ysum[ibin]);
+		v2ysum[ibin] = TMath::Sqrt(v2ysum[ibin]/9);
 	}
 //}}}
 
@@ -98,12 +98,12 @@ void ParSum(const Int_t multMinhi = 0, const Int_t multMaxhi = 300, const Int_t 
 	TGraphErrors* gsum = new TGraphErrors(gpar[0]->GetN(), v2xpar[0], v2ysum, Expar[0], Ev2ysum);
 	gsum->SetName("gsum");
 	gsum->SetMarkerStyle(20);
+	gsum->SetMarkerSize(1.4);
 	gsum->Draw("samepe");
 	SetLine(1, 0, 0, 30, 0, 0, 3);
-	c1->SaveAs(Form("SystPlot/MupT%s/Syst_v2_diff_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_pol2_MupT%s_ParSum.pdf", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data()));
+	c1->SaveAs(Form("SystPlot/MupT%s/Syst_v2_diff_Reco_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_pol2_MupT%s_ParSum.pdf", MupT.Data(), multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), MupT.Data()));
 
 	fout->cd();
 	gsum->Write();
 	fout->Close();
-//}}}
 }
