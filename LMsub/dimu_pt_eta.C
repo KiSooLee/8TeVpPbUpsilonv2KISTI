@@ -24,7 +24,7 @@ using namespace std;
 using namespace RooFit;
 //}}}
 
-void dimu_pt_eta(const Int_t multMin = 90, const Int_t multMax = 300, const TString MupT = "3p5", const TString trkptversion = "v1", const Bool_t Weight = true)
+void dimu_pt_eta(const Int_t multMin = 70, const Int_t multMax = 300, const TString MupT = "3p5", const TString trkptversion = "v1", const Bool_t Weight = true)
 {
 	SetStyle();
 
@@ -46,8 +46,8 @@ void dimu_pt_eta(const Int_t multMin = 90, const Int_t multMax = 300, const TStr
 	}
 //}}}
 
-	const Int_t ptMin[4] = {0, 4, 7, 10};
-	const Int_t ptMax[4] = {4, 7, 10, 30};
+	const Int_t ptMin[4] = {0, 3, 6, 10};
+	const Int_t ptMax[4] = {3, 6, 10, 30};
 	const Double_t ptval[10] = {0, 2, 3, 4, 5, 6, 8, 10, 15, 30};
 
 //Get files{{{
@@ -169,10 +169,10 @@ void dimu_pt_eta(const Int_t multMin = 90, const Int_t multMax = 300, const TStr
 			}
 			for(Int_t ipts = 0; ipts < 9; ipts++)
 			{
-				if( trg_pt >= ptval[ipts] && trg_pt > ptval[ipts+1] ) heta_tot[ipts]->Fill(TMath::Abs(trg_eta), 1./( (double)upacc*upeff));
-				if( trg_pt >= ptval[ipts] && trg_pt > ptval[ipts+1] && (trg_m > 9 && trg_m < 10) ) heta_peak[ipts]->Fill(TMath::Abs(trg_eta), 1./( (double)upacc*upeff));
-				if( trg_pt >= ptval[ipts] && trg_pt > ptval[ipts+1] && trg_m < 9 ) heta_lbkg[ipts]->Fill(TMath::Abs(trg_eta), 1./( (double)upacc*upeff));
-				if( trg_pt >= ptval[ipts] && trg_pt > ptval[ipts+1] && trg_m > 11 ) heta_hbkg[ipts]->Fill(TMath::Abs(trg_eta), 1./( (double)upacc*upeff));
+				if( trg_pt >= ptval[ipts] && trg_pt < ptval[ipts+1] ) heta_tot[ipts]->Fill(TMath::Abs(trg_eta), 1./( (double)upacc*upeff));
+				if( trg_pt >= ptval[ipts] && trg_pt < ptval[ipts+1] && (trg_m > 9 && trg_m < 10) ) heta_peak[ipts]->Fill(TMath::Abs(trg_eta), 1./( (double)upacc*upeff));
+				if( trg_pt >= ptval[ipts] && trg_pt < ptval[ipts+1] && trg_m < 9 ) heta_lbkg[ipts]->Fill(TMath::Abs(trg_eta), 1./( (double)upacc*upeff));
+				if( trg_pt >= ptval[ipts] && trg_pt < ptval[ipts+1] && trg_m > 11 ) heta_hbkg[ipts]->Fill(TMath::Abs(trg_eta), 1./( (double)upacc*upeff));
 			}
 		}
 	}
