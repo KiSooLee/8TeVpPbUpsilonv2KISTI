@@ -25,7 +25,7 @@
 #include "../Headers/Upsilon.h"
 //}}}
 
-void LMsub(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, const Int_t multMinlow = 0, const Int_t multMaxlow = 40, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Int_t maxF = 3, const Int_t bkgN = 0, const Int_t AwayN = 1, const Bool_t isfine = true, const TString versionhi = "v19", const TString versionlow = "v20", const TString Jversionhi = "v19", const TString Jversionlow = "v20", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Int_t isTnP = 0, const Bool_t SigSys = false, const Bool_t BkgSys = false, const TString MupT = "3p5")
+void LMsub_Par(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, const Int_t multMinlow = 0, const Int_t multMaxlow = 40, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Int_t maxF = 3, const Int_t bkgN = 0, const Int_t AwayN = 1, const Bool_t isfine = true, const TString versionhi = "v19", const TString versionlow = "v20", const TString Jversionhi = "v19", const TString Jversionlow = "v20", const TString MupT = "3p5", const Int_t FreeParN = 0)
 {
 	SetStyle();
 
@@ -53,18 +53,6 @@ void LMsub(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, const Int_t
 	else
 	{
 		cout << "out of delta eta cut range list" << endl;
-		return;
-	}
-	TString TnPs;
-	if(isTnP == 0) TnPs = "w";
-	else if(isTnP == 1) TnPs = "statup";
-	else if(isTnP == 2) TnPs = "statdw";
-	else if(isTnP == 3) TnPs = "systup";
-	else if(isTnP == 4) TnPs = "systdw";
-	else if(isTnP == 5) TnPs = "wo";
-	else
-	{
-		cout << "There is no such TnP index" << endl;
 		return;
 	}
 	TString Fine;
@@ -114,8 +102,7 @@ void LMsub(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, const Int_t
 	Double_t JYield[2][NPT];
 	for(Int_t imult = 0; imult < 2; imult++)
 	{
-		if(imult == 0) fv2[imult] = new TFile(Form("../SignalV2/V2Dist/V2File/%s/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s%s.root", versions[imult].Data(), multMins[imult], multMaxs[imult], (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), versions[imult].Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data(), Ffit.Data()), "READ");
-		else fv2[imult] = new TFile(Form("../SignalV2/V2Dist/V2File/%s/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s%s_intg.root", versions[imult].Data(), multMins[imult], multMaxs[imult], (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), versions[imult].Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data(), Ffit.Data()), "READ");
+		fv2[imult] = new TFile(Form("../SignalV2/V2Dist/V2File/%s/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_%s_%s_Data_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_OS_MupT%s_tra_FreePar%d.root", versions[imult].Data(), multMins[imult], multMaxs[imult], (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, bkgF.Data(), Away.Data(), Fine.Data(), versions[imult].Data(), MupT.Data(), FreeParN), "READ");
 		TGraphErrors* gtemp = (TGraphErrors*) fv2[imult]->Get(Form("v2_1s_vs_pt"));
 		g1[imult] = (TGraphErrors*) gtemp->Clone(Form("g1_%s", HorL[imult].Data()));
 
@@ -128,18 +115,10 @@ void LMsub(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, const Int_t
 		}
 	}
 
-	TFile* fJRatio = new TFile(Form("File/JRatio_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_MupT%s.root", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Jversionhi.Data(), Jversionlow.Data(), Fine.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()), "READ");
+	TFile* fJRatio = new TFile(Form("File/JRatio_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_MupT%s.root", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Jversionhi.Data(), Jversionlow.Data(), Fine.Data(), MupT.Data()), "READ");
 	TF1* fitin = (TF1*) fJRatio->Get("fit1");
 	Double_t JRatio = fitin->GetParameter(0);
 	Double_t JRatioE = fitin->GetParError(0);
-	//JRatio = 1.0;
-	//TGraphErrors* fitin = (TGraphErrors*) fJRatio->Get("gJRatio");
-	//Double_t JRatio;
-	//Double_t JRatioE;
-	//Double_t Jx1;
-	//Double_t Jx2;
-	//fitin->GetPoint(0, Jx1, JRatio);
-	//JRatioE = fitin->GetErrorY(0);
 
 	Double_t v2xhi[NPT];
 	Double_t v2yhi[NPT];
@@ -166,20 +145,19 @@ void LMsub(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, const Int_t
 	TGraphErrors* gv2sub = new TGraphErrors(pt_narr-1, v2xhi, v2sub, v2xEhi, v2subE);
 	gv2sub->SetName("gv2sub");
 	FormGraph(gv2sub, 0, 0, 1.2);
-	TH1D* htmp = new TH1D("htmp", ";p_{T} (GeV/c);V_{2}^{sub}(#varUpsilon-trk)", 10, 0, ptBinsArr[pt_narr-1]);
+	TH1D* htmp = new TH1D("htmp", ";p_{T} (GeV/c);V_{2}^{sub}(#varUpssilon-trk)", 10, 0, ptBinsArr[pt_narr-1]);
 	FormTH1(htmp, 0);
 
 	TCanvas* c1 = new TCanvas("c1", "", 0, 0, 600, 600);
 	c1->cd();
-	htmp->SetMinimum(-0.005);
+	htmp->SetMinimum(-0.006);
 	//htmp->SetMaximum(0.2);
-	//htmp->SetMaximum(0.02);
-	htmp->SetMaximum(0.01);
+	htmp->SetMaximum(0.02);
 	htmp->Draw();
 	gv2sub->Draw("samepe");
-	c1->SaveAs(Form("Plots/Sub/Subv2_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_jet_%s_by_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_%s_MupT%s.pdf", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, bkgF.Data(), MupT.Data()));
+	c1->SaveAs(Form("Plots/Sub/Subv2_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_%s_MupT%s_tra_FreePar%d.pdf", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), bkgF.Data(), MupT.Data(), FreeParN));
 
-	TFile* fout = new TFile(Form("File/Subv2_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_jet_%s_by_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_%s_MupT%s.root", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, bkgF.Data(), MupT.Data()), "RECREATE");
+	TFile* fout = new TFile(Form("File/Subv2_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_jet_%s_by_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_%s_MupT%s_tra_FreePar%d.root", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Jversionhi.Data(), Jversionlow.Data(), bkgF.Data(), MupT.Data(), FreeParN), "RECREATE");
 	fout->cd();
 	gv2sub->Write();
 	fout->Close();
