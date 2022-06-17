@@ -25,7 +25,7 @@
 #include "../Headers/Upsilon.h"
 //}}}
 
-void JetYieldRatio(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, const Int_t multMinlow = 0, const Int_t multMaxlow = 40, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const Bool_t isfine = true, const TString versionhi = "v19", const TString versionlow = "v20", const bool Weight = false, const TString MupT = "3p5")
+void JetYieldRatio(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, const Int_t multMinlow = 0, const Int_t multMaxlow = 40, const Double_t rapMin = -2.4, const Double_t rapMax = 2.4, const Double_t TrkptMin = 0, const Double_t TrkptMax = 1, const TString versionhi = "v19", const TString versionlow = "v20", const Bool_t isAccRW = true, const Bool_t isEffRW = true, const Int_t isTnP = 0, const Bool_t SigSys = false, const Bool_t BkgSys = false, const TString MupT = "3p5", const Bool_t isfine = true)
 {
 	SetStyle();
 
@@ -44,6 +44,18 @@ void JetYieldRatio(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, con
 //}}}
 
 //Define names{{{
+	TString TnPs;
+	if(isTnP == 0) TnPs = "w";
+	else if(isTnP == 1) TnPs = "statup";
+	else if(isTnP == 2) TnPs = "statdw";
+	else if(isTnP == 3) TnPs = "systup";
+	else if(isTnP == 4) TnPs = "systdw";
+	else if(isTnP == 5) TnPs = "wo";
+	else
+	{
+		cout << "There is no such TnP index" << endl;
+		return;
+	}
 	TString PorB[2] = {"peak", "bkg"};
 	TString BandName[2] = {"short", "long"};
 	TString Fine;
@@ -72,13 +84,15 @@ void JetYieldRatio(const Int_t multMinhi = 110, const Int_t multMaxhi = 300, con
 	Double_t JRatio[NPT];
 	Double_t JRatioE[NPT];
 	Double_t pt[NPT];
-	const Int_t ptbins[NPT+1] = {9, 10, 12, 15};
+	//const Int_t ptbins[NPT+1] = {11, 15, 20, 30};
+	const Int_t ptbins[NPT+1] = {12, 15, 20, 30};
+	//const Int_t ptbins[NPT+1] = {11, 13, 17, 30};
 
 	for(Int_t imult = 0; imult < 2; imult++)
 	{
 		for(Int_t ipt = 0; ipt < NPT; ipt++)
 		{
-			fjet[imult][ipt] = new TFile(Form("File/Sideband_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_MupT%s_Weight%o_%s.root", multMins[imult], multMaxs[imult], ptbins[ipt], ptbins[ipt+1], (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versions[imult].Data(), MupT.Data(), Weight, Fine.Data()));
+			fjet[imult][ipt] = new TFile(Form("File/Sideband_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc%o_Eff%o_TnP%s_MupT%s_%s.root", multMins[imult], multMaxs[imult], ptbins[ipt], ptbins[ipt+1], (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versions[imult].Data(), isAccRW, isEffRW, TnPs.Data(), MupT.Data(), Fine.Data()));
 
 			for(Int_t ipb = 0; ipb < 2; ipb++)
 			{
@@ -91,11 +105,18 @@ cout << versions[imult] << ": short-long: " << PorB[ipb] << ": Val: " << JComp[i
 cout << versions[imult] << ": short-long: " << PorB[ipb] << ": Err: " << JCompE[imult][ipt][ipb] << endl;
 			}
 
-			TFile* ffit = new TFile(Form("../SkimmedFiles/Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_weight%o_MupT%s.root", multMins[imult], multMaxs[imult], ptbins[ipt], ptbins[ipt+1], (int)(10*rapMin), (int)(10*rapMax), versions[imult].Data(), Weight, MupT.Data()), "READ");
+			TFile* ffit = new TFile(Form("../SkimmedFiles/Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_OS_MupT%s.root", multMins[imult], multMaxs[imult], ptbins[ipt], ptbins[ipt+1], (int)(10*rapMin), (int)(10*rapMax), versions[imult].Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()), "READ");
 			TH1D* htmpfrac = (TH1D*) ffit->Get("hfrac");
-			Double_t f = htmpfrac->GetBinContent(1)/( htmpfrac->GetBinContent(1)+htmpfrac->GetBinContent(2) );
-			//Double_t f = htmpfrac->GetBinContent(3)/( htmpfrac->GetBinContent(3)+htmpfrac->GetBinContent(4) );
-			//Double_t f = htmpfrac->GetBinContent(5)/( htmpfrac->GetBinContent(5)+htmpfrac->GetBinContent(6) );
+			Double_t f;
+			//if(!fracRange) f = htmpfrac->GetBinContent(1)/( htmpfrac->GetBinContent(1)+htmpfrac->GetBinContent(2) );
+			//else
+			//{
+			//	//for fine peak range
+			//	//f = htmpfrac->GetBinContent(3)/( htmpfrac->GetBinContent(3)+htmpfrac->GetBinContent(4) );
+			//	//for wide peak range
+			//	f = htmpfrac->GetBinContent(5)/( htmpfrac->GetBinContent(5)+htmpfrac->GetBinContent(6) );
+			//}
+			f = htmpfrac->GetBinContent(5)/( htmpfrac->GetBinContent(5)+htmpfrac->GetBinContent(6) );
 			JYield[imult][ipt] = ( JComp[imult][ipt][0]-(1-f)*JComp[imult][ipt][1] )/f;
 			JYieldE[imult][ipt] = TMath::Sqrt( TMath::Power(JCompE[imult][ipt][0]/f, 2) + TMath::Power((1-f)*JCompE[imult][ipt][1]/f, 2) );
 cout << versions[imult] << ": fraction: " << f << endl;
@@ -120,16 +141,20 @@ cout << versions[imult] << ": signal: " << ": Err: " << JYieldE[imult][ipt] << e
 	TCanvas* c1 = new TCanvas("c1", "", 0, 0, 600, 600);
 	c1->cd();
 	htmp->SetMinimum(0.0);
-	htmp->SetMaximum(1.5);
+	htmp->SetMaximum(4.0);
 	htmp->Draw();
 	gJRatio->Draw("samepe");
 	TF1* fit1 = new TF1("fit1", "[0]", 0, ptbins[NPT]);
 	fit1->SetLineColor(2);
 	fit1->SetLineWidth(2);
-	gJRatio->Fit(fit1);
-	c1->SaveAs(Form("Plots/JRatio/JRatio_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_%s_MupT%s_Weight%o.pdf", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Fine.Data(), MupT.Data(), Weight));
+	gJRatio->Fit(fit1, "W");
+	TLatex* lt1 = new TLatex();
+	FormLatex(lt1, 12, 0.04);
+	lt1->DrawLatex(0.4, 0.7, Form("J_{high}/J_{low} = %.2f #pm %.2f", fit1->GetParameter(0), fit1->GetParError(0)));
 
-	TFile* fout = new TFile(Form("File/JRatio_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_%s_MupT%s_Weight%o.root", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Fine.Data(), MupT.Data(), Weight), "RECREATE");
+	c1->SaveAs(Form("Plots/JRatio/JRatio_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_MupT%s.pdf", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Fine.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()));
+
+	TFile* fout = new TFile(Form("File/JRatio_Mult_%d-%d_by_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_by_%s_%s_Acc%o_Eff%o_TnP%s_SigSys%o_BkgSys%o_MupT%s.root", multMinhi, multMaxhi, multMinlow, multMaxlow, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, versionhi.Data(), versionlow.Data(), Fine.Data(), isAccRW, isEffRW, TnPs.Data(), SigSys, BkgSys, MupT.Data()), "RECREATE");
 	fout->cd();
 	gJRatio->Write();
 	fit1->Write();
