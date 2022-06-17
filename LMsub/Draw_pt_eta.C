@@ -47,21 +47,21 @@ void Draw_pt_eta(const TString MupT = "3p5", const TString trkptversion = "v1")
 	const TString ranges[4] = {"_tot", "_peak", "_lbkg", "_hbkg"};
 //}}}
 
-	const Double_t ptval[9] = {0, 2, 3, 4, 5, 6, 8, 10, 15};
-	Double_t meanetahi[4][8] = {};
-	Double_t erretahi[4][8] = {};
-	Double_t meanetalow[4][8] = {};
-	Double_t erretalow[4][8] = {};
+	const Double_t ptval[10] = {0, 2, 3, 4, 5, 6, 8, 10, 15, 30};
+	Double_t meanetahi[4][9] = {};
+	Double_t erretahi[4][9] = {};
+	Double_t meanetalow[4][9] = {};
+	Double_t erretalow[4][9] = {};
 
-	TFile* fin1 = new TFile(Form("Plots/Di-mu_eta_dist_mult_90-300_MupT%s.root", MupT.Data()), "READ");
+	TFile* fin1 = new TFile(Form("Plots/Di-mu_eta_dist_mult_70-300_MupT%s.root", MupT.Data()), "READ");
 	TFile* fin2 = new TFile(Form("Plots/Di-mu_eta_dist_mult_0-50_MupT%s.root", MupT.Data()), "READ");
 
 	TCanvas* c1[4];
 	TCanvas* c2[4];
 	TCanvas* c3 = new TCanvas("c3", "", 0, 0, 600, 600);
 	TCanvas* c4 = new TCanvas("c4", "", 0, 0, 600, 600);
-	TH1D* heta_hi[4][8];
-	TH1D* heta_low[4][8];
+	TH1D* heta_hi[4][9];
+	TH1D* heta_low[4][9];
 	TH1D* hpthi[4];
 	TH1D* hptlow[4];
 	TH1D* hratio[4];
@@ -69,16 +69,16 @@ void Draw_pt_eta(const TString MupT = "3p5", const TString trkptversion = "v1")
 	{
 		c1[i] = new TCanvas(Form("c1%s", ranges[i].Data()), "", 0, 0, 600, 600);
 		c2[i] = new TCanvas(Form("c2%s", ranges[i].Data()), "", 0, 0, 600, 600);
-		hpthi[i] = new TH1D(Form("hpthi%s", ranges[i].Data()), ";p_{T};|#eta|", 8, ptval);
-		hptlow[i] = new TH1D(Form("hptlow%s", ranges[i].Data()), ";p_{T};|#eta|", 8, ptval);
-		hratio[i] = new TH1D(Form("hratio%s", ranges[i].Data()), ";p_{T};|#eta| ratio", 8, ptval);
+		hpthi[i] = new TH1D(Form("hpthi%s", ranges[i].Data()), ";p_{T};|#eta|", 9, ptval);
+		hptlow[i] = new TH1D(Form("hptlow%s", ranges[i].Data()), ";p_{T};|#eta|", 9, ptval);
+		hratio[i] = new TH1D(Form("hratio%s", ranges[i].Data()), ";p_{T};|#eta| ratio", 9, ptval);
 		FormTH1Marker(hpthi[i], 0, 0, 1.2);
 		FormTH1Marker(hptlow[i], 1, 0, 1.2);
 	}
 
 	for(Int_t i = 0; i < 4; i++)
 	{
-		for(Int_t j = 0; j < 8; j++)
+		for(Int_t j = 0; j < 9; j++)
 		{
 			heta_hi[i][j] = (TH1D*) fin1->Get(Form("heta%s_%d", ranges[i].Data(), j));
 			heta_low[i][j] = (TH1D*) fin2->Get(Form("heta%s_%d", ranges[i].Data(), j));
@@ -94,15 +94,15 @@ void Draw_pt_eta(const TString MupT = "3p5", const TString trkptversion = "v1")
 		TLegend* leg1 = new TLegend(0.50, 0.72, 0.95, 0.87);
 		FormLegend(leg1, 0.04);
 		c1[i]->cd();
-		hpthi[i]->SetMaximum(2.5);
+		hpthi[i]->SetMaximum(3.5);
 		hpthi[i]->SetMinimum(0.0);
 		hpthi[i]->GetYaxis()->SetTitle("<#eta>");
 		hpthi[i]->Draw("pe");
 		hptlow[i]->Draw("pesame");
-		leg1->AddEntry(hpthi[i], "90 #leq mult < 300", "pe");
+		leg1->AddEntry(hpthi[i], "70 #leq mult < 300", "pe");
 		leg1->AddEntry(hptlow[i], "0 #leq mult < 50", "pe");
 		leg1->Draw();
-		c1[i]->SaveAs(Form("Plots/Di-mu_eta_vs_pt_dist_mult_90-300_0-50_comp_MupT%s%s.pdf", MupT.Data(), ranges[i].Data()));
+		c1[i]->SaveAs(Form("Plots/Di-mu_eta_vs_pt_dist_mult_70-300_0-50_comp_MupT%s%s.pdf", MupT.Data(), ranges[i].Data()));
 
 		c2[i]->cd();
 		hratio[i] = (TH1D*) hpthi[i]->Clone(Form("hratio%s", ranges[i].Data()));
@@ -111,8 +111,8 @@ void Draw_pt_eta(const TString MupT = "3p5", const TString trkptversion = "v1")
 		hratio[i]->SetMinimum(0.0);
 		hratio[i]->GetYaxis()->SetTitle("<#eta>_{high}/<#eta>_{low}");
 		hratio[i]->Draw("pe");
-		SetLine(2, 0, 1, 15, 1, 0, 3);
-		c2[i]->SaveAs(Form("Plots/Di-mu_eta_vs_pt_dist_mult_90-300_0-50_ratio_MupT%s%s.pdf", MupT.Data(), ranges[i].Data()));
+		SetLine(2, 0, 1, 30, 1, 0, 3);
+		c2[i]->SaveAs(Form("Plots/Di-mu_eta_vs_pt_dist_mult_70-300_0-50_ratio_MupT%s%s.pdf", MupT.Data(), ranges[i].Data()));
 	}
 	c3->cd();
 	TLegend* leg2 = new TLegend(0.50, 0.72, 0.95, 0.87);
@@ -122,15 +122,15 @@ void Draw_pt_eta(const TString MupT = "3p5", const TString trkptversion = "v1")
 		FormTH1Marker(hpthi[i], i, 1, 1.2);
 		if(i == 0)
 		{
-			hpthi[i]->SetMaximum(2.0);
-			hpthi[i]->SetMinimum(1.0);
+			hpthi[i]->SetMaximum(3.5);
+			hpthi[i]->SetMinimum(0.0);
 			hpthi[i]->Draw("pe");
 		}
 		else hpthi[i]->Draw("pesame");
 		leg2->AddEntry(hpthi[i], Form("%s", ranges[i].Data()), "pe");
 	}
 	leg2->Draw();
-	c3->SaveAs(Form("Plots/Di-mu_eta_vs_pt_dist_mult_90-300_MupT%s.pdf", MupT.Data()));
+	c3->SaveAs(Form("Plots/Di-mu_eta_vs_pt_dist_mult_70-300_MupT%s.pdf", MupT.Data()));
 
 	c4->cd();
 	TLegend* leg3 = new TLegend(0.50, 0.72, 0.95, 0.87);
@@ -140,8 +140,8 @@ void Draw_pt_eta(const TString MupT = "3p5", const TString trkptversion = "v1")
 		FormTH1Marker(hptlow[i], i, 1, 1.2);
 		if(i == 0)
 		{
-			hptlow[i]->SetMaximum(2.0);
-			hptlow[i]->SetMinimum(1.0);
+			hptlow[i]->SetMaximum(3.5);
+			hptlow[i]->SetMinimum(0.0);
 			hptlow[i]->Draw("pe");
 		}
 		else hptlow[i]->Draw("pesame");
