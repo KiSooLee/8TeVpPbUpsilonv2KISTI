@@ -265,31 +265,13 @@ void FreePar(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t 
 	const Double_t RangeMin = 8.;
 	const Double_t RangeMax = 14.;
 	//high-multiplicity
-	//const Double_t histMin = -0.02;
-	//const Double_t histMax = 0.04;
-	//low-multiplicity
 	const Double_t histMin = -0.02;
-	const Double_t histMax = 0.1;
+	const Double_t histMax = 0.04;
+	//low-multiplicity
+	//const Double_t histMin = -0.02;
+	//const Double_t histMax = 0.1;
 
-	TString Fine;
-	if(isfine == true) Fine = "fine";
-	else Fine = "coarse";
-
-//Make directory{{{
-	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
-	TString fDIR = mainDIR + Form("/V2Dist/V2File/%s", version.Data());
-	TString sDIR = mainDIR + Form("/V2Dist/SigV2/%s/MupT%s/Away1", version.Data(), MupT.Data());
-
-	void * dirf = gSystem->OpenDirectory(fDIR.Data());
-	if(dirf) gSystem->FreeDirectory(dirf);
-	else gSystem->mkdir(fDIR.Data(), kTRUE);
-
-	void * dirs = gSystem->OpenDirectory(sDIR.Data());
-	if(dirs) gSystem->FreeDirectory(dirs);
-	else gSystem->mkdir(sDIR.Data(), kTRUE);
-//}}}
-
-//define muon pt value{{{
+//Set fitting condition name{{{
 	Double_t MupTCut;
 	if(MupT == "0") MupTCut = 0;
 	else if(MupT == "0p5") MupTCut = 0.5;
@@ -305,10 +287,27 @@ void FreePar(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t 
 		cout << "There is no such muon pT cut value" << endl;
 		return;
 	}
+	TString Fine;
+	if(isfine == true) Fine = "fine";
+	else Fine = "coarse";
+//}}}
+
+//Make directory{{{
+	TString mainDIR = gSystem->ExpandPathName(gSystem->pwd());
+	TString fDIR = mainDIR + Form("/V2Dist/V2File/%s", version.Data());
+	TString sDIR = mainDIR + Form("/V2Dist/SigV2/%s/MupT%s/Away1", version.Data(), MupT.Data());
+
+	void * dirf = gSystem->OpenDirectory(fDIR.Data());
+	if(dirf) gSystem->FreeDirectory(dirf);
+	else gSystem->mkdir(fDIR.Data(), kTRUE);
+
+	void * dirs = gSystem->OpenDirectory(sDIR.Data());
+	if(dirs) gSystem->FreeDirectory(dirs);
+	else gSystem->mkdir(sDIR.Data(), kTRUE);
 //}}}
 
 	TFile* fout;
-	fout = new TFile(Form("V2Dist/V2File/%s/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_pol2_1_%s_Data_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_MupT%s_tra.root", version.Data(), multMin, multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Fine.Data(), version.Data(), MupT.Data()), "RECREATE");
+	fout = new TFile(Form("V2Dist/V2File/%s/Combine_fit_Mult_%d-%d_rap_%d-%d_Trkpt_%d-%d_pol2_1_%s_Data_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_OS_MupT%s_tra_FreePar%d.root", version.Data(), multMin, multMax, (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Fine.Data(), version.Data(), MupT.Data(), FreeParN), "RECREATE");
 	fout->cd();
 
 	TF1* fyieldtot[pt_narr-1];
@@ -343,7 +342,7 @@ void FreePar(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
 //Get yield distribution{{{
-		TFile* fyield = new TFile(Form("../SkimmedFiles/Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_MupT%s.root", multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), MupT.Data()), "READ");
+		TFile* fyield = new TFile(Form("../SkimmedFiles/Yield/Yield_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_OS_MupT%s.root", multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), MupT.Data()), "READ");
 		TH1D* hyield = (TH1D*) fyield->Get(Form("hmass"));
 		hyield->GetXaxis()->SetTitle("m_{#mu#mu} (GeV/c^{2})");
 		hyield->GetYaxis()->SetTitle("Entries");
@@ -365,7 +364,7 @@ void FreePar(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t 
 		Double_t var26, var27, var28, var29;
 
 		ifstream in1;
-		in1.open(Form("../SkimmedFiles/Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_MupT%s.txt", multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), MupT.Data()));
+		in1.open(Form("../SkimmedFiles/Parameter/Result_parameters_mult_%d-%d_pt_%d-%d_rap_%d-%d_Data_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_OS_MupT%s.txt", multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), version.Data(), MupT.Data()));
 		if(in1.is_open())
 		{
 			in1 >> char1 >> char2 >> char3 >> char4 >> char5 >> char6 >> 
@@ -387,7 +386,7 @@ void FreePar(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t 
 
 		Double_t bpar1, bpar2, bpar3, bpar4, bpar5;
 		ifstream in2;
-		in2.open(Form("Parameter/v2_bkg_pol2_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_MupT%s_Par%d.txt", multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), FreeParN));
+		in2.open(Form("Parameter/v2_bkg_pol2_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_MupT%s_Par%d.txt", multMin, multMax, (int)(10*ptBinsArr[ipt]), (int)(10*ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), FreeParN));
 		if(in2.is_open())
 		{
 			in2 >> bpar1 >> bpar2 >> bpar3 >> bpar4 >> bpar5;
@@ -399,7 +398,7 @@ void FreePar(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t 
 
 //Get vn distribution{{{
 		TFile* fvn;
-		fvn = new TFile(Form("../ExtractV2/ProjDist/DistFiles/%s/MupT%s/v2_dist_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_Acc1_Eff1_TnP1_MupT%s_tra.root", version.Data(), MupT.Data(), multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data()), "READ");
+		fvn = new TFile(Form("../ExtractV2/ProjDist/DistFiles/%s/MupT%s/v2_dist_Reco_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_Data_%s_Acc1_Eff1_TnPw_OS_MupT%s_tra.root", version.Data(), MupT.Data(), multMin, multMax, (int)(ptBinsArr[ipt]), (int)(ptBinsArr[ipt+1]), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data()), "READ");
 
 		TGraphErrors* gvn;
 		if(isfine == true) gvn = (TGraphErrors*) fvn->Get(Form("gv2_Away1_fine"));
@@ -494,6 +493,9 @@ void FreePar(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t 
 		c1[ipt]->cd(2);
 		hist->Draw();
 		fitter.Config().SetParamsSettings(Npar, par0);
+		fitter.Config().ParSettings(0).SetLimits(0., 100000000.);
+		fitter.Config().ParSettings(1).SetLimits(0., 100000000.);
+		fitter.Config().ParSettings(2).SetLimits(0., 100000000.);
 		if(FreeParN == 2) fitter.Config().ParSettings(6).SetLimits(0.5, 20.);
 		if(FreeParN == 3) fitter.Config().ParSettings(7).SetLimits(0.5, 20.);
 		if(FreeParN == 4) fitter.Config().ParSettings(8).SetLimits(0., 1.);
@@ -557,7 +559,7 @@ void FreePar(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t 
 		gvn->Draw("PESAME");
 
 		FILE* ftxt;
-		ftxt = fopen(Form("Parameter/Obv2_bkg_pol2_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_MupT%s_Par%d.txt", multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), FreeParN), "w");
+		ftxt = fopen(Form("Parameter/Obv2_bkg_pol2_par_mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_MupT%s_Par%d.txt", multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, version.Data(), MupT.Data(), FreeParN), "w");
 		if(ftxt != NULL)
 		{
 			fprintf(ftxt, "%f   %f   %f   %f \n", fvn_simul->GetParameter(16), fvn_simul->GetParameter(17), fvn_simul->GetParameter(18), fvn_simul->GetParameter(19));
@@ -639,7 +641,7 @@ void FreePar(const Int_t multMin = 0, const Int_t multMax = 300, const Double_t 
 
 	for(Int_t ipt = 0; ipt < pt_narr-1; ipt++)
 	{
-		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away1/Combined_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_pol2_1_%s_Data_%s_Acc1_Eff1_TnP1_SigSys0_BkgSys0_MupT%s_tra_FreePar%d.pdf", version.Data(), MupT.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Fine.Data(), version.Data(), MupT.Data(), FreeParN));
+		c1[ipt]->SaveAs(Form("V2Dist/SigV2/%s/MupT%s/Away1/Combined_fit_Mult_%d-%d_pt_%d-%d_rap_%d-%d_Trkpt_%d-%d_pol2_1_%s_Data_%s_Acc1_Eff1_TnPw_SigSys0_BkgSys0_OS_MupT%s_tra_FreePar%d.pdf", version.Data(), MupT.Data(), multMin, multMax, (int)(ptBinsArr[ipt]*10), (int)(ptBinsArr[ipt+1]*10), (int)(10*rapMin), (int)(10*rapMax), (int)TrkptMin, (int)TrkptMax, Fine.Data(), version.Data(), MupT.Data(), FreeParN));
 	}
 
 	TGraphErrors* v2_1splot = new TGraphErrors(pt_narr-1, pt, v2_1s, 0, v2_1sE);
