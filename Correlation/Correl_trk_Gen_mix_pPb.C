@@ -99,10 +99,16 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 	Int_t mult2;
 	//Float_t zVtx1;
 	//Float_t zVtx2;
+	Int_t Ntrg_Gen1;
+	Int_t Ntrg_Gen2;
 	Int_t Nass_Gen1;
 	Int_t Nass_Gen2;
+	TClonesArray* Vec_trg_Gen1;
+	TClonesArray* Vec_trg_Gen2;
 	TClonesArray* Vec_ass_Gen1;
 	TClonesArray* Vec_ass_Gen2;
+	Vec_trg_Gen1 = 0;
+	Vec_trg_Gen2 = 0;
 	Vec_ass_Gen1 = 0;
 	Vec_ass_Gen2 = 0;
 
@@ -110,25 +116,37 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 	TBranch* b_mult2;
 	//TBranch* b_zVtx1;
 	//TBranch* b_zVtx2;
+	TBranch* b_Ntrg_Gen1;
+	TBranch* b_Ntrg_Gen2;
 	TBranch* b_Nass_Gen1;
 	TBranch* b_Nass_Gen2;
+	TBranch* b_Vec_trg_Gen1;
+	TBranch* b_Vec_trg_Gen2;
 	TBranch* b_Vec_ass_Gen1;
 	TBranch* b_Vec_ass_Gen2;
 
 	tin1->SetBranchAddress("mult", &mult1, &b_mult1);
 	//tin1->SetBranchAddress("zVtx", &zVtx1, &b_zVtx1);
+	tin1->SetBranchAddress("Ntrg_Gen", &Ntrg_Gen1, &b_Ntrg_Gen1);
 	tin1->SetBranchAddress("Nass_Gen", &Nass_Gen1, &b_Nass_Gen1);
+	tin1->SetBranchAddress("Vec_trg_Gen", &Vec_trg_Gen1, &b_Vec_trg_Gen1);
 	tin1->SetBranchAddress("Vec_ass_Gen", &Vec_ass_Gen1, &b_Vec_ass_Gen1);
 
 	tin2->SetBranchAddress("mult", &mult2, &b_mult2);
 	//tin2->SetBranchAddress("zVtx", &zVtx2, &b_zVtx2);
+	tin2->SetBranchAddress("Ntrg_Gen", &Ntrg_Gen2, &b_Ntrg_Gen2);
 	tin2->SetBranchAddress("Nass_Gen", &Nass_Gen2, &b_Nass_Gen2);
+	tin2->SetBranchAddress("Vec_trg_Gen", &Vec_trg_Gen2, &b_Vec_trg_Gen2);
 	tin2->SetBranchAddress("Vec_ass_Gen", &Vec_ass_Gen2, &b_Vec_ass_Gen2);
 //}}}
 
 //Define lorentz vector{{{
+	TLorentzVector* vec_trg_Gen1 = new TLorentzVector;
+	TLorentzVector* vec_trg_Gen2 = new TLorentzVector;
 	TLorentzVector* vec_trk_Gen1 = new TLorentzVector;
 	TLorentzVector* vec_trk_Gen2 = new TLorentzVector;
+	vec_trg_Gen1 = 0;
+	vec_trg_Gen2 = 0;
 	vec_trk_Gen1 = 0;
 	vec_trk_Gen2 = 0;
 //}}}
@@ -145,6 +163,14 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 
 			//if(Nass_Gen1 < 0 || zVtx1 == -99) continue;
 			if(Nass_Gen1 < 0) continue;
+			for(Int_t itrg = 0; itrg < Ntrg_Gen1; itrg++)
+			{
+				vec_trg_Gen1 = (TLorentzVector*) Vec_trg_Gen1->At(itrg);
+				if(vec_trg_Gen1 == 0) continue;
+				else break;
+			}
+			Double_t trg_pt1 = vec_trg_Gen1->Pt();
+
 			for(Int_t itrk1 = 0; itrk1 < Nass_Gen1; itrk1++)
 			{
 				vec_trk_Gen1 = (TLorentzVector*) Vec_ass_Gen1->At(itrk1);
@@ -157,13 +183,19 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 				{
 					Int_t rNum = gRandom->Integer(Nevt2);
 					tin2->GetEntry(rNum);
+
+					for(Int_t itrg = 0; itrg < Ntrg_Gen2; itrg++)
+					{
+						vec_trg_Gen2 = (TLorentzVector*) Vec_trg_Gen2->At(itrg);
+					}
+					Double_t trg_pt2 = vec_trg_Gen2->Pt();
 					//if(zVtx2 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Gen2 <= 0)
 					if(Nass_Gen2 <= 0)
 					{
 						irand--;
 						continue;
 					}
-
+/*
 //multiplicity restrict for high{{{
 					if(mult1 >= 70 && mult1 < 80)
 					{
@@ -206,8 +238,8 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 						}
 					}
 //}}}
+*/
 
-/*
 //multiplicity restrict for low{{{
 					if(mult1 >= 0 && mult1 < 35)
 					{
@@ -226,7 +258,42 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 						}
 					}
 //}}}
-*/
+
+//pt restrict{{{
+					if(trg_pt1 >= 0 && trg_pt1 < 3)
+					{
+						if(trg_pt2 < 0 || trg_pt2 >= 3)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt1 >= 3 && trg_pt1 < 6)
+					{
+						if(trg_pt2 < 3 || trg_pt2 >= 6)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt1 >= 6 && trg_pt1 < 10)
+					{
+						if(trg_pt2 < 6 || trg_pt2 >= 10)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt1 >= 10 && trg_pt1 < 30)
+					{
+						if(trg_pt2 < 10 || trg_pt2 >= 30)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+
 					for(Int_t itrk2 = 0; itrk2 < Nass_Gen2; itrk2++)
 					{
 						vec_trk_Gen2 = (TLorentzVector*) Vec_ass_Gen2->At(itrk2);
@@ -280,6 +347,14 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 
 			//if(Nass_Gen2 <= 0 || zVtx2 == -99) continue;
 			if(Nass_Gen2 <= 0) continue;
+			for(Int_t itrg = 0; itrg < Ntrg_Gen2; itrg++)
+			{
+				vec_trg_Gen2 = (TLorentzVector*) Vec_trg_Gen2->At(itrg);
+				if(vec_trg_Gen2 == 0) continue;
+				else break;
+			}
+			Double_t trg_pt2 = vec_trg_Gen2->Pt();
+
 			for(Int_t itrk1 = 0; itrk1 < Nass_Gen2; itrk1++)
 			{
 				vec_trk_Gen2 = (TLorentzVector*) Vec_ass_Gen2->At(itrk1);
@@ -293,12 +368,20 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 					Int_t rNum = gRandom->Integer(Nevt1);
 					tin1->GetEntry(rNum);
 					//if(zVtx1 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Gen1 <= 0)
+					for(Int_t itrg = 0; itrg < Ntrg_Gen1; itrg++)
+					{
+						vec_trg_Gen1 = (TLorentzVector*) Vec_trg_Gen1->At(itrg);
+						if(vec_trg_Gen1 == 0) continue;
+						else break;
+					}
+					Double_t trg_pt1 = vec_trg_Gen1->Pt();
+
 					if(Nass_Gen1 <= 0)
 					{
 						irand--;
 						continue;
 					}
-
+/*
 //multiplicity restrict for high{{{
 					if(mult2 >= 70 && mult2 < 80)
 					{
@@ -341,8 +424,8 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 						}
 					}
 //}}}
+*/
 
-/*
 //multiplicity restrict for low{{{
 					if(mult2 >= 0 && mult2 < 35)
 					{
@@ -361,7 +444,42 @@ void Correl_trk_Gen_mix_pPb(const Int_t multMin = 0, const Int_t multMax = 300, 
 						}
 					}
 //}}}
-*/
+
+//pt restrict{{{
+					if(trg_pt2 >= 0 && trg_pt2 < 3)
+					{
+						if(trg_pt1 < 0 || trg_pt1 >= 3)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt2 >= 3 && trg_pt2 < 6)
+					{
+						if(trg_pt1 < 3 || trg_pt1 >= 6)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt2 >= 6 && trg_pt2 < 10)
+					{
+						if(trg_pt1 < 6 || trg_pt1 >= 10)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt2 >= 10 && trg_pt2 < 30)
+					{
+						if(trg_pt1 < 10 || trg_pt1 >= 30)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+
 					for(Int_t itrk2 = 0; itrk2 < Nass_Gen1; itrk2++)
 					{
 						vec_trk_Gen1 = (TLorentzVector*) Vec_ass_Gen1->At(itrk2);

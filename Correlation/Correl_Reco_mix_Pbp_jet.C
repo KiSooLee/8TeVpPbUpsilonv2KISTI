@@ -67,10 +67,14 @@ void Correl_Reco_mix_Pbp_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 		//if( (isBkg && (ibin < 20 || ibin >= 60)) || (!isBkg && (ibin >= 26 && ibin < 32)) )
 		if( (!isMC && isBkg && (ibin < 20 || ibin >= 60)) || (!isMC && !isBkg && (ibin >= 22 && ibin < 36)) || (isMC && (ibin >= 10 && ibin < 40)) )
 		{
-			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
-			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
-			fname1 = Form("/cms/scratch/kilee/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
-			fname2 = Form("/cms/scratch/kilee/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
+			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
+			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
+			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_OS_CutGP_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//CutGPlus
+			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_OS_CutGP_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//CutGPlus
+			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_OS_Olv_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//Overlaping vertex filter
+			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_OS_Olv_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//Overlaping vertex filter
+			//fname1 = Form("/cms/scratch/kilee/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
+			//fname2 = Form("/cms/scratch/kilee/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
 			tin1_tmp->Add(fname1.Data());
 			tin2_tmp->Add(fname2.Data());
 		}
@@ -80,8 +84,8 @@ void Correl_Reco_mix_Pbp_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 	tin1_tmp->Reset();
 	tin2_tmp->Reset();
 
-	TFile* facc = new TFile(Form("../AccEff/Plots/AccPlots_Upsilon_1S_RW%o_MupT%s.root", isAccRW, MupT.Data()), "READ");
-	TFile* feff = new TFile(Form("../AccEff/Plots/EffPlots_Upsilon_1S_RW%o_TnP%s_MupT%s.root", isEffRW, TnPs.Data(), MupT.Data()), "READ");
+	TFile* facc = new TFile(Form("../AccEff/Plots/AccPlots_Upsilon_1S_RW%o_v107_MupT%s.root", isAccRW, MupT.Data()), "READ");
+	TFile* feff = new TFile(Form("../AccEff/Plots/EffPlots_Upsilon_1S_RW%o_TnP%s_v107_MupT%s.root", isEffRW, TnPs.Data(), MupT.Data()), "READ");
 	TFile* ftrk = new TFile("../AccEff/Plots/Hijing_8TeV_dataBS.root", "READ");
 //}}}
 
@@ -274,21 +278,21 @@ void Correl_Reco_mix_Pbp_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 							continue;
 						}
 					}
-					//else if(mult1 >= 90 && mult1 < 110)
-					else if(mult1 >= 90 && mult1 < 120)
+					else if(mult1 >= 90 && mult1 < 110)
+					//else if(mult1 >= 90 && mult1 < 120)
 					{
-						//if (mult2 < 90 || mult2 >= 110)
-						if (mult2 < 90 || mult2 >= 120)
+						if (mult2 < 90 || mult2 >= 110)
+						//if (mult2 < 90 || mult2 >= 120)
 						{
 							irand--;
 							continue;
 						}
 					}
-					//else if(mult1 >= 110 && mult1 < 150)
-					else if(mult1 >= 120 && mult1 < 150)
+					else if(mult1 >= 110 && mult1 < 150)
+					//else if(mult1 >= 120 && mult1 < 150)
 					{
-						//if (mult2 < 110 || mult2 >= 150)
-						if (mult2 < 120 || mult2 >= 150)
+						if (mult2 < 110 || mult2 >= 150)
+						//if (mult2 < 120 || mult2 >= 150)
 						{
 							irand--;
 							continue;
@@ -430,21 +434,21 @@ void Correl_Reco_mix_Pbp_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 							continue;
 						}
 					}
-					//else if(mult2 >= 90 && mult2 < 110)
-					else if(mult2 >= 90 && mult2 < 120)
+					else if(mult2 >= 90 && mult2 < 110)
+					//else if(mult2 >= 90 && mult2 < 120)
 					{
-						//if (mult1 < 90 || mult1 >= 110)
-						if (mult1 < 90 || mult1 >= 120)
+						if (mult1 < 90 || mult1 >= 110)
+						//if (mult1 < 90 || mult1 >= 120)
 						{
 							irand--;
 							continue;
 						}
 					}
-					//else if(mult2 >= 110 && mult2 < 150)
-					else if(mult2 >= 120 && mult2 < 150)
+					else if(mult2 >= 110 && mult2 < 150)
+					//else if(mult2 >= 120 && mult2 < 150)
 					{
-						//if (mult1 < 110 || mult1 >= 150)
-						if (mult1 < 120 || mult1 >= 150)
+						if (mult1 < 110 || mult1 >= 150)
+						//if (mult1 < 120 || mult1 >= 150)
 						{
 							irand--;
 							continue;

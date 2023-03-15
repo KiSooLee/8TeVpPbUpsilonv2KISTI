@@ -68,8 +68,12 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 		{
 			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//storage
 			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//storage
-			fname1 = Form("/cms/scratch/kilee/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//scratch
-			fname2 = Form("/cms/scratch/kilee/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//scratch
+			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%s_CutGP_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//CutGPlus
+			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%s_CutGP_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//CutGPlus
+			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%s_Olv_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//Overlaping vertex filter
+			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%s_Olv_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//Overlaping vertex filter
+			//fname1 = Form("/cms/scratch/kilee/resultPbp1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp1_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//scratch
+			//fname2 = Form("/cms/scratch/kilee/resultPbp2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_Pbp2_PADoubleMuon_%s_%s_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), SS.Data(), ibin);//scratch
 		}
 		else
 		{
@@ -86,8 +90,10 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 	tin1_tmp->Reset();
 	tin2_tmp->Reset();
 
-	TFile* facc = new TFile(Form("../AccEff/Plots/AccPlots_Upsilon_1S_RW%o_MupT%s.root", isAccRW, MupT.Data()), "READ");
-	TFile* feff = new TFile(Form("../AccEff/Plots/EffPlots_Upsilon_1S_RW%o_TnP%s_MupT%s.root", isEffRW, TnPs.Data(), MupT.Data()), "READ");
+	TFile* facc = new TFile(Form("../AccEff/Plots/AccPlots_Upsilon_1S_RW%o_v107_MupT%s.root", isAccRW, MupT.Data()), "READ");//new
+	TFile* feff = new TFile(Form("../AccEff/Plots/EffPlots_Upsilon_1S_RW%o_TnP%s_v107_MupT%s.root", isEffRW, TnPs.Data(), MupT.Data()), "READ");//new
+	//TFile* facc = new TFile(Form("../AccEff/Plots/AccPlots_Upsilon_1S_RW%o_MupT%s.root", isAccRW, MupT.Data()), "READ");//old
+	//TFile* feff = new TFile(Form("../AccEff/Plots/EffPlots_Upsilon_1S_RW%o_TnP%s_MupT%s.root", isEffRW, TnPs.Data(), MupT.Data()), "READ");//old
 	TFile* ftrk = new TFile("../AccEff/Plots/Hijing_8TeV_dataBS.root", "READ");
 //}}}
 
@@ -235,21 +241,22 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 			{
 				vec_trg_Reco1 = (TLorentzVector*) Vec_trg_Reco1->At(itrg);
 				if(vec_trg_Reco1 == 0) continue;
-				Double_t trg_y = vec_trg_Reco1->Rapidity();
-				Double_t trg_pt = vec_trg_Reco1->Pt();
-				Double_t trg_eta = vec_trg_Reco1->Eta();
-				Double_t trg_phi = vec_trg_Reco1->Phi();
+				Double_t trg_y1 = vec_trg_Reco1->Rapidity();
+				Double_t trg_pt1 = vec_trg_Reco1->Pt();
+				Double_t trg_eta1 = vec_trg_Reco1->Eta();
+				Double_t trg_phi1 = vec_trg_Reco1->Phi();
 
 				Double_t upacc = 1.;
 				Double_t upeff = 1.;
 				for(Int_t iy = 0; iy < Ny; iy++)
 				{
-					if(fabs(trg_y) > ybin[iy] && fabs(trg_y) <= ybin[iy+1])
+					if(fabs(trg_y1) > ybin[iy] && fabs(trg_y1) <= ybin[iy+1])
 					{
-						upacc = hacc[iy]->GetBinContent(hacc[iy]->FindBin(trg_pt));
-						upeff = heff[iy]->GetBinContent(heff[iy]->FindBin(trg_pt));
+						upacc = hacc[iy]->GetBinContent(hacc[iy]->FindBin(trg_pt1));
+						upeff = heff[iy]->GetBinContent(heff[iy]->FindBin(trg_pt1));
 						break;
 					}
+					else continue;
 				}
 
 //correlation{{{
@@ -257,12 +264,21 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 				{
 					Int_t rNum = gRandom->Integer(Nevt2);
 					tin2->GetEntry(rNum);
+
+					for(Int_t itrg = 0; itrg < Ntrg_Reco2; itrg++)
+					{
+						vec_trg_Reco2 = (TLorentzVector*) Vec_trg_Reco2->At(itrg);
+						if(vec_trg_Reco2 == 0) continue;
+						else break;
+					}
+					Double_t trg_pt2 = vec_trg_Reco2->Pt();
+
 					if(zVtx2 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Reco2 <= 0)
 					{
 						irand--;
 						continue;
 					}
-/*
+
 //multiplicity restrict for high{{{
 					if(mult1 >= 70 && mult1 < 80)
 					{
@@ -280,21 +296,21 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 							continue;
 						}
 					}
-					//else if(mult1 >= 90 && mult1 < 110)
-					else if(mult1 >= 90 && mult1 < 120)
+					else if(mult1 >= 90 && mult1 < 110)
+					//else if(mult1 >= 90 && mult1 < 120)
 					{
-						//if (mult2 < 90 || mult2 >= 110)
-						if (mult2 < 90 || mult2 >= 120)
+						if (mult2 < 90 || mult2 >= 110)
+						//if (mult2 < 90 || mult2 >= 120)
 						{
 							irand--;
 							continue;
 						}
 					}
-					//else if(mult1 >= 110 && mult1 < 150)
-					else if(mult1 >= 120 && mult1 < 150)
+					else if(mult1 >= 110 && mult1 < 150)
+					//else if(mult1 >= 120 && mult1 < 150)
 					{
-						//if (mult2 < 110 || mult2 >= 150)
-						if (mult2 < 120 || mult2 >= 150)
+						if (mult2 < 110 || mult2 >= 150)
+						//if (mult2 < 120 || mult2 >= 150)
 						{
 							irand--;
 							continue;
@@ -309,8 +325,8 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 						}
 					}
 //}}}
-*/
 
+/*
 //multiplicity restrict for low{{{
 					if(mult1 >= 0 && mult1 < 35)
 					{
@@ -329,6 +345,42 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 						}
 					}
 //}}}
+*/
+
+//pt restrict{{{
+					if(trg_pt1 >= 0 && trg_pt1 < 3)
+					{
+						if(trg_pt2 < 0 || trg_pt2 >= 3)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt1 >= 3 && trg_pt1 < 6)
+					{
+						if(trg_pt2 < 3 || trg_pt2 >= 6)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt1 >= 6 && trg_pt1 < 10)
+					{
+						if(trg_pt2 < 6 || trg_pt2 >= 10)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt1 >= 10 && trg_pt1 < 30)
+					{
+						if(trg_pt2 < 10 || trg_pt2 >= 30)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
 
 					for(Int_t itrk = 0; itrk < Nass_Reco2; itrk++)
 					{
@@ -339,8 +391,8 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 						Double_t ass_eta = vec_ass_Reco2->Eta();
 						Double_t ass_phi = vec_ass_Reco2->Phi();
 						Double_t ass_pt = vec_ass_Reco2->Pt();
-						Double_t deta = ass_eta - trg_eta;
-						Double_t dphi = ass_phi - trg_phi;
+						Double_t deta = ass_eta - trg_eta1;
+						Double_t dphi = ass_phi - trg_phi1;
 
 						if(dphi > TMath::Pi()) dphi = dphi - 2*TMath::Pi();
 						if(dphi < -TMath::Pi()) dphi = dphi + 2*TMath::Pi();
@@ -390,21 +442,22 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 			{
 				vec_trg_Reco2 = (TLorentzVector*) Vec_trg_Reco2->At(itrg);
 				if(vec_trg_Reco2 == 0) continue;
-				Double_t trg_y = vec_trg_Reco2->Rapidity();
-				Double_t trg_pt = vec_trg_Reco2->Pt();
-				Double_t trg_eta = vec_trg_Reco2->Eta();
-				Double_t trg_phi = vec_trg_Reco2->Phi();
+				Double_t trg_y2 = vec_trg_Reco2->Rapidity();
+				Double_t trg_pt2 = vec_trg_Reco2->Pt();
+				Double_t trg_eta2 = vec_trg_Reco2->Eta();
+				Double_t trg_phi2 = vec_trg_Reco2->Phi();
 
 				Double_t upacc = 1.;
 				Double_t upeff = 1.;
 				for(Int_t iy = 0; iy < Ny; iy++)
 				{
-					if(fabs(trg_y) > ybin[iy] && fabs(trg_y) <= ybin[iy+1])
+					if(fabs(trg_y2) > ybin[iy] && fabs(trg_y2) <= ybin[iy+1])
 					{
-						upacc = hacc[iy]->GetBinContent(hacc[iy]->FindBin(trg_pt));
-						upeff = heff[iy]->GetBinContent(heff[iy]->FindBin(trg_pt));
+						upacc = hacc[iy]->GetBinContent(hacc[iy]->FindBin(trg_pt2));
+						upeff = heff[iy]->GetBinContent(heff[iy]->FindBin(trg_pt2));
 						break;
 					}
+					else continue;
 				}
 
 //correlation{{{
@@ -412,12 +465,21 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 				{
 					Int_t rNum = gRandom->Integer(Nevt1);
 					tin1->GetEntry(rNum);
+
+					for(Int_t itrg = 0; itrg < Ntrg_Reco1; itrg++)
+					{
+						vec_trg_Reco1 = (TLorentzVector*) Vec_trg_Reco1->At(itrg);
+						if(vec_trg_Reco1 == 0) continue;
+						else break;
+					}
+					Double_t trg_pt1 = vec_trg_Reco1->Pt();
+
 					if(zVtx1 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Reco1 <= 0)
 					{
 						irand--;
 						continue;
 					}
-/*
+
 //multiplicity restrict for high{{{
 					if(mult2 >= 70 && mult2 < 80)
 					{
@@ -435,21 +497,21 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 							continue;
 						}
 					}
-					//else if(mult2 >= 90 && mult2 < 110)
-					else if(mult2 >= 90 && mult2 < 120)
+					else if(mult2 >= 90 && mult2 < 110)
+					//else if(mult2 >= 90 && mult2 < 120)
 					{
-						//if (mult1 < 90 || mult1 >= 110)
-						if (mult1 < 90 || mult1 >= 120)
+						if (mult1 < 90 || mult1 >= 110)
+						//if (mult1 < 90 || mult1 >= 120)
 						{
 							irand--;
 							continue;
 						}
 					}
-					//else if(mult2 >= 110 && mult2 < 150)
-					else if(mult2 >= 120 && mult2 < 150)
+					else if(mult2 >= 110 && mult2 < 150)
+					//else if(mult2 >= 120 && mult2 < 150)
 					{
-						//if (mult1 < 110 || mult1 >= 150)
-						if (mult1 < 120 || mult1 >= 150)
+						if (mult1 < 110 || mult1 >= 150)
+						//if (mult1 < 120 || mult1 >= 150)
 						{
 							irand--;
 							continue;
@@ -464,8 +526,8 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 						}
 					}
 //}}}
-*/
 
+/*
 //multiplicity restrict for low{{{
 					if(mult2 >= 0 && mult2 < 35)
 					{
@@ -484,6 +546,41 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 						}
 					}
 //}}}
+*/
+//pt restrict{{{
+					if(trg_pt2 >= 0 && trg_pt2 < 3)
+					{
+						if(trg_pt1 < 0 || trg_pt1 >= 3)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt2 >= 3 && trg_pt2 < 6)
+					{
+						if(trg_pt1 < 3 || trg_pt1 >= 6)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt2 >= 6 && trg_pt2 < 10)
+					{
+						if(trg_pt1 < 6 || trg_pt1 >= 10)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt2 >= 10 && trg_pt2 < 30)
+					{
+						if(trg_pt1 < 10 || trg_pt1 >= 30)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
 
 					for(Int_t itrk = 0; itrk < Nass_Reco1; itrk++)
 					{
@@ -494,8 +591,8 @@ void Correl_Reco_mix_Pbp(const bool isMC = false, const Int_t multMin = 0, const
 						Double_t ass_eta = vec_ass_Reco1->Eta();
 						Double_t ass_phi = vec_ass_Reco1->Phi();
 						Double_t ass_pt = vec_ass_Reco1->Pt();
-						Double_t deta = ass_eta - trg_eta;
-						Double_t dphi = ass_phi - trg_phi;
+						Double_t deta = ass_eta - trg_eta2;
+						Double_t dphi = ass_phi - trg_phi2;
 
 						if(dphi > TMath::Pi()) dphi = dphi - 2*TMath::Pi();
 						if(dphi < -TMath::Pi()) dphi = dphi + 2*TMath::Pi();

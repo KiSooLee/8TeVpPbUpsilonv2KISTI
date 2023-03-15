@@ -168,21 +168,31 @@ void Correl_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, cons
 			{
 				vec_trg_Gen1 = (TLorentzVector*) Vec_trg_Gen1->At(itrg);
 				if(vec_trg_Gen1 == 0) continue;
-				Double_t trg_eta = vec_trg_Gen1->Eta();
-				Double_t trg_phi = vec_trg_Gen1->Phi();
+				Double_t trg_pt1 = vec_trg_Gen1->Pt();
+				Double_t trg_eta1 = vec_trg_Gen1->Eta();
+				Double_t trg_phi1 = vec_trg_Gen1->Phi();
 
 //correlation{{{
 				for(Int_t irand = 0; irand < 10; irand++)
 				{
 					Int_t rNum = gRandom->Integer(Nevt2);
 					tin2->GetEntry(rNum);
+
+					for(Int_t itrg = 0; itrg < Ntrg_Gen2; itrg++)
+					{
+						vec_trg_Gen2 = (TLorentzVector*) Vec_trg_Gen2->At(itrg);
+						if(vec_trg_Gen2 == 0) continue;
+						else break;
+					}
+					Double_t trg_pt2 = vec_trg_Gen2->Pt();
+
 					if(zVtx2 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Gen2 <= 0)
 					//if(Nass_Gen2 <= 0)
 					{
 						irand--;
 						continue;
 					}
-
+/*
 //multiplicity restrict for high{{{
 					if(mult1 >= 70 && mult1 < 80)
 					{
@@ -225,8 +235,8 @@ void Correl_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, cons
 						}
 					}
 //}}}
+*/
 
-/*
 //multiplicity restrict for low{{{
 					if(mult1 >= 0 && mult1 < 35)
 					{
@@ -245,7 +255,42 @@ void Correl_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, cons
 						}
 					}
 //}}}
-*/
+
+//pt restrict{{{
+					if(trg_pt1 >= 0 && trg_pt1 < 3)
+					{
+						if(trg_pt2 < 0 || trg_pt2 >= 3)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt1 >= 3 && trg_pt1 < 6)
+					{
+						if(trg_pt2 >= 3 && trg_pt2 < 6)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt1 >= 6 && trg_pt1 < 10)
+					{
+						if(trg_pt2 >= 6 && trg_pt2 < 10)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt1 >= 10 && trg_pt1 < 30)
+					{
+						if(trg_pt2 >= 10 && trg_pt2 < 30)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+
 					for(Int_t itrk = 0; itrk < Nass_Gen2; itrk++)
 					{
 						vec_ass_Gen2 = (TLorentzVector*) Vec_ass_Gen2->At(itrk);
@@ -254,8 +299,8 @@ void Correl_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, cons
 //calculate correl{{{
 						Double_t ass_eta = vec_ass_Gen2->Eta();
 						Double_t ass_phi = vec_ass_Gen2->Phi();
-						Double_t deta = ass_eta - trg_eta;
-						Double_t dphi = ass_phi - trg_phi;
+						Double_t deta = ass_eta - trg_eta1;
+						Double_t dphi = ass_phi - trg_phi1;
 
 						if(dphi > TMath::Pi()) dphi = dphi - 2*TMath::Pi();
 						if(dphi < -TMath::Pi()) dphi = dphi + 2*TMath::Pi();
@@ -303,21 +348,31 @@ void Correl_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, cons
 			{
 				vec_trg_Gen2 = (TLorentzVector*) Vec_trg_Gen2->At(itrg);
 				if(vec_trg_Gen2 == 0) continue;
-				Double_t trg_eta = vec_trg_Gen2->Eta();
-				Double_t trg_phi = vec_trg_Gen2->Phi();
+				Double_t trg_pt2 = vec_trg_Gen2->Pt();
+				Double_t trg_eta2 = vec_trg_Gen2->Eta();
+				Double_t trg_phi2 = vec_trg_Gen2->Phi();
 
 //correlation{{{
 				for(Int_t irand = 0; irand < 10; irand++)
 				{
 					Int_t rNum = gRandom->Integer(Nevt1);
 					tin1->GetEntry(rNum);
+
+					for(Int_t itrg = 0; itrg < Ntrg_Gen1; itrg++)
+					{
+						vec_trg_Gen1 = (TLorentzVector*) Vec_trg_Gen1->At(itrg);
+						if(vec_trg_Gen1 == 0) continue;
+						else break;
+					}
+					Double_t trg_pt1 = vec_trg_Gen1->Pt();
+
 					if(zVtx1 == -99 || TMath::Abs(zVtx1 - zVtx2) > 20. || Nass_Gen1 <= 0)
 					//if(Nass_Gen1 <= 0)
 					{
 						irand--;
 						continue;
 					}
-
+/*
 //multiplicity restrict for high{{{
 					if(mult2 >= 70 && mult2 < 80)
 					{
@@ -360,8 +415,8 @@ void Correl_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, cons
 						}
 					}
 //}}}
+*/
 
-/*
 //multiplicity restrict for low{{{
 					if(mult2 >= 0 && mult2 < 35)
 					{
@@ -380,7 +435,42 @@ void Correl_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, cons
 						}
 					}
 //}}}
-*/
+
+//pt restrict{{{
+					if(trg_pt2 >= 0 && trg_pt2 < 3)
+					{
+						if(trg_pt1 < 0 || trg_pt1 >= 3)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt2 >= 3 && trg_pt2 < 6)
+					{
+						if(trg_pt1 >= 3 && trg_pt1 < 6)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt2 >= 6 && trg_pt2 < 10)
+					{
+						if(trg_pt1 >= 6 && trg_pt1 < 10)
+						{
+							irand--;
+							continue;
+						}
+					}
+					else if(trg_pt2 >= 10 && trg_pt2 < 30)
+					{
+						if(trg_pt1 >= 10 && trg_pt1 < 30)
+						{
+							irand--;
+							continue;
+						}
+					}
+//}}}
+
 					for(Int_t itrk = 0; itrk < Nass_Gen1; itrk++)
 					{
 						vec_ass_Gen1 = (TLorentzVector*) Vec_ass_Gen1->At(itrk);
@@ -389,8 +479,8 @@ void Correl_Gen_mix_Pbp(const Int_t multMin = 0, const Int_t multMax = 300, cons
 //calculate correl{{{
 						Double_t ass_eta = vec_ass_Gen1->Eta();
 						Double_t ass_phi = vec_ass_Gen1->Phi();
-						Double_t deta = ass_eta - trg_eta;
-						Double_t dphi = ass_phi - trg_phi;
+						Double_t deta = ass_eta - trg_eta2;
+						Double_t dphi = ass_phi - trg_phi2;
 	
 						if(dphi > TMath::Pi()) dphi = dphi - 2*TMath::Pi();
 						if(dphi < -TMath::Pi()) dphi = dphi + 2*TMath::Pi();

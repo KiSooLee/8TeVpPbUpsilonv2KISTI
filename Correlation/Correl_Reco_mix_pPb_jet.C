@@ -67,10 +67,14 @@ void Correl_Reco_mix_pPb_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 		//if( (isBkg && (ibin < 20 || ibin >= 60)) || (!isBkg && (ibin >= 26 && ibin < 32)) )
 		if( (!isMC && isBkg && (ibin < 20 || ibin >= 60)) || (!isMC && !isBkg && (ibin >= 22 && ibin < 36)) || (isMC && (ibin >= 10 && ibin < 40)) )
 		{
-			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
-			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
-			fname1 = Form("/cms/scratch/kilee/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
-			fname2 = Form("/cms/scratch/kilee/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
+			fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
+			fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//storage
+			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb1_PADoubleMuon_%s_OS_CutGP_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//CutGPlus
+			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb2_PADoubleMuon_%s_OS_CutGP_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//CutGPlus
+			//fname1 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb1_PADoubleMuon_%s_OS_Olv_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//Overlaping vertex filter
+			//fname2 = Form("root://cms-xrdr.private.lo:2094///xrd/store/user/kilee/pPb_8TeV_OniaTrkTree/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb2_PADoubleMuon_%s_OS_Olv_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//Overlaping vertex filter
+			//fname1 = Form("/cms/scratch/kilee/resultpPb1/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb1_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
+			//fname2 = Form("/cms/scratch/kilee/resultpPb2/%d-%d_%d-%d_%d-%d_%d-%d_MupT%s_trk%s/Sort_OniaTree_Reco_pPb2_PADoubleMuon_%s_OS_%d.root", multMin, multMax, (int)ptMin, (int)ptMax, (int)(rapMin*10), (int)(rapMax*10), (int)TrkptMin, (int)TrkptMax, MupT.Data(), trkptversion.Data(), MorD.Data(), ibin);//scratch
 			tin1_tmp->Add(fname1.Data());
 			tin2_tmp->Add(fname2.Data());
 		}
@@ -80,8 +84,8 @@ void Correl_Reco_mix_pPb_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 	tin1_tmp->Reset();
 	tin2_tmp->Reset();
 
-	TFile* facc = new TFile(Form("../AccEff/Plots/AccPlots_Upsilon_1S_RW%o_MupT%s.root", isAccRW, MupT.Data()), "READ");
-	TFile* feff = new TFile(Form("../AccEff/Plots/EffPlots_Upsilon_1S_RW%o_TnP%s_MupT%s.root", isEffRW, TnPs.Data(), MupT.Data()), "READ");
+	TFile* facc = new TFile(Form("../AccEff/Plots/AccPlots_Upsilon_1S_RW%o_v107_MupT%s.root", isAccRW, MupT.Data()), "READ");
+	TFile* feff = new TFile(Form("../AccEff/Plots/EffPlots_Upsilon_1S_RW%o_TnP%s_v107_MupT%s.root", isEffRW, TnPs.Data(), MupT.Data()), "READ");
 	TFile* ftrk = new TFile("../AccEff/Plots/Hijing_8TeV_dataBS.root", "READ");
 //}}}
 
@@ -257,7 +261,7 @@ void Correl_Reco_mix_pPb_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 						irand--;
 						continue;
 					}
-
+/*
 //multiplicity restrict for high{{{
 					if(mult1 >= 70 && mult1 < 80)
 					{
@@ -300,8 +304,8 @@ void Correl_Reco_mix_pPb_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 						}
 					}
 //}}}
+*/
 
-/*
 //multiplicity restrict for low{{{
 					if(mult1 >= 0 && mult1 < 35)
 					{
@@ -320,7 +324,7 @@ void Correl_Reco_mix_pPb_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 						}
 					}
 //}}}
-*/
+
 					for(Int_t itrk = 0; itrk < Nass_Reco2; itrk++)
 					{
 						vec_ass_Reco2 = (TLorentzVector*) Vec_ass_Reco2->At(itrk);
@@ -409,7 +413,7 @@ void Correl_Reco_mix_pPb_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 						irand--;
 						continue;
 					}
-
+/*
 //multiplicity restrict for high{{{
 					if(mult2 >= 70 && mult2 < 80)
 					{
@@ -451,9 +455,9 @@ void Correl_Reco_mix_pPb_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 							continue;
 						}
 					}
-//}}}
+//}}}/
+*/
 
-/*
 //multiplicity restrict for low{{{
 					if(mult2 >= 0 && mult2 < 35)
 					{
@@ -472,7 +476,7 @@ void Correl_Reco_mix_pPb_jet(const Bool_t isMC = false, const Int_t multMin = 0,
 						}
 					}
 //}}}
-*/
+
 					for(Int_t itrk = 0; itrk < Nass_Reco1; itrk++)
 					{
 						vec_ass_Reco1 = (TLorentzVector*) Vec_ass_Reco1->At(itrk);
