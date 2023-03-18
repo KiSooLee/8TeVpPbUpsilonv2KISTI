@@ -5,7 +5,7 @@
 #include <TClonesArray.h>
 //}}}
 
-//Basic info{{{
+//Version info{{{
 /*
 //v1: Integrated{{{
 Int_t multBinsArr[] = {0, 300};
@@ -573,14 +573,403 @@ Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
 Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 38, 40};
 //}}}
 */
-
+/*
 //v74: multiplcity 70 ~ 300{{{
 Int_t multBinsArr[] = {70, 300};
 Double_t rapBinsArr[] = {-2.4, 2.4};
 Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
 Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
 //}}}
+*/
+/*
+//v75: pt binnig for jet ratio 70~300{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 11.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v76: multiplcity 70 ~ 90{{{
+Int_t multBinsArr[] = {70, 90};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v77: pt binnig for jet ratio 70~90{{{
+Int_t multBinsArr[] = {70, 90};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 11.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v78: finer pt bin for MC reweight{{{
+Int_t multBinsArr[] = {0, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v79: multiplcity 70 ~ 300 integrated pT{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v80: multiplcity 0 ~ 50 integrated pT{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v81: pt binnig for jet ratio 70~300 pt 12~15{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v82: new pt binnig for jet ratio 0~50 pt 12~15{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v83: same with v74. with more high mass bin{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 62, 68, 75, 82, 90, 98, 108, 120};
+//}}}
+*/
+/*
+//v84: same with v83 for mass. v2 bin for same sign{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 6, 14, 23, 28, 36, 44, 51, 58, 64, 75, 82, 90, 98, 106, 120};
+//}}}
+*/
+/*
+//v85: same with v55. mix event multiplicity range cut{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v86: same with v81. mix event multiplicity range cut{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v87: same with v82. mix event multiplicity range cut{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+//Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Double_t ptBinsArr[] = {12.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v88: same with 79. mixed event multiplicity range cut{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 62, 68, 75, 82, 90, 98, 108, 120};
+//}}}
+*/
+/*
+//v89: same with 80 multiplcity 0 ~ 50 integrated pT{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v90: binning for MC closure test high-multiplicity{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 40};
+//}}}
+*/
+/*
+//v91: binning for MC closure test low-multiplicity{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 40};
+//}}}
+*/
+/*
+//v92: binning for MC closure test high-multiplicity integrated pT{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 40};
+//}}}
+*/
+/*
+//v93: binning for MC closure test low-multiplicity integrated pT{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 40};
+//}}}
+*/
+/*
+//v94: multiplicity scan for yield{{{
+Int_t multBinsArr[] = {0, 35, 50, 60, 70, 80, 90, 100, 120, 150, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0, 30};
+Int_t massBinsArr[] = {0, 120};
+//}}}
+*/
+/*
+//v95: multiplicity scan for v2{{{
+Int_t multBinsArr[] = {70, 90, 120, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0, 30};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 62, 68, 75, 82, 90, 98, 108, 120};
+//}}}
+*/
+/*
+//v96: multiplicity scan for jet{{{
+Int_t multBinsArr[] = {70, 90, 120, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {12, 30};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 62, 68, 75, 82, 90, 98, 108, 120};
+//}}}
+*/
+/*
+//v97: same with v85. multiplicity 0 ~ 35{{{
+Int_t multBinsArr[] = {0, 35};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+//Double_t ptBinsArr[] = {0.0, 30.0};
+//Int_t massBinsArr[] = {0, 14, 25, 30, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+Int_t massBinsArr[] = {0, 14, 20, 25, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v98: same with v87. imultiplicity 0 ~ 35{{{
+Int_t multBinsArr[] = {0, 35};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {12.0, 15.0, 20.0, 30.0};
+//Double_t ptBinsArr[] = {12.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v99: same with v83. CutGPlus{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 62, 68, 75, 82, 90, 98, 108, 120};
+//}}}
+*/
+/*
+//v100: same with v85. CutGPlus{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v101: same with v86. CutGPlus{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v102: same with v87. CutGPlus{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+//Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Double_t ptBinsArr[] = {12.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v103: same with 88. CutGPlus{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 62, 68, 75, 82, 90, 98, 108, 120};
+//}}}
+*/
+/*
+//v104: same with 89. CutGPlus{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 14, 20, 25, 30, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v105: same with v86. CutGPlus{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v106: same with v87. CutGPlus{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v107: MC reweight, new MC{{{
+Int_t multBinsArr[] = {0, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v108: same with v83. overlapping vertex filter high{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 16, 22, 26, 28, 29, 30, 32, 36, 39, 41, 43, 46, 49, 54, 59, 64, 70, 77, 85, 93, 105, 120};
+//}}}
+*/
 
+//v109: same with v85. overlapping vertex filter low{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 15, 20, 25, 29, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+//}}}/
+
+/*
+//v110: same with v86. overlapping vertex filter jet high{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v111: same with v87. overlapping vertex filter jet low{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {9.0, 10.0, 12.0, 15.0, 20.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 28, 29, 32, 35, 38, 41, 44, 46, 50, 56, 66, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v112: same with 88. overlapping vertex filter integrated high{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 62, 68, 75, 82, 90, 98, 108, 120};
+//}}}
+*/
+/*
+//v113: same with 89. overlapping vertex filter integrated low{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 15, 20, 25, 29, 33, 42, 48, 56, 64, 77, 89, 104, 120};
+//}}}
+*/
+/*
+//v114: same with 90. binning for MC closure test high-multiplicity{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 40};
+//}}}
+*/
+/*
+//v115: same with 91. binning for MC closure test low-multiplicity{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 40};
+//}}}
+*/
+/*
+//v116: same with 92. binning for MC closure test high-multiplicity integrated pT{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 40};
+//}}}
+*/
+/*
+//v117: same with 93, binning for MC closure test low-multiplicity integrated pT{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 30.0};
+Int_t massBinsArr[] = {10, 15, 20, 24, 28, 30, 33, 36, 40};
+//}}}
+*/
+/*
+//v118: overlapping vertex filter but same mass binning with v83.{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0};
+Int_t massBinsArr[] = {0, 7, 15, 23, 26, 27, 29, 30, 32, 35, 38, 41, 44, 46, 50, 56, 62, 68, 75, 82, 90, 98, 108, 120};
+//}}}
+*/
+/*
+//v119: same with v83. new MC and TnP but no pile-up filter{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 16, 22, 26, 28, 29, 30, 32, 36, 39, 41, 43, 46, 49, 54, 59, 64, 70, 77, 85, 93, 105, 120};
+//}}}
+*/
+/*
+//v120: same with v83. old MC{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 3.0, 6.0, 10.0, 30.0};
+Int_t massBinsArr[] = {0, 9, 16, 22, 26, 28, 29, 30, 32, 36, 39, 41, 43, 46, 49, 54, 59, 64, 70, 77, 85, 93, 105, 120};
+//}}}
+*/
+/*
+//v121: same with 90. fine binning for MC closure test high-multiplicity{{{
+Int_t multBinsArr[] = {70, 300};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+Int_t massBinsArr[] = {10, 20, 24, 28, 30, 32, 40};
+//}}}
+*/
+/*
+//v122: same with 91. fine binning for MC closure test low-multiplicity{{{
+Int_t multBinsArr[] = {0, 50};
+Double_t rapBinsArr[] = {-2.4, 2.4};
+Double_t ptBinsArr[] = {0.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+Int_t massBinsArr[] = {10, 20, 24, 28, 30, 32, 35};
+//}}}
+*/
 //}}}
 
 const Int_t rap_narr = sizeof(rapBinsArr)/sizeof(double);
